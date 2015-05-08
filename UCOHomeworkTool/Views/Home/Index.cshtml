@@ -1,7 +1,127 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-    
-    <div class="row">
-        
+<br/>
+<br/>
+<br/>
+<div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Problem 1</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img class="img-responsive img-rounded" src="http://placehold.it/600x400&text=Problem Diagram" />
+                    </div>
+                    <div class="col-sm-6">
+                        Given Values:
+                        <ul class="list-group">
+                            <li class="list-group-item">V<sub>s</sub> = 12.5</li>
+                            <li class="list-group-item">R<sub>1</sub> = 12.5</li>
+                            <li class="list-group-item">R<sub>c</sub> = 12.5</li>
+                            <li class="list-group-item">C = 12.5</li>
+                            <li class="list-group-item">
+                                L = 12.5
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-6">
+                        Please give the values for:
+                        <div class="row">
+                            <div style="font-weight: bolder" class="col-sm-2">i:</div>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" style="text-align: right;" />
+                            </div>
+                            <div class="col-sm-4">
+                                <div id="myAlert" role="alert" data-alert="alert" class="alert alert-success fade">
+                                    Correct!
+                                </div>
+                            </div>
+                            <div style="font-weight: bolder" class="col-sm-2">
+                                V<sub>0</sub>:
+                            </div>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" style="text-align: right;" />
+                            </div>
+                            <div class="col-sm-4">
+                                <div id="myAlert2" role="alert" data-alert="alert" class="alert alert-danger fade">
+                                    Wrong! 2 tries remaining.
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6">
+                                <button id="submitButton" class="btn btn-primary form-control" onclick="showAlert();" style="margin-top: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="col-sm-10 col-sm-offset-1">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Problem 2</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img class="img-responsive img-rounded" src="http://placehold.it/600x400&text=Problem Diagram" />
+                    </div>
+                    <div class="col-sm-6">
+                        Given Values:
+                        <ul class="list-group">
+                            <li class="list-group-item">V<sub>s</sub> = 12.5</li>
+                            <li class="list-group-item">R<sub>1</sub> = 12.5</li>
+                            <li class="list-group-item">R<sub>c</sub> = 12.5</li>
+                            <li class="list-group-item">C = 12.5</li>
+                            <li class="list-group-item">
+                                L = 12.5
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-6">
+                        Please give the values for:
+                        <div class="row">
+                            <div style="font-weight: bolder" class="col-sm-2">i:</div>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" style="text-align: right;" />
+                            </div>
+                            <div class="col-sm-4">
+                                <div id="myAlert1" role="alert" data-alert="alert" class="alert alert-success fade">
+                                    Correct!
+                                </div>
+                            </div>
+                            <div style="font-weight: bolder" class="col-sm-2">
+                                V<sub>0</sub>:
+                            </div>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" style="text-align: right;" />
+                            </div>
+                            <div class="col-sm-4">
+                                <div id="myAlert3" role="alert" data-alert="alert" class="alert alert-danger fade">
+                                    No!
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6">
+                                <button id="submitButton2" class="btn btn-primary form-control" onclick="showAlert();" style="margin-top: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function showAlert() {
+        $("#myAlert").addClass("in");
+        $("#myAlert2").addClass("in");
+    }
+</script>
