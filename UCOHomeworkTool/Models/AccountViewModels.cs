@@ -5,7 +5,7 @@ namespace UCOHomeworkTool.Models
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
-        [Display(Name = "User name")]
+        [Display(Name = "Student ID")]
         public string UserName { get; set; }
     }
 
@@ -31,7 +31,7 @@ namespace UCOHomeworkTool.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "User name")]
+        [Display(Name = "Student ID")]
         public string UserName { get; set; }
 
         [Required]
