@@ -27,7 +27,7 @@ namespace UCOHomeworkTool.Controllers
                     database.Entry(prob).Collection("Givens").Load();
                     database.Entry(prob).Collection("Responses").Load();
                 }
-                return View(problemsModel.ToList());
+                return PartialView(problemsModel.ToList());
             }
         }
         public ActionResult _Sidebar()

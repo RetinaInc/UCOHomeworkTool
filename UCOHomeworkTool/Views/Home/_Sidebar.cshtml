@@ -19,6 +19,7 @@
             }).done(function (result)
             {
                 $("#pageContent").html(result);
+                $(".nav-sidebar .active").removeClass("active");
                 $(self).addClass("active");
             })
         });
