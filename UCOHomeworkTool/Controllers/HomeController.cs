@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using UCOHomeworkTool.Models;
 
 namespace UCOHomeworkTool.Controllers
 {
@@ -11,21 +13,19 @@ namespace UCOHomeworkTool.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            return View();
+                       return View();
         }
-
-        public ActionResult About()
+        [Authorize]
+        public ActionResult Assignment()
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            using (var database = new ApplicationDbContext())
+            {
+                var problemsModel = database.Problems.Include("Givens").Include("Responses").ToList();
+                problemsModel.ElementAt(0).Givens.Add(new Given { Label = "V", Value = 1.5 });
+                problemsModel.ElementAt(0).Responses.Add(new Response{Label="I", Expected = 73});
+                database.SaveChanges();
+                return View(problemsModel);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity;
 
 namespace UCOHomeworkTool.Models
 {
@@ -13,5 +14,8 @@ namespace UCOHomeworkTool.Models
             : base("DefaultConnection", throwIfV1Schema:false)
         {
         }
+        public DbSet<Problem> Problems { get; set; }
+        public DbSet<Given> Givens { get; set; }
+        public DbSet<Response> Responses { get; set; }
     }
 }

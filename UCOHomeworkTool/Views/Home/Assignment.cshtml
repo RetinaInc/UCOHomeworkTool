@@ -1,0 +1,72 @@
+﻿@model IEnumerable<UCOHomeworkTool.Models.Problem>
+
+
+<div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+        @foreach (var problem in Model)
+        {
+            var collapseLink = "#collapse" + problem.ProblemNumeber;
+            var collapseId = "collapse" + problem.ProblemNumeber;
+            <div id="accordion" class="panel-group">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="@collapseLink">Problem @problem.ProblemNumeber</a>
+                        </h3>
+                    </div>
+                    <div id="@collapseId" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <img class="img-responsive img-rounded" src="http://placehold.it/600x400&text=Problem Diagram" />
+                                </div>
+                                <div class="col-sm-6">
+                                    Given Values:
+                                    <ul class="list-group">
+                                        @foreach (var given in problem.Givens)
+                                        {
+                                            <li class="list-group-item">@given.Label = @given.Value</li>
+                                        }
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6 col-sm-offset-6">
+                                    Please give the values for:
+                                    <div class="row">
+                                        @foreach (var response in problem.Responses)
+                                        {
+                                            <div style="font-weight: bolder" class="col-sm-2">@response.Label</div>
+
+                                            <div class="col-sm-6">
+                                                <input class="form-control" type="text" style="text-align: right;" />
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div id="myAlert" role="alert" data-alert="alert" class="alert alert-success fade">
+                                                    Correct!
+                                                </div>
+                                            </div>
+                                        }
+                                        <div class="col-sm-6"></div>
+                                        <div class="col-sm-6">
+                                            <button id="submitButton" class="btn btn-primary form-control" onclick="showAlert();" style="margin-top: 20px;">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".panel-heading").click(function (event) {
+            $(event.target).find('a').trigger('click');
+        });
+    });
+    function showAlert() {
+        $("#myAlert").toggleClass("in");
+        $("#myAlert2").toggleClass("in");
+    }
+</script>
