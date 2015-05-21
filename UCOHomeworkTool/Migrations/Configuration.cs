@@ -12,7 +12,6 @@ namespace UCOHomeworkTool.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "UCOHomeworkTool.Models.ApplicationDbContext";
         }
 
         protected override void Seed(UCOHomeworkTool.Models.ApplicationDbContext context)
@@ -29,39 +28,71 @@ namespace UCOHomeworkTool.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-            var problems = new List<Problem>
+            var courses = new List<Course>
             {
-                new Problem {ProblemNumeber = 1, Responses = new List<Response>(), Givens = new List<Given>()},
-                new Problem {ProblemNumeber = 2, Responses = new List<Response>(), Givens = new List<Given>()},
-                new Problem {ProblemNumeber = 5, Responses = new List<Response>(), Givens = new List<Given>()},
+                new Course {Name = "Signals", Assignments = new List<Assignment>()},
             };
-            problems.ForEach(p => context.Problems.AddOrUpdate(p));
-            context.SaveChanges();
+            courses.ForEach(c => context.Courses.AddOrUpdate(u => u.Name, c));
 
-            var givens = new List<Given>
+            var assignments = new List<Assignment>
             {
-                new Given {Label = "v", Value = 15.2 },
-                new Given {Label = "i", Value = 1.23},
-                new Given {Label = "O", Value = 12.1},
+                new Assignment {AssignmentNumber = 1, Problems = new List<Problem>()},
+                new Assignment {AssignmentNumber = 2, Problems = new List<Problem>()},
+                new Assignment {AssignmentNumber = 3, Problems = new List<Problem>()},
+                new Assignment {AssignmentNumber = 4, Problems = new List<Problem>()},
             };
-            givens.ForEach(g => context.Givens.AddOrUpdate(g));
+            assignments.ForEach(a => context.Assignments.AddOrUpdate(u => u.AssignmentNumber, a));
+            context.Courses.Find(1).Assignments.AddRange(assignments);
             context.SaveChanges();
-
-            var responses = new List<Response>
+            var problems = new List<Problem>();
+            foreach (var assignment in assignments)
             {
-                new Response {Label = "i", Expected = 13.2},
-                new Response {Label = "p", Expected = 13.1},
-                new Response {Label = "r", Expected = 13.6},
-                new Response {Label = "dy/dx", Expected = 1.2},
+                var localProblems = new List<Problem>
+                {
+                    new Problem {ProblemNumeber = 1, Givens = new List<Given>(), Responses = new List<Response>()},
+                    new Problem {ProblemNumeber = 2, Givens = new List<Given>(), Responses = new List<Response>()},
+                    new Problem {ProblemNumeber = 3, Givens = new List<Given>(), Responses = new List<Response>()},
+                    new Problem {ProblemNumeber = 4, Givens = new List<Given>(), Responses = new List<Response>()},
+                    new Problem {ProblemNumeber = 5, Givens = new List<Given>(), Responses = new List<Response>()},
+                    new Problem {ProblemNumeber = 6, Givens = new List<Given>(), Responses = new List<Response>()},
+                };
+                assignment.Problems.AddRange(localProblems);
+                problems.AddRange(localProblems);
+            }
+            problems.ForEach(p => context.Problems.AddOrUpdate(u => u.ProblemNumeber, p));
                 
-            };
-            responses.ForEach(r => context.Responses.AddOrUpdate(r));
             context.SaveChanges();
 
-            problems[1].Givens.AddRange(givens);
-            problems[1].Responses.AddRange(responses);
+            Random rand = new Random();
+
+            var givens = new List<Given>();
+            foreach(var problem in problems)
+            {
+                var localGivens = new List<Given>();
+                for(int i = 0; i < 5; i++)
+                {
+                    localGivens.Add(new Given { Label = "P" + i + problem.ProblemNumeber , Value = rand.NextDouble() + rand.Next() });
+                }
+                problem.Givens.AddRange(localGivens);
+                givens.AddRange(localGivens);
+            }
+            givens.ForEach(g => context.Givens.AddOrUpdate(u => u.Label, g));
             context.SaveChanges();
 
+            var responses = new List<Response>();
+            foreach( var problem in problems)
+            {
+                var localResp = new List<Response>();
+                for (int i = 0; i < 2; i++)
+                {
+                    localResp.Add(new Response { Label = "A" + i + problem.ProblemNumeber, Expected = rand.NextDouble() });
+                }
+                problem.Responses.AddRange(localResp);
+                responses.AddRange(localResp);                
+            }
+            responses.ForEach(r => context.Responses.AddOrUpdate(u => u.Label, r));
+
+            context.SaveChanges();
         }
     }
 }

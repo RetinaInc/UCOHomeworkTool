@@ -192,22 +192,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201505081808381_InitialCreate.cs" />
-    <Compile Include="Migrations\201505081808381_InitialCreate.Designer.cs">
-      <DependentUpon>201505081808381_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201505142225468_Initial2.cs" />
-    <Compile Include="Migrations\201505142225468_Initial2.Designer.cs">
-      <DependentUpon>201505142225468_Initial2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201505210151144_AddProblemModels.cs" />
-    <Compile Include="Migrations\201505210151144_AddProblemModels.Designer.cs">
-      <DependentUpon>201505210151144_AddProblemModels.cs</DependentUpon>
+    <Compile Include="Migrations\201505211534349_initial.cs" />
+    <Compile Include="Migrations\201505211534349_initial.Designer.cs">
+      <DependentUpon>201505211534349_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\Problem.cs" />
+    <Compile Include="Models\ApplicationModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -271,6 +263,7 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Assignment.cshtml" />
+    <Content Include="Views\Home\_Sidebar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -280,14 +273,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201505081808381_InitialCreate.resx">
-      <DependentUpon>201505081808381_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201505142225468_Initial2.resx">
-      <DependentUpon>201505142225468_Initial2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201505210151144_AddProblemModels.resx">
-      <DependentUpon>201505210151144_AddProblemModels.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201505211534349_initial.resx">
+      <DependentUpon>201505211534349_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

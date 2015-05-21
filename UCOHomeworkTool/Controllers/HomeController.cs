@@ -13,18 +13,29 @@ namespace UCOHomeworkTool.Controllers
         [Authorize]
         public ActionResult Index()
         {
-                       return View();
+            return View();
         }
         [Authorize]
-        public ActionResult Assignment()
+        public ActionResult Assignment(int id)
         {
             using (var database = new ApplicationDbContext())
             {
-                var problemsModel = database.Problems.Include("Givens").Include("Responses").ToList();
-                problemsModel.ElementAt(0).Givens.Add(new Given { Label = "V", Value = 1.5 });
-                problemsModel.ElementAt(0).Responses.Add(new Response{Label="I", Expected = 73});
-                database.SaveChanges();
-                return View(problemsModel);
+                var assignmentModel = database.Assignments.Include("Problems").SingleOrDefault(x => x.Id == id);
+                var problemsModel = assignmentModel.Problems;
+                foreach (var prob in problemsModel)
+                {
+                    database.Entry(prob).Collection("Givens").Load();
+                    database.Entry(prob).Collection("Responses").Load();
+                }
+                return View(problemsModel.ToList());
+            }
+        }
+        public ActionResult _Sidebar()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var assignmentList = db.Assignments.ToList();
+                return PartialView(assignmentList);
             }
         }
     }
