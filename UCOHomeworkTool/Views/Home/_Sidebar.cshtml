@@ -2,15 +2,25 @@
 
 @foreach(var item in Model)
 {
-    <li><a href="@Url.Action("Assignment", "Home", new { id = @item.Id })">Assignment @item.AssignmentNumber</a></li>
-    <li><a href="/Home/Assignment/@item.Id">Assignment @item.AssignmentNumber</a></li>
+        <li><a data-assignment="@item.Id" href="/Home/Assignment/@item.Id">Assignment @item.AssignmentNumber</a></li>
 }
 <script>
     $(document).ready(function () {
         $("ul.nav-sidebar a").click(function (e) {
-            e.preventDefaul(); // prevent default link button redirect behaviour
-            var url = $(this).attr("href");
-            $('#pageContent').load(url);
+            e.preventDefault(); // prevent default link button redirect behaviour
+            var aId = $(this).data("assignment");
+            var self = $(this).parent();
+            $.ajax({
+                async: true,
+                url: '@Url.Action("Assignment")',
+                type: 'GET',
+                cache: false,
+                data: { id: aId }
+            }).done(function (result)
+            {
+                $("#pageContent").html(result);
+                $(self).addClass("active");
+            })
         });
     });
 </script>
