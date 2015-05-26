@@ -4,39 +4,57 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using UCOHomeworkTool.Models;
+using Microsoft.AspNet.Identity;
+using System.Data.Entity.Migrations;
+using UCOHomeworkTool.Migrations;
 
 namespace UCOHomeworkTool.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        [Authorize]
         public ActionResult Index()
         {
-            return View();
+            var userId = User.Identity.GetUserId();
+            using(var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Find(userId);
+                var userCourses = user.Courses;
+                return View(userCourses.ToList());
+            }
         }
-        [Authorize]
+        public void DebugDB()
+        {
+            var configuration = new Configuration();
+            var migrator = new DbMigrator(configuration);
+            migrator.Update();
+        }
         public ActionResult Assignment(int id)
         {
-            using (var database = new ApplicationDbContext())
+            using (var db = new ApplicationDbContext())
             {
-                var assignmentModel = database.Assignments.Include("Problems").SingleOrDefault(x => x.Id == id);
+                var assignmentModel = db.Assignments.Include("Problems").SingleOrDefault(x => x.Id == id);
                 var problemsModel = assignmentModel.Problems;
                 foreach (var prob in problemsModel)
                 {
-                    database.Entry(prob).Collection("Givens").Load();
-                    database.Entry(prob).Collection("Responses").Load();
+                    db.Entry(prob).Collection("Givens").Load();
+                    db.Entry(prob).Collection("Responses").Load();
                 }
                 return PartialView(problemsModel.ToList());
             }
         }
-        public ActionResult _Sidebar()
+        public ActionResult Course(int id)
         {
+
+            var userId = User.Identity.GetUserId();
             using (var db = new ApplicationDbContext())
             {
-                var assignmentList = db.Assignments.ToList();
-                return PartialView(assignmentList);
+                var assignmentList = db.Assignments.Where(x => x.Course.Id == id && x.Student.Id == userId).ToList();
+                return View(assignmentList);
             }
+
         }
     }
 }

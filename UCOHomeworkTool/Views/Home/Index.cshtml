@@ -1,13 +1,18 @@
-﻿@{
+﻿@model IEnumerable<UCOHomeworkTool.Models.Course>
+@{
     ViewBag.Title = "Home Page";
 }
-<div id="pageContent">
 
-</div>
-
+<h1>Your Courses:</h1>
+<ul>
+    @foreach(var course in Model)
+    {
+        <li><a href="@Url.Action("Course","Home",new{id = @course.Id})">@course.Name</a></li>
+    }
+</ul>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $(".panel-heading").click(function(event) {
+    $(document).ready(function () {
+        $(".panel-heading").click(function (event) {
             $(event.target).find('a').trigger('click');
         });
     });
