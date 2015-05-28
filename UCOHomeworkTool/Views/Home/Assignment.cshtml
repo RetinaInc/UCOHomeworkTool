@@ -17,7 +17,8 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <img class="img-responsive img-rounded" src="http://placehold.it/600x400&text=Problem Diagram" />
+                                    @*http://placehold.it/600x400&text=Problem Diagram for placeholder*@
+                                    <img class="img-responsive img-rounded" src="@Url.Action("DiagramImage","Home",new {id = problem.GeneratedFrom})" />
                                 </div>
                                 <div class="col-sm-6">
                                     Given Values:
@@ -58,6 +59,7 @@
         }
     </div>
 </div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $(".panel-heading").click(function (event) {

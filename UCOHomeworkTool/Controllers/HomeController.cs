@@ -56,5 +56,14 @@ namespace UCOHomeworkTool.Controllers
             }
 
         }
+        public ActionResult DiagramImage(int id)
+        {
+            using(var db = new ApplicationDbContext())
+            {
+                var imageData = db.ProblemDiagrams.Where(d => d.ProblemId == id).Select(d => d.ImageContent).FirstOrDefault();
+                return File(imageData, "image/jpg");
+            }
+
+        }
     }
 }

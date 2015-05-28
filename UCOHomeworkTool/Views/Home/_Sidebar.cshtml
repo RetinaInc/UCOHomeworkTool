@@ -1,27 +1,7 @@
 ﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
 
-@foreach(var item in Model)
+@foreach (var item in Model)
 {
-        <li><a data-assignment="@item.Id" href="/Home/Assignment/@item.Id">Assignment @item.AssignmentNumber</a></li>
+    <li><a data-assignment="@item.Id" href="/Home/Assignment/@item.Id">Assignment @item.AssignmentNumber</a></li>
 }
-<script>
-    $(document).ready(function () {
-        $("ul.nav-sidebar a").click(function (e) {
-            e.preventDefault(); // prevent default link button redirect behaviour
-            var aId = $(this).data("assignment");
-            var self = $(this).parent();
-            $.ajax({
-                async: true,
-                url: '@Url.Action("Assignment")',
-                type: 'GET',
-                cache: false,
-                data: { id: aId }
-            }).done(function (result)
-            {
-                $("#pageContent").html(result);
-                $(".nav-sidebar .active").removeClass("active");
-                $(self).addClass("active");
-            })
-        });
-    });
-</script>
+

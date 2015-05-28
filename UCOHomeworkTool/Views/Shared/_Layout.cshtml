@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", false)
 
 </head>
 <body>
@@ -31,7 +27,7 @@
         <div class="row">
             <div class="col-sm-3 col-md-2 sidebar">
                 <ul class="nav nav-sidebar">
-                    @RenderSection("Sidebar",required: false)
+                    @RenderSection("Sidebar", required: false)
                 </ul>
             </div>
             <div class="col-sm-9 col-md-10 col-sm-offset-3 col-md-offset-2 main">
@@ -46,10 +42,34 @@
 
 </body>
 </html>
+@Scripts.Render("~/bundles/modernizr")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", false)
 <script type="text/javascript">
     $(document).ready(function () {
         $('[data-toggle=offcanvas]').click(function () {
             $('.row-offcanvas').toggleClass('active');
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("ul.nav-sidebar a").click(function (e) {
+            e.preventDefault(); // prevent default link button redirect behaviour
+            var aId = $(this).data("assignment");
+            var self = $(this).parent();
+            $.ajax({
+                async: true,
+                url: '@Url.Action("Assignment")',
+                type: 'GET',
+                cache: false,
+                data: { id: aId }
+            }).done(function (result) {
+                $("#pageContent").html(result);
+                $(".nav-sidebar .active").removeClass("active");
+                $(self).addClass("active");
+            })
         });
     });
 </script>

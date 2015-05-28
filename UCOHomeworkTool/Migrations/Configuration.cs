@@ -7,6 +7,7 @@ namespace UCOHomeworkTool.Migrations
     using System.Data.Entity.Migrations;
     using System.Data.Entity.Validation;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Linq;
     using UCOHomeworkTool.Models;
 
@@ -37,6 +38,7 @@ namespace UCOHomeworkTool.Migrations
 
             context.Database.ExecuteSqlCommand("delete from Responses");
             context.Database.ExecuteSqlCommand("delete from Givens");
+            context.Database.ExecuteSqlCommand("delete from ProblemDiagrams");
             context.Database.ExecuteSqlCommand("delete from Problems");
             context.Database.ExecuteSqlCommand("delete from Assignments");
             context.Database.ExecuteSqlCommand("delete from Courses");
@@ -89,6 +91,11 @@ namespace UCOHomeworkTool.Migrations
                 assignment.Problems.AddRange(localProblems);
                 problems.AddRange(localProblems);
             }
+            assignments[1].Problems.RemoveAt(5);
+            assignments[1].Problems.RemoveAt(4);
+            assignments[3].Problems.RemoveAt(5);
+            assignments[3].Problems.RemoveAt(4);
+            assignments[3].Problems.RemoveAt(3);
             problems.ForEach(p => context.Problems.AddOrUpdate(u => u.ProblemNumber, p));
             context.SaveChanges();
             var givens = new List<Given>();
@@ -116,6 +123,21 @@ namespace UCOHomeworkTool.Migrations
                 responses.AddRange(localResp);                
             }
             responses.ForEach(r => context.Responses.AddOrUpdate(u => u.Label, r));
+
+            //associate diagrams to the created problems
+            string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
+            var diagram = Image.FromFile(path + "\\HW1_Prob1.jpg");
+            int id = 1;
+            foreach(var prob in problems)
+            {
+                var problemDiagram = new ProblemDiagram
+                {
+                    Id = id++,
+                    Diagram = diagram,
+                    ProblemId = prob.Id,
+                };
+                context.ProblemDiagrams.AddOrUpdate(p => p.Id, problemDiagram);
+            }
 
             //use template assignment to create assignment for myUser
             var assignmentsForMyUser = new List<Assignment>();

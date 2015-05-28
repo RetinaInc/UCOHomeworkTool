@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -51,6 +54,7 @@ namespace UCOHomeworkTool.Models
         {
             ProblemNumber = toCopy.ProblemNumber;
             Givens = new List<Given>();
+            GeneratedFrom = toCopy.Id;
             foreach(GivenTemplate given in toCopy.Givens)
             {
                 var newGiven = new Given(given);
@@ -67,8 +71,30 @@ namespace UCOHomeworkTool.Models
         }
         public int Id { get; set; }
         public int ProblemNumber{ get; set; }
+        public int GeneratedFrom { get; set; }
         public virtual List<Given> Givens{ get; set; }
         public virtual List<Response> Responses { get; set; }
+    }
+    public class ProblemDiagram
+    {
+        public int Id { get; set; }
+        public int ProblemId{ get; set; }
+        [NotMapped]
+        public Image Diagram { get; set; }
+        public byte[] ImageContent 
+        { 
+            get
+            {
+                MemoryStream ms = new MemoryStream();
+                Diagram.Save(ms, Diagram.RawFormat);
+                return ms.ToArray();
+            }
+            set
+            {
+                MemoryStream ms = new MemoryStream(value);
+                Diagram = Image.FromStream(ms);
+            }
+        }
     }
     public class Given
     {
