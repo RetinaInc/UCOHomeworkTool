@@ -18,7 +18,7 @@ namespace UCOHomeworkTool.Controllers
         public ActionResult Index()
         {
             var userId = User.Identity.GetUserId();
-            using(var db = new ApplicationDbContext())
+            using (var db = new ApplicationDbContext())
             {
                 var user = db.Users.Find(userId);
                 var userCourses = user.Courses;
@@ -58,12 +58,49 @@ namespace UCOHomeworkTool.Controllers
         }
         public ActionResult DiagramImage(int id)
         {
-            using(var db = new ApplicationDbContext())
+            using (var db = new ApplicationDbContext())
             {
                 var imageData = db.ProblemDiagrams.Where(d => d.ProblemId == id).Select(d => d.ImageContent).FirstOrDefault();
                 return File(imageData, "image/jpg");
             }
 
+        }
+        public JsonResult CheckResponse(List<JsonResponseObject> responses, int probId)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var p = db.Problems.Find(probId);
+                var jsonReply = new List<object>();
+                if (p.TrysRemaining > 0)
+                {
+                    foreach (var response in responses)
+                    {
+                        Response r = db.Responses.Find(response.id);
+                        switch (p.TrysRemaining)
+                        {
+                            case 3:
+                                r.FirstAttempt = response.value;
+                                break;
+                            case 2:
+                                r.SecondAttempt = response.value;
+                                break;
+                            case 1:
+                                r.ThirdAttempt = response.value;
+                                break;
+                        }
+                        var isCorrect = r.Expected.Equals(response.value);
+                        jsonReply.Add(new { id = response.id, correct = isCorrect, trysLeft = p.TrysRemaining - 1 });
+                    }
+                    p.TrysRemaining -= 1;
+                    db.SaveChanges();
+                }
+                return Json(jsonReply, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public class JsonResponseObject
+        {
+            public int id { get; set; }
+            public double value { get; set; }
         }
     }
 }

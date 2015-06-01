@@ -14,9 +14,9 @@ namespace UCOHomeworkTool.Models
     {
         private static readonly Random random = new Random();
         private static readonly object syncLock = new object();
-        public static double RandomNumber(double min, double max)
+        public static int RandomNumber(int min, int max)
         {
-            return random.NextDouble() * (max - min) + min;
+            return random.Next(min,max) ;
         }
     }
     public class Course
@@ -55,6 +55,7 @@ namespace UCOHomeworkTool.Models
             ProblemNumber = toCopy.ProblemNumber;
             Givens = new List<Given>();
             GeneratedFrom = toCopy.Id;
+            TrysRemaining = 3;
             foreach(GivenTemplate given in toCopy.Givens)
             {
                 var newGiven = new Given(given);
@@ -65,6 +66,7 @@ namespace UCOHomeworkTool.Models
             foreach(var resp in toCopy.Responses)
             {
                 var newResp = new Response(resp);
+                newResp.setExpected(this.Givens);
                 newResp.Problem = this;
                 Responses.Add(newResp);
             }
@@ -72,6 +74,7 @@ namespace UCOHomeworkTool.Models
         public int Id { get; set; }
         public int ProblemNumber{ get; set; }
         public int GeneratedFrom { get; set; }
+        public int TrysRemaining { get; set; }
         public virtual List<Given> Givens{ get; set; }
         public virtual List<Response> Responses { get; set; }
     }
@@ -107,13 +110,13 @@ namespace UCOHomeworkTool.Models
         }
         public int Id { get; set; }
         public string Label{ get; set; }
-        public double Value { get; set; }
+        public int Value { get; set; }
         public virtual Problem Problem{ get; set; }
     }
     public class GivenTemplate : Given
     {
-        public double minRange { get; set; }
-        public double maxRange { get; set; }
+        public int minRange { get; set; }
+        public int maxRange { get; set; }
     }
     public class Response
     {
@@ -122,10 +125,45 @@ namespace UCOHomeworkTool.Models
         {
             Label = toCopy.Label;
         }
+        public void setExpected(List<Given> givens)
+        {
+            //find and assign appropriate givens for this problem
+            Given R1given = givens.Find(g => g.Label == "R1") ?? new Given { Value = 0 };
+            Given R2given = givens.Find(g => g.Label == "R2") ?? new Given { Value = 0 };
+            Given R3given = givens.Find(g => g.Label == "R3") ?? new Given { Value = 0 };
+            Given V1given = givens.Find(g => g.Label == "V1") ?? new Given { Value = 0 };
+            Given V2given = givens.Find(g => g.Label == "V2") ?? new Given { Value = 0 };
+            double R1 = (double) R1given.Value;
+            double R2 = (double) R2given.Value;
+            double R3 = (double) R3given.Value;
+            double V1 = (double) V1given.Value;
+            double V2 = (double) V2given.Value;
+            //make sure none of the values are 0
+            if (R1 * R2 * R3 * V1 * V2 == 0)
+                return; 
+            //calculate V0
+            double V0 = ((V1 / R1) + (V2 / R3)) * (1 / ((1 / R1) + (1 / R2) + (1 / R3)));
+            //based on what response we are trying to find, use the correct equation
+            if(this.Label == "i1")
+            {
+                Expected = Math.Round(((V0 - V1) / R1),2);
+            }
+            else if(this.Label == "i2")
+            {
+                Expected = Math.Round((V0 / R2),2);
+            }
+            else if(this.Label == "i3")
+            {
+                Expected = Math.Round(((V0 - V2) / R3),2);
+            }
+        }
         public int Id { get; set; }
         public string Label { get; set; }
         public double Expected{ get; set; }
-        public List<double> Actuals { get; set; }
+        public double FirstAttempt { get; set; }
+        public double SecondAttempt{ get; set; }
+        public double ThirdAttempt{ get; set; }
+
         public virtual Problem Problem{ get; set; }
     }
 }

@@ -208,6 +208,22 @@
     <Compile Include="Migrations\201505271820529_addImagesAndGeneratedFromKey.Designer.cs">
       <DependentUpon>201505271820529_addImagesAndGeneratedFromKey.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506011453043_changeDatatypeOfGivens.cs" />
+    <Compile Include="Migrations\201506011453043_changeDatatypeOfGivens.Designer.cs">
+      <DependentUpon>201506011453043_changeDatatypeOfGivens.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506011804355_enumerateAttemptsAndAddTrysRemainingCount.cs" />
+    <Compile Include="Migrations\201506011804355_enumerateAttemptsAndAddTrysRemainingCount.Designer.cs">
+      <DependentUpon>201506011804355_enumerateAttemptsAndAddTrysRemainingCount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506012008212_addLockedParamToProblem.cs" />
+    <Compile Include="Migrations\201506012008212_addLockedParamToProblem.Designer.cs">
+      <DependentUpon>201506012008212_addLockedParamToProblem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506012028323_removeLockedFromProblemAndMoveTrysToProblem.cs" />
+    <Compile Include="Migrations\201506012028323_removeLockedFromProblemAndMoveTrysToProblem.Designer.cs">
+      <DependentUpon>201506012028323_removeLockedFromProblemAndMoveTrysToProblem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -296,6 +312,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505271820529_addImagesAndGeneratedFromKey.resx">
       <DependentUpon>201505271820529_addImagesAndGeneratedFromKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506011453043_changeDatatypeOfGivens.resx">
+      <DependentUpon>201506011453043_changeDatatypeOfGivens.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506011804355_enumerateAttemptsAndAddTrysRemainingCount.resx">
+      <DependentUpon>201506011804355_enumerateAttemptsAndAddTrysRemainingCount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506012008212_addLockedParamToProblem.resx">
+      <DependentUpon>201506012008212_addLockedParamToProblem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506012028323_removeLockedFromProblemAndMoveTrysToProblem.resx">
+      <DependentUpon>201506012028323_removeLockedFromProblemAndMoveTrysToProblem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

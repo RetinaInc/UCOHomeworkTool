@@ -56,15 +56,42 @@ namespace UCOHomeworkTool.Migrations
             };
 
 
+
             //create Signals course for myUser and enroll myUser in course
             var courses = new List<Course>
             {
                 new Course {Name = "Signals", Assignments = new List<Assignment>(), Templates = new List<Assignment>()},
+                new Course {Name = "TestCourse", Assignments = new List<Assignment>(), Templates = new List<Assignment>()}
             };
             courses.ForEach(c => context.Courses.AddOrUpdate(u => u.Name, c));
             context.Users.AddOrUpdate(u => u.UserName, myUser);
             context.Users.Find(myUser.Id).Courses = courses;
+            //create dummy students and enroll them in testCourse to test problem randomization funcionality
 
+            var student1 = new ApplicationUser
+            {
+                UserName = "1",
+                PasswordHash = passwordHash.HashPassword("pass"),
+                Courses = new List<Course> {courses[1] },
+                SecurityStamp = Guid.NewGuid().ToString(),
+            };
+
+            var student2 = new ApplicationUser
+            {
+                UserName = "2",
+                PasswordHash = passwordHash.HashPassword("pass"),
+                Courses = new List<Course> {courses[1] },
+                SecurityStamp = Guid.NewGuid().ToString(),
+            };
+
+            var student3 = new ApplicationUser
+            {
+                UserName = "3",
+                PasswordHash = passwordHash.HashPassword("pass"),
+                Courses = new List<Course> {courses[1] },
+                SecurityStamp = Guid.NewGuid().ToString(),
+            };
+            List<ApplicationUser> students = new List<ApplicationUser> { student1, student2, student3 };
             //create assignment templates to be used in Signals course
             var assignments = new List<Assignment>
             {
@@ -74,7 +101,7 @@ namespace UCOHomeworkTool.Migrations
                 new Assignment {AssignmentNumber = 4, Problems = new List<Problem>(), Course = courses[0]},
             };
             assignments.ForEach(a => context.Assignments.AddOrUpdate(u => u.AssignmentNumber, a));
-            context.Courses.Find(courses[0].Id).Templates.AddRange(assignments);
+            //context.Courses.Find(courses[0].Id).Templates.AddRange(assignments);
             context.SaveChanges();
             var problems = new List<Problem>();
             foreach (var assignment in assignments)
@@ -91,6 +118,7 @@ namespace UCOHomeworkTool.Migrations
                 assignment.Problems.AddRange(localProblems);
                 problems.AddRange(localProblems);
             }
+            //remove some problems from some assignments to make it more visually obvious that the assignments are different
             assignments[1].Problems.RemoveAt(5);
             assignments[1].Problems.RemoveAt(4);
             assignments[3].Problems.RemoveAt(5);
@@ -104,7 +132,7 @@ namespace UCOHomeworkTool.Migrations
                 var localGivens = new List<Given>();
                 for(int i = 0; i < 5; i++)
                 {
-                    localGivens.Add(new GivenTemplate { Label = "P" + i + problem.ProblemNumber , minRange = 1.5, maxRange = 8.4 });
+                    localGivens.Add(new GivenTemplate { Label = "P" + i + problem.ProblemNumber , minRange = 1, maxRange = 10 });
                 }
                 problem.Givens.AddRange(localGivens);
                 givens.AddRange(localGivens);
@@ -148,7 +176,47 @@ namespace UCOHomeworkTool.Migrations
                 assignmentsForMyUser.Add(newAssignment);
             }
             context.Courses.Find(courses[0].Id).Assignments.AddRange(assignmentsForMyUser);
+            context.SaveChanges();
 
+            //create a single problem to give to dummy students 
+            var testProblem = new Problem
+            {
+                ProblemNumber = 1, Givens = new List<Given>(), Responses = new List<Response>(),
+            };
+            testProblem.Givens.Add(new GivenTemplate { Label = "R1", minRange = 1, maxRange = 10 });
+            testProblem.Givens.Add(new GivenTemplate { Label = "R2", minRange = 1, maxRange = 10 });
+            testProblem.Givens.Add(new GivenTemplate { Label = "R3", minRange = 1, maxRange = 10 });
+            testProblem.Givens.Add(new GivenTemplate { Label = "V1", minRange = 1, maxRange = 10 });
+            testProblem.Givens.Add(new GivenTemplate { Label = "V2", minRange = 1, maxRange = 10 });
+            testProblem.Responses.Add(new Response { Label = "i1"});
+            testProblem.Responses.Add(new Response { Label = "i2"});
+            testProblem.Responses.Add(new Response { Label = "i3"});
+            //create assignment for that problem
+            var testAssignment = new Assignment
+            {
+                AssignmentNumber = 1,
+                Course = courses[1],
+                Problems = new List<Problem>{testProblem},
+            };
+            context.Courses.Find(courses[1].Id).Templates.Add(testAssignment);
+            context.Assignments.AddOrUpdate(testAssignment);
+            context.SaveChanges();
+            //set up diagram for test problem
+            var testDiagram = new ProblemDiagram
+            {
+                Id = id++,
+                ProblemId = testProblem.Id,
+                Diagram = diagram,
+            };
+            context.ProblemDiagrams.AddOrUpdate(p => p.Id, testDiagram);
+            // instantiate students to db and connect test assignments to students
+            foreach(var student in students)
+            {
+                var testAssignFromTemplate = new Assignment(testAssignment);
+                context.Users.AddOrUpdate(student);
+                testAssignFromTemplate.Student = student;
+                context.Assignments.AddOrUpdate(testAssignFromTemplate);
+            }
             context.SaveChanges();
         }
     }

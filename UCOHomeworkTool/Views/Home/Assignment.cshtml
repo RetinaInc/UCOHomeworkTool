@@ -37,17 +37,26 @@
                                             <div style="font-weight: bolder" class="col-sm-2">@response.Label</div>
 
                                             <div class="col-sm-6">
-                                                <input class="form-control" type="text" style="text-align: right;" />
+                                                <input id="@response.Id" class="form-control response-input@(problem.Id)" type="text" style="text-align: right;" />
                                             </div>
                                             <div class="col-sm-4">
-                                                <div id="myAlert" role="alert" data-alert="alert" class="alert alert-success fade">
-                                                    Correct!
+                                                <div id="alert@(response.Id)" role="alert" data-alert="alert" class="alert alert-success fade">
                                                 </div>
                                             </div>
                                         }
-                                        <div class="col-sm-6"></div>
                                         <div class="col-sm-6">
-                                            <button id="submitButton" class="btn btn-primary form-control" onclick="showAlert();" style="margin-top: 20px;">Submit</button>
+                                            <div id="probalert@(problem.Id)" role="alert" data-alert="alert" class="alert alert-warning fade"></div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <button id="submit@(problem.Id)" class="btn btn-primary form-control" onclick="checkResponse(@problem.Id);" 
+                                                    style="margin-top: 20px;"
+                                                  @{
+                                                      if(problem.TrysRemaining <= 0)     
+                                                      {
+                                                         @:disabled="disabled"
+                                                      }
+                                                   } 
+                                                     >Submit</button>
                                         </div>
                                     </div>
                                 </div>
@@ -66,8 +75,47 @@
             $(event.target).find('a').trigger('click');
         });
     });
-    function showAlert() {
-        $("#myAlert").toggleClass("in");
-        $("#myAlert2").toggleClass("in");
+    function checkResponse(probid)
+    {
+        var responses = []
+        $(".response-input" + probid).each(function () {
+            responses.push({ id: this.id, value: $(this).val() })
+        });
+        responses = JSON.stringify({ "responses": responses, "probId": probid });
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'POST',
+            url: '/Home/CheckResponse',
+            data: responses,
+            success: function (data)
+            {
+                for(item in data)
+                {
+                    var currdata = data[item];
+                    if (currdata.trysLeft <= 0)
+                        $("#submit" + probid).attr("disabled", "disabled");
+                    if(currdata.correct)
+                    {
+                        $("#alert" + currdata.id).addClass("in").removeClass("alert-danger").addClass("alert-success").html("Correct!");
+                    }
+                    else
+                    {
+                        $("#alert" + currdata.id).addClass("in").addClass("alert-danger").removeClass("alert-success").html("Incorrect! Trys remaining: " + currdata.trysLeft);
+                    }
+                }
+            }
+        })
     }
+    function showAlert(probid) {
+        var responseInputIds = []
+        $(".response-input" + probid).each(function () {
+            responseInputIds.push(this.id)
+        });
+        for (id in responseInputIds)
+        {
+            $("#alert" + responseInputIds[id]).toggleClass("in");
+        }
+    }
+    //# sourceURL=assignment.js
 </script>
