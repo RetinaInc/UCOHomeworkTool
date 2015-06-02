@@ -66,10 +66,36 @@ namespace UCOHomeworkTool.Models
             foreach(var resp in toCopy.Responses)
             {
                 var newResp = new Response(resp);
+                //setting expected to whatever value is stored in the template
+                newResp.Expected = resp.Expected;
+                //overriding the default only if an applicable equation exists to calculate the expected value
                 newResp.setExpected(this.Givens);
                 newResp.Problem = this;
                 Responses.Add(newResp);
             }
+        }
+        public bool AllResponsesCorrect()
+        {
+            bool allCorrect = true;
+            foreach(var response in this.Responses)
+            {
+                switch(this.TrysRemaining)
+                {
+                    case 3:
+                        allCorrect = false;
+                        break;
+                    case 2:
+                        allCorrect = response.Expected.Equals(response.FirstAttempt);
+                        break;
+                    case 1:
+                        allCorrect = response.Expected.Equals(response.SecondAttempt);
+                        break;
+                    case 0:
+                        allCorrect = response.Expected.Equals(response.ThirdAttempt);
+                        break;
+                }
+            }
+            return allCorrect;
         }
         public int Id { get; set; }
         public int ProblemNumber{ get; set; }
@@ -146,15 +172,15 @@ namespace UCOHomeworkTool.Models
             //based on what response we are trying to find, use the correct equation
             if(this.Label == "i1")
             {
-                Expected = Math.Round(((V0 - V1) / R1),2);
+                Expected = Math.Round(((V0 - V1) / R1),2, MidpointRounding.AwayFromZero);
             }
             else if(this.Label == "i2")
             {
-                Expected = Math.Round((V0 / R2),2);
+                Expected = Math.Round((V0 / R2),2, MidpointRounding.AwayFromZero);
             }
             else if(this.Label == "i3")
             {
-                Expected = Math.Round(((V0 - V2) / R3),2);
+                Expected = Math.Round(((V0 - V2) / R3),2, MidpointRounding.AwayFromZero);
             }
         }
         public int Id { get; set; }

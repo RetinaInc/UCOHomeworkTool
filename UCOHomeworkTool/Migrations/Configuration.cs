@@ -145,7 +145,7 @@ namespace UCOHomeworkTool.Migrations
                 var localResp = new List<Response>();
                 for (int i = 0; i < 2; i++)
                 {
-                    localResp.Add(new Response { Label = "A" + i + problem.ProblemNumber  });
+                    localResp.Add(new Response { Label = "A" + i + problem.ProblemNumber, Expected = 4.4  });
                 }
                 problem.Responses.AddRange(localResp);
                 responses.AddRange(localResp);                
