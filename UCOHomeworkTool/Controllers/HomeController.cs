@@ -55,7 +55,7 @@ namespace UCOHomeworkTool.Controllers
             var userId = User.Identity.GetUserId();
             using (var db = new ApplicationDbContext())
             {
-                var assignmentList = db.Assignments.Where(x => x.Course.Id == id && x.Student.Id == userId).ToList();
+                var assignmentList = db.Assignments.Where(x => x.Course.Id == id && x.Student.Id == userId).OrderBy(x => x.AssignmentNumber).ToList();
                 return View(assignmentList);
             }
 
