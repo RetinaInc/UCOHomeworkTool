@@ -189,6 +189,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TeacherController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -224,6 +225,18 @@
     <Compile Include="Migrations\201506012028323_removeLockedFromProblemAndMoveTrysToProblem.Designer.cs">
       <DependentUpon>201506012028323_removeLockedFromProblemAndMoveTrysToProblem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506082000180_addRequiredRelationships.cs" />
+    <Compile Include="Migrations\201506082000180_addRequiredRelationships.Designer.cs">
+      <DependentUpon>201506082000180_addRequiredRelationships.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506082050437_addIsAssignedToProblem.cs" />
+    <Compile Include="Migrations\201506082050437_addIsAssignedToProblem.Designer.cs">
+      <DependentUpon>201506082050437_addIsAssignedToProblem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506082134063_removeRequiredFields.cs" />
+    <Compile Include="Migrations\201506082134063_removeRequiredFields.Designer.cs">
+      <DependentUpon>201506082134063_removeRequiredFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -238,6 +251,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\dashboard.css" />
+    <Content Include="Content\toastr.css" />
+    <Content Include="Content\toastr.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -251,6 +266,8 @@
     <Content Include="Icon.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\toastr.scss" />
+    <Content Include="Content\toastr.less" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -266,6 +283,8 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\toastr.js" />
+    <Content Include="Scripts\toastr.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -294,6 +313,10 @@
     <Content Include="Views\Home\Assignment.cshtml" />
     <Content Include="Views\Home\_Sidebar.cshtml" />
     <Content Include="Views\Home\Course.cshtml" />
+    <Content Include="Views\Teacher\Index.cshtml" />
+    <Content Include="Views\Teacher\Course.cshtml" />
+    <Content Include="Views\Teacher\Assignment.cshtml" />
+    <Content Include="Views\Shared\_Sidebar.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -324,6 +347,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506012028323_removeLockedFromProblemAndMoveTrysToProblem.resx">
       <DependentUpon>201506012028323_removeLockedFromProblemAndMoveTrysToProblem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506082000180_addRequiredRelationships.resx">
+      <DependentUpon>201506082000180_addRequiredRelationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506082050437_addIsAssignedToProblem.resx">
+      <DependentUpon>201506082050437_addIsAssignedToProblem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506082134063_removeRequiredFields.resx">
+      <DependentUpon>201506082134063_removeRequiredFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

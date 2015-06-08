@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Drawing;
@@ -16,7 +17,7 @@ namespace UCOHomeworkTool.Models
         private static readonly object syncLock = new object();
         public static int RandomNumber(int min, int max)
         {
-            return random.Next(min,max) ;
+            return random.Next(min, max);
         }
     }
     public class Course
@@ -24,46 +25,105 @@ namespace UCOHomeworkTool.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public virtual List<Assignment> Templates { get; set; }
-        public virtual List<Assignment> Assignments{ get; set; }
+        public virtual List<Assignment> Assignments { get; set; }
         public virtual List<ApplicationUser> Students { get; set; }
     }
     public class Assignment
     {
-        public Assignment() { } 
+        public Assignment() { }
         public Assignment(Assignment toCopy)
         {
             AssignmentNumber = toCopy.AssignmentNumber;
             Course = toCopy.Course;
             Problems = new List<Problem>();
-            foreach(var prob in toCopy.Problems)
+            foreach (var prob in toCopy.Problems)
             {
                 var newProb = new Problem(prob);
                 Problems.Add(newProb);
             }
         }
+        public Assignment(Assignment toCopy, List<Problem> problemsToAssign)
+        {
+            AssignmentNumber = toCopy.AssignmentNumber;
+            Course = toCopy.Course;
+            Problems = new List<Problem>();
+            int newProbNum = 1;
+            foreach (var prob in problemsToAssign)
+            {
+                var newProb = new Problem(prob);
+                newProb.ProblemNumber = newProbNum++;
+                Problems.Add(newProb);
+            }
+        }
+
         public int Id { get; set; }
         public int AssignmentNumber { get; set; }
-        public virtual List<Problem> Problems{ get; set; }
-        public virtual Course Course{ get; set; }
-        public virtual ApplicationUser Student{ get; set; }
+        public virtual List<Problem> Problems { get; set; }
+        public virtual Course Course { get; set; }
+        public virtual ApplicationUser Student { get; set; }
+        public bool MakeAssignment(List<int> probids, ApplicationDbContext db)
+        {
+            this.Course.Assignments.RemoveAll(a => a.AssignmentNumber == this.AssignmentNumber);
+            var toRemove = db.Assignments.Where(a => a.AssignmentNumber == this.AssignmentNumber && a.Student != null).ToList();
+            foreach (var assignment in toRemove)
+            {
+                foreach (var prob in assignment.Problems.ToList())
+                {
+                    foreach (var given in prob.Givens.ToList())
+                    {
+                        db.Givens.Remove(given);
+                    }
+                    foreach (var resp in prob.Responses.ToList())
+                    {
+                        db.Responses.Remove(resp);
+                    }
+                    db.Problems.Remove(prob);
+                }
+                db.Assignments.Remove(assignment);
+            }
+            db.SaveChanges();
+            bool success = true;
+            var probsToAssign = this.Problems.Where(prob => probids.Contains(prob.Id)).ToList();
+            if (probsToAssign.Count != 0)
+            {
+                foreach (var student in Course.Students)
+                {
+                    var newAssignment = new Assignment(this, probsToAssign);
+                    newAssignment.Student = student;
+                    Course.Assignments.Add(newAssignment);
+                }
+
+            }
+            foreach (var prob in probsToAssign)
+            {
+                prob.IsAssigned = true;
+            }
+            var notAssigned = this.Problems.Except(probsToAssign).ToList();
+            foreach (var prob in notAssigned)
+            {
+                prob.IsAssigned = false;
+            }
+            return success;
+        }
     }
     public class Problem
     {
-        public Problem() { }
+        public Problem() { IsAssigned = false; }
         public Problem(Problem toCopy)
         {
+            IsAssigned = false;
             ProblemNumber = toCopy.ProblemNumber;
             Givens = new List<Given>();
             GeneratedFrom = toCopy.Id;
             TrysRemaining = 3;
-            foreach(GivenTemplate given in toCopy.Givens)
+            foreach (GivenTemplate given in toCopy.Givens)
             {
                 var newGiven = new Given(given);
                 newGiven.Problem = this;
                 Givens.Add(newGiven);
             }
             Responses = new List<Response>();
-            foreach(var resp in toCopy.Responses)
+            foreach (var resp in toCopy.Responses)
             {
                 var newResp = new Response(resp);
                 //setting expected to whatever value is stored in the template
@@ -77,9 +137,9 @@ namespace UCOHomeworkTool.Models
         public bool AllResponsesCorrect()
         {
             bool allCorrect = true;
-            foreach(var response in this.Responses)
+            foreach (var response in this.Responses)
             {
-                switch(this.TrysRemaining)
+                switch (this.TrysRemaining)
                 {
                     case 3:
                         allCorrect = false;
@@ -98,20 +158,21 @@ namespace UCOHomeworkTool.Models
             return allCorrect;
         }
         public int Id { get; set; }
-        public int ProblemNumber{ get; set; }
+        public int ProblemNumber { get; set; }
         public int GeneratedFrom { get; set; }
         public int TrysRemaining { get; set; }
-        public virtual List<Given> Givens{ get; set; }
+        public virtual List<Given> Givens { get; set; }
         public virtual List<Response> Responses { get; set; }
+        public Boolean IsAssigned { get; set; }
     }
     public class ProblemDiagram
     {
         public int Id { get; set; }
-        public int ProblemId{ get; set; }
+        public int ProblemId { get; set; }
         [NotMapped]
         public Image Diagram { get; set; }
-        public byte[] ImageContent 
-        { 
+        public byte[] ImageContent
+        {
             get
             {
                 MemoryStream ms = new MemoryStream();
@@ -135,9 +196,9 @@ namespace UCOHomeworkTool.Models
             Value = Rand.RandomNumber(toCopy.minRange, toCopy.maxRange);
         }
         public int Id { get; set; }
-        public string Label{ get; set; }
+        public string Label { get; set; }
         public int Value { get; set; }
-        public virtual Problem Problem{ get; set; }
+        public virtual Problem Problem { get; set; }
     }
     public class GivenTemplate : Given
     {
@@ -159,37 +220,37 @@ namespace UCOHomeworkTool.Models
             Given R3given = givens.Find(g => g.Label == "R3") ?? new Given { Value = 0 };
             Given V1given = givens.Find(g => g.Label == "V1") ?? new Given { Value = 0 };
             Given V2given = givens.Find(g => g.Label == "V2") ?? new Given { Value = 0 };
-            double R1 = (double) R1given.Value;
-            double R2 = (double) R2given.Value;
-            double R3 = (double) R3given.Value;
-            double V1 = (double) V1given.Value;
-            double V2 = (double) V2given.Value;
+            double R1 = (double)R1given.Value;
+            double R2 = (double)R2given.Value;
+            double R3 = (double)R3given.Value;
+            double V1 = (double)V1given.Value;
+            double V2 = (double)V2given.Value;
             //make sure none of the values are 0
             if (R1 * R2 * R3 * V1 * V2 == 0)
-                return; 
+                return;
             //calculate V0
             double V0 = ((V1 / R1) + (V2 / R3)) * (1 / ((1 / R1) + (1 / R2) + (1 / R3)));
             //based on what response we are trying to find, use the correct equation
-            if(this.Label == "i1")
+            if (this.Label == "i1")
             {
-                Expected = Math.Round(((V0 - V1) / R1),2, MidpointRounding.AwayFromZero);
+                Expected = Math.Round(((V0 - V1) / R1), 2, MidpointRounding.AwayFromZero);
             }
-            else if(this.Label == "i2")
+            else if (this.Label == "i2")
             {
-                Expected = Math.Round((V0 / R2),2, MidpointRounding.AwayFromZero);
+                Expected = Math.Round((V0 / R2), 2, MidpointRounding.AwayFromZero);
             }
-            else if(this.Label == "i3")
+            else if (this.Label == "i3")
             {
-                Expected = Math.Round(((V0 - V2) / R3),2, MidpointRounding.AwayFromZero);
+                Expected = Math.Round(((V0 - V2) / R3), 2, MidpointRounding.AwayFromZero);
             }
         }
         public int Id { get; set; }
         public string Label { get; set; }
-        public double Expected{ get; set; }
+        public double Expected { get; set; }
         public double FirstAttempt { get; set; }
-        public double SecondAttempt{ get; set; }
-        public double ThirdAttempt{ get; set; }
+        public double SecondAttempt { get; set; }
+        public double ThirdAttempt { get; set; }
 
-        public virtual Problem Problem{ get; set; }
+        public virtual Problem Problem { get; set; }
     }
 }

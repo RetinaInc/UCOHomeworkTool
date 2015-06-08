@@ -1,0 +1,14 @@
+﻿@model IEnumerable<UCOHomeworkTool.Models.Course>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="col-md-4">
+    <h3 class="page-header">Your Courses</h3>
+    <div class="list-group">
+        @foreach (var course in Model)
+        {
+            <a class="list-group-item btn" href="@Url.Action("Course","Teacher",new{id = @course.Id})">@course.Name</a>
+        }
+    </div>
+</div>

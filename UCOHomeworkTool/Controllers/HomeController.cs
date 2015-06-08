@@ -17,6 +17,10 @@ namespace UCOHomeworkTool.Controllers
     {
         public ActionResult Index()
         {
+            if(User.IsInRole("Teacher"))
+            {
+                return RedirectToAction("Index", "Teacher");
+            }
             var userId = User.Identity.GetUserId();
             using (var db = new ApplicationDbContext())
             {

@@ -6,16 +6,23 @@
         {
             var collapseLink = "#collapse" + problem.ProblemNumber;
             var collapseId = "collapse" + problem.ProblemNumber;
-            <div id="accordion" class="panel-group">
-                <div id="panel@(problem.Id)" class="panel
-                     @{ if (problem.TrysRemaining == 0 || problem.AllResponsesCorrect()) { @: panel-success
-                                             } else { @: panel-primary
-                                             }     } ">
-                    <div class=" panel-heading">
+                <div id="accordion" class="panel-group">
+                <div id="panel@(problem.Id)" class="panel 
+                     @{ if (problem.TrysRemaining == 0 || problem.AllResponsesCorrect()) 
+                        { 
+                            @:  panel-success
+                           
+                        } else 
+                        { 
+                            @:  panel-primary
+
+                     }    
+                     }">
+                    <div class= "panel-heading">
                     <h3 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="@collapseLink">Problem @problem.ProblemNumber</a>
                     </h3>
-                </div>
+                    </div>
                 <div id="@collapseId" class="panel-collapse collapse">
                     <div class="panel-body">
                         <div class="row">

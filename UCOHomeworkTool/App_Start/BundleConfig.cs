@@ -11,6 +11,9 @@ namespace UCOHomeworkTool
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/toastr").Include(
+                        "~/Scripts/toastr.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
@@ -26,7 +29,8 @@ namespace UCOHomeworkTool
             bundles.Add(new StyleBundle("~/Content/css").Include(
                        "~/Content/dashboard.css",
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/toastr.css"));
         }
     }
 }

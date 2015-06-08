@@ -1,6 +1,7 @@
 namespace UCOHomeworkTool.Migrations
 {
     using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
@@ -54,8 +55,23 @@ namespace UCOHomeworkTool.Migrations
                 Courses = new List<Course>(),
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
-
-
+            context.Users.AddOrUpdate(u => u.UserName, myUser);
+            context.SaveChanges();
+            //set up teacher role and give this user that role
+            using(var rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext())))
+            using(var um = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+            {
+                if(!rm.RoleExists("Teacher"))
+                {
+                    var roleResult = rm.Create(new IdentityRole("Teacher"));
+                    if (!roleResult.Succeeded)
+                        throw new ApplicationException("Creating role Teacher failed with errors: " + roleResult.Errors);
+                }
+                if(!um.IsInRole(myUser.Id, "Teacher"))
+                {
+                    var userResult = um.AddToRole(myUser.Id, "Teacher");
+                }
+            }
 
             //create Signals course for myUser and enroll myUser in course
             var courses = new List<Course>
@@ -64,8 +80,8 @@ namespace UCOHomeworkTool.Migrations
                 new Course {Name = "TestCourse", Assignments = new List<Assignment>(), Templates = new List<Assignment>()}
             };
             courses.ForEach(c => context.Courses.AddOrUpdate(u => u.Name, c));
-            context.Users.AddOrUpdate(u => u.UserName, myUser);
             context.Users.Find(myUser.Id).Courses = courses;
+            context.SaveChanges();
             //create dummy students and enroll them in testCourse to test problem randomization funcionality
 
             var student1 = new ApplicationUser
@@ -101,7 +117,7 @@ namespace UCOHomeworkTool.Migrations
                 new Assignment {AssignmentNumber = 4, Problems = new List<Problem>(), Course = courses[0]},
             };
             assignments.ForEach(a => context.Assignments.AddOrUpdate(u => u.AssignmentNumber, a));
-            //context.Courses.Find(courses[0].Id).Templates.AddRange(assignments);
+            context.Courses.Find(courses[0].Id).Templates.AddRange(assignments);
             context.SaveChanges();
             var problems = new List<Problem>();
             foreach (var assignment in assignments)
@@ -167,13 +183,11 @@ namespace UCOHomeworkTool.Migrations
                 context.ProblemDiagrams.AddOrUpdate(p => p.Id, problemDiagram);
             }
 
-            //use template assignment to create assignment for myUser
+            //give my user ownership of template assignments
             var assignmentsForMyUser = new List<Assignment>();
             foreach(var assignment in assignments)
             {
-                var newAssignment = new Assignment(assignment);
-                newAssignment.Student = myUser;
-                assignmentsForMyUser.Add(newAssignment);
+                assignmentsForMyUser.Add(assignment);
             }
             context.Courses.Find(courses[0].Id).Assignments.AddRange(assignmentsForMyUser);
             context.SaveChanges();
@@ -212,10 +226,10 @@ namespace UCOHomeworkTool.Migrations
             // instantiate students to db and connect test assignments to students
             foreach(var student in students)
             {
-                var testAssignFromTemplate = new Assignment(testAssignment);
+                //var testAssignFromTemplate = new Assignment(testAssignment);
                 context.Users.AddOrUpdate(student);
-                testAssignFromTemplate.Student = student;
-                context.Assignments.AddOrUpdate(testAssignFromTemplate);
+                //testAssignFromTemplate.Student = student;
+                //context.Assignments.AddOrUpdate(testAssignFromTemplate);
             }
             context.SaveChanges();
         }
