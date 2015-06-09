@@ -60,7 +60,7 @@ namespace UCOHomeworkTool.Controllers
             }
             using (var db = new ApplicationDbContext())
             {
-                var assignment = db.Assignments.Find(assignmentId);
+                var assignment = db.Assignments.Include("Course").SingleOrDefault(x => x.Id == assignmentId);
                 assignment.MakeAssignment(probids, db);
                 try
                 {

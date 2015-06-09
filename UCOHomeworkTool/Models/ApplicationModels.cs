@@ -63,11 +63,13 @@ namespace UCOHomeworkTool.Models
         public virtual ApplicationUser Student { get; set; }
         public bool MakeAssignment(List<int> probids, ApplicationDbContext db)
         {
-            this.Course.Assignments.RemoveAll(a => a.AssignmentNumber == this.AssignmentNumber);
-            var toRemove = db.Assignments.Where(a => a.AssignmentNumber == this.AssignmentNumber && a.Student != null).ToList();
+            //removing from the db all problems that have does not have its id in the probids list and is currently marked as assigned
+            var currCourse = db.Courses.Find(this.Course.Id); 
+            var toRemove = db.Assignments.Where(a => a.AssignmentNumber == this.AssignmentNumber && this.Course.Id == a.Course.Id && a.Student != null).ToList();
             foreach (var assignment in toRemove)
             {
-                foreach (var prob in assignment.Problems.ToList())
+                var problemsToRemove = assignment.Problems.Except(assignment.Problems.Where(p => p.IsAssigned == true && probids.Contains(p.GeneratedFrom))).ToList();
+                foreach (var prob in problemsToRemove)
                 {
                     foreach (var given in prob.Givens.ToList())
                     {
@@ -78,19 +80,39 @@ namespace UCOHomeworkTool.Models
                         db.Responses.Remove(resp);
                     }
                     db.Problems.Remove(prob);
+                    db.SaveChanges();
                 }
-                db.Assignments.Remove(assignment);
+                //if assignment is empty, delete it
+                if(db.Assignments.Find(assignment.Id).Problems.Count == 0)
+                {
+                    db.Assignments.Remove(assignment);
+                    db.SaveChanges();
+                }
             }
-            db.SaveChanges();
             bool success = true;
-            var probsToAssign = this.Problems.Where(prob => probids.Contains(prob.Id)).ToList();
+            var probsToAssign = this.Problems.Where(prob => probids.Contains(prob.Id) && prob.IsAssigned == false).ToList();
             if (probsToAssign.Count != 0)
             {
                 foreach (var student in Course.Students)
                 {
-                    var newAssignment = new Assignment(this, probsToAssign);
-                    newAssignment.Student = student;
-                    Course.Assignments.Add(newAssignment);
+                    var existingAssignment = Course.Assignments.Where(a => a.Student.Id == student.Id && a.AssignmentNumber == this.AssignmentNumber).FirstOrDefault();
+                    if(existingAssignment == null)
+                    {
+                        var newAssignment = new Assignment(this, probsToAssign);
+                        newAssignment.Student = student;
+                        newAssignment.Course = currCourse;
+                        currCourse.Assignments.Add(newAssignment);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        foreach(var prob in probsToAssign)
+                        {
+                            prob.ProblemNumber = existingAssignment.Problems.Count + 1;
+                            var newProb = new Problem(prob);
+                            existingAssignment.Problems.Add(newProb);
+                        }
+                    }
                 }
 
             }
@@ -98,7 +120,7 @@ namespace UCOHomeworkTool.Models
             {
                 prob.IsAssigned = true;
             }
-            var notAssigned = this.Problems.Except(probsToAssign).ToList();
+            var notAssigned = this.Problems.Except(probsToAssign).Except(this.Problems.Where(prob => probids.Contains(prob.Id))).ToList();
             foreach (var prob in notAssigned)
             {
                 prob.IsAssigned = false;
@@ -111,7 +133,7 @@ namespace UCOHomeworkTool.Models
         public Problem() { IsAssigned = false; }
         public Problem(Problem toCopy)
         {
-            IsAssigned = false;
+            IsAssigned = true;
             ProblemNumber = toCopy.ProblemNumber;
             Givens = new List<Given>();
             GeneratedFrom = toCopy.Id;
