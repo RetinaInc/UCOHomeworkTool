@@ -11,6 +11,7 @@ namespace UCOHomeworkTool.Migrations
     using System.Drawing;
     using System.Linq;
     using UCOHomeworkTool.Models;
+    using UCOHomeworkTool.Calculations;
 
     internal sealed class Configuration : DbMigrationsConfiguration<UCOHomeworkTool.Models.ApplicationDbContext>
     {
@@ -89,7 +90,7 @@ namespace UCOHomeworkTool.Migrations
             {
                 UserName = "1",
                 PasswordHash = passwordHash.HashPassword("pass"),
-                Courses = new List<Course> { courses[1], courses[2] },
+                Courses = new List<Course> { courses[2] },
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
@@ -97,7 +98,7 @@ namespace UCOHomeworkTool.Migrations
             {
                 UserName = "2",
                 PasswordHash = passwordHash.HashPassword("pass"),
-                Courses = new List<Course> { courses[1], courses[2] },
+                Courses = new List<Course> {courses[0], courses[1], courses[2] },
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
@@ -105,78 +106,33 @@ namespace UCOHomeworkTool.Migrations
             {
                 UserName = "3",
                 PasswordHash = passwordHash.HashPassword("pass"),
-                Courses = new List<Course> { courses[1], courses[2] },
+                Courses = new List<Course> { courses[0], courses[2] },
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
             List<ApplicationUser> students = new List<ApplicationUser> { student1, student2, student3 };
             //create assignment templates to be used in Signals course
             var assignmentsTemplate = new List<Assignment>()
             {
-                new Assignment(){AssignmentNumber = 1, Course = courses[2], Problems = new List<Problem>()},
+                new Assignment(){AssignmentNumber = 1, Course = courses[0], Problems = new List<Problem>()},
             };
-            var p1Givens = new List<Given>()
-            {
-                new GivenTemplate {Label = "Vs1", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "Vs2", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "Vs3", minRange = 1, maxRange = 10,},
-            };
-            var p2Givens = new List<Given>()
-            {
-                new GivenTemplate {Label = "Vs1", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R1", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R2", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R3", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "a", minRange = 1, maxRange = 10,},
-            };
-            var p3Givens = new List<Given>()
-            {
-                new GivenTemplate {Label = "Vs1", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R1", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R2", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R3", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R4", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "Is3", minRange = 1, maxRange = 10,},
-            };
-            var p4Givens = new List<Given>()
-            {
-                new GivenTemplate {Label = "Vs", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R1", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R2", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R3", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R4", minRange = 1, maxRange = 10,},
-                new GivenTemplate {Label = "R5", minRange = 1, maxRange = 10,},
-            };
-            var p1Resp = new List<Response>()
-            {
-                new Response {Label = "v1"},
-                new Response {Label = "v2"},
-                new Response {Label = "v3"},
-            };
-            var p2Resp = new List<Response>()
-            {
-                new Response {Label = "Vx"},
-                new Response {Label = "P"},
-            };
-            var p3Resp = new List<Response>()
-            {
-                new Response {Label = "i due to source Vs1"},
-                new Response {Label = "i due to source Vs2"},
-                new Response {Label = "i due to source Is3"},
-                new Response {Label = "i total"},
-            };
-            var p4Resp = new List<Response>()
-            {
-                new Response {Label = "io (in microAmps)"},
-            };
-
             var problems = new List<Problem>()
             {
-                new Problem(){ProblemNumber = 1, Givens = p1Givens, Responses = p1Resp},
-                new Problem(){ProblemNumber = 2, Givens = p2Givens, Responses = p2Resp},
-                new Problem(){ProblemNumber = 3, Givens = p3Givens, Responses = p3Resp},
-                new Problem(){ProblemNumber = 4, Givens = p4Givens, Responses = p4Resp},
+                createProblem(1,
+                              new List<string>{"Vs1", "Vs2","Vs3"},
+                              new List<string>{"v1","v2","v3"},
+                              null),
+                createProblem(2,
+                              new List<string>{"Vs1", "R1","R2","R3","a"},
+                              new List<string>{"Vx","P"},
+                              null),
+                createProblem(3,
+                              new List<string>{"Vs1","R1","R2","R3","R4","Is3"},
+                              new List<string>{"i due to source Vs1","i due to source Vs2","i due to source Vs3", "i total"},
+                              null),
+                createProblem(4,
+                              new List<string>{"Vs", "R1","R2","R3","R4","R5"},new List<string>{"io (in microAmps)"},null),
             };
-            context.Courses.Find(courses[2].Id).Templates.AddRange(assignmentsTemplate);
+            context.Courses.Find(courses[0].Id).Templates.AddRange(assignmentsTemplate);
             assignmentsTemplate[0].Problems.AddRange(problems);
             assignmentsTemplate.ForEach(t => context.Assignments.AddOrUpdate(t));
             context.SaveChanges();
@@ -189,27 +145,17 @@ namespace UCOHomeworkTool.Migrations
             var diagram4 = Image.FromFile(path + "\\h1p4.png");
             var problemDiagrams = new List<ProblemDiagram>()
             {
-                new ProblemDiagram{Id = 1, Diagram = diagram1, ProblemId = assignmentsTemplate[0].Problems[0].Id },
-                new ProblemDiagram{Id = 2, Diagram = diagram2, ProblemId = assignmentsTemplate[0].Problems[1].Id },
-                new ProblemDiagram{Id = 3, Diagram = diagram3, ProblemId = assignmentsTemplate[0].Problems[2].Id },
-                new ProblemDiagram{Id = 4, Diagram = diagram4, ProblemId = assignmentsTemplate[0].Problems[3].Id },
+                new ProblemDiagram{Diagram = diagram1, ProblemId = assignmentsTemplate[0].Problems[0].Id },
+                new ProblemDiagram{Diagram = diagram2, ProblemId = assignmentsTemplate[0].Problems[1].Id },
+                new ProblemDiagram{Diagram = diagram3, ProblemId = assignmentsTemplate[0].Problems[2].Id },
+                new ProblemDiagram{Diagram = diagram4, ProblemId = assignmentsTemplate[0].Problems[3].Id },
             };
             problemDiagrams.ForEach(p => context.ProblemDiagrams.AddOrUpdate(p));
             //create a single problem to give to dummy students 
-            var testProblem = new Problem
-            {
-                ProblemNumber = 1,
-                Givens = new List<Given>(),
-                Responses = new List<Response>(),
-            };
-            testProblem.Givens.Add(new GivenTemplate { Label = "R1", minRange = 1, maxRange = 10 });
-            testProblem.Givens.Add(new GivenTemplate { Label = "R2", minRange = 1, maxRange = 10 });
-            testProblem.Givens.Add(new GivenTemplate { Label = "R3", minRange = 1, maxRange = 10 });
-            testProblem.Givens.Add(new GivenTemplate { Label = "V1", minRange = 1, maxRange = 10 });
-            testProblem.Givens.Add(new GivenTemplate { Label = "V2", minRange = 1, maxRange = 10 });
-            testProblem.Responses.Add(new Response { Label = "i1" });
-            testProblem.Responses.Add(new Response { Label = "i2" });
-            testProblem.Responses.Add(new Response { Label = "i3" });
+            var testProblem = createProblem(1, 
+                                            new List<string> { "R1", "R2", "R3", "V1", "V2" }, 
+                                            new List<string> { "i1", "i2", "i3" }, 
+                                            new Response.CalculateResponseDelegate(Calculations.a5p1));
             //create assignment for that problem
             var testAssignment = new Assignment
             {
@@ -223,7 +169,6 @@ namespace UCOHomeworkTool.Migrations
             //set up diagram for test problem
             var testDiagram = new ProblemDiagram
             {
-                Id = 5,
                 ProblemId = testProblem.Id,
                 Diagram = diagram,
             };
@@ -236,6 +181,136 @@ namespace UCOHomeworkTool.Migrations
                 testAssignFromTemplate.Student = student;
             }
             context.SaveChanges();
+            createFourAssignmentsForESCourse(context);
         }
+    private void createFourAssignmentsForESCourse(ApplicationDbContext context)
+    {
+        //find the Electrical Science Course
+        var course = context.Courses.Where(c => c.Name.Equals("electrical science", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+        //construct assignment 1, problems first
+        var probs1 = new List<Problem>{
+            createProblem(1, 
+                          new List<string>{"Vs1","Vs2","Vs3"},
+                          new List<string>{"v1","v2","v3"},
+                          new Response.CalculateResponseDelegate(Calculations.a1p1)),
+            createProblem(2,
+                          new List<string>{"Vs1","R1","R2","R3","a"},
+                          new List<string>{"Vx","P"},
+                          new Response.CalculateResponseDelegate(Calculations.a1p2)),
+            createProblem(3,
+                          new List<string>{"Vs","R1","R2","R3","R4"},
+                          new List<string>{"V0","I0"},
+                          new Response.CalculateResponseDelegate(Calculations.a1p3)),
+            createProblem(4,
+                          new List<string>{"Vb","Ib", "R1", "R2"},
+                          new List<string>{"Vs"},
+                          new Response.CalculateResponseDelegate(Calculations.a1p4)),
+        };
+        var probs2 = new List<Problem>{
+            createProblem(1, 
+                          new List<string>{"Vs","R1","R2","R3","R4","a"},
+                          new List<string>{"V0","Ix"},
+                          new Response.CalculateResponseDelegate(Calculations.a2p1)),
+            createProblem(2,
+                          new List<string>{"Vs1","Vs2","Is","R1","R2","R3","R4"},
+                          new List<string>{"i0","i1"},
+                          new Response.CalculateResponseDelegate(Calculations.a2p2)),
+            createProblem(3,
+                          new List<string>{"Vs","Is","R1","R2","R3","R4","R5"},
+                          new List<string>{"V1","V2","V3","V4"},
+                          new Response.CalculateResponseDelegate(Calculations.a2p3)),
+        };
+        var probs3 = new List<Problem>{
+            createProblem(1, 
+                          new List<string>{"Vs1","Vs2","R1","R2","R3","R4","Is3"},
+                          new List<string>{"i due to source Vs1","i due to source Vs2", "i due to source Is3", "i total"},
+                          new Response.CalculateResponseDelegate(Calculations.a3p1)),
+            createProblem(2,
+                          new List<string>{"Vs1","Vs2","Is","R1","R2","R3","R4"},
+                          new List<string>{"Vx"},
+                          new Response.CalculateResponseDelegate(Calculations.a3p2)),
+            createProblem(3,
+                          new List<string>{"Vs","Is","R1","R2","R3","R4","R5"},
+                          new List<string>{"Vth_ab","Rth_ab","Vth_bc","Rth_bc"},
+                          new Response.CalculateResponseDelegate(Calculations.a3p3)),
+        };
+        var probs4 = new List<Problem>{
+            createProblem(1, 
+                          new List<string>{"Vs","R1","R2","R3","R4","R5"},
+                          new List<string>{"io (in microAmp)"},
+                          new Response.CalculateResponseDelegate(Calculations.a4p1)),
+            createProblem(2,
+                          new List<string>{"Vs1","Vs2","R1","R2","R3","R4","R5"},
+                          new List<string>{"Vo"},
+                          new Response.CalculateResponseDelegate(Calculations.a4p2)),
+        };
+        var assignment1 = new Assignment { AssignmentNumber = 1, Course = course, Problems = probs1 };
+        var assignment2 = new Assignment { AssignmentNumber = 2, Course = course, Problems = probs2 };
+        var assignment3 = new Assignment { AssignmentNumber = 3, Course = course, Problems = probs3 };
+        var assignment4 = new Assignment { AssignmentNumber = 4, Course = course, Problems = probs4 };
+        course.Templates.Add(assignment1);
+        course.Templates.Add(assignment2);
+        course.Templates.Add(assignment3);
+        course.Templates.Add(assignment4);
+        context.SaveChanges();
+        //create problem diagrams
+        var path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
+        var diag11 = Image.FromFile(path + "\\a1p1.png");
+        var diag12 = Image.FromFile(path + "\\a1p2.png");
+        var diag13 = Image.FromFile(path + "\\a1p3.png");
+        var diag14 = Image.FromFile(path + "\\a1p4.png");
+        var diag21= Image.FromFile(path + "\\a2p1.png");
+        var diag22= Image.FromFile(path + "\\a2p2.png");
+        var diag23= Image.FromFile(path + "\\a2p3.png");
+        var diag31= Image.FromFile(path + "\\a3p1.png");
+        var diag32= Image.FromFile(path + "\\a3p2.png");
+        var diag33= Image.FromFile(path + "\\a3p3.png");
+        var diag41= Image.FromFile(path + "\\a4p1.png");
+        var diag42= Image.FromFile(path + "\\a4p2.png");
+        var diagrams = new List<ProblemDiagram>{
+            new ProblemDiagram{Diagram = diag11, ProblemId = probs1[0].Id},
+            new ProblemDiagram{Diagram = diag12, ProblemId = probs1[1].Id},
+            new ProblemDiagram{Diagram = diag13, ProblemId = probs1[2].Id},
+            new ProblemDiagram{Diagram = diag14, ProblemId = probs1[3].Id},
+            new ProblemDiagram{Diagram = diag21, ProblemId = probs2[0].Id},
+            new ProblemDiagram{Diagram = diag22, ProblemId = probs2[1].Id},
+            new ProblemDiagram{Diagram = diag23, ProblemId = probs2[2].Id},
+            new ProblemDiagram{Diagram = diag31, ProblemId = probs3[0].Id},
+            new ProblemDiagram{Diagram = diag32, ProblemId = probs3[1].Id},
+            new ProblemDiagram{Diagram = diag33, ProblemId = probs3[2].Id},
+            new ProblemDiagram{Diagram = diag41, ProblemId = probs4[0].Id},
+            new ProblemDiagram{Diagram = diag42, ProblemId = probs4[1].Id},
+        };
+        diagrams.ForEach(d => context.ProblemDiagrams.AddOrUpdate(d));
+    }
+    private List<Given> createGivensList(List<string> labels)
+    {
+        List<Given> givens = new List<Given>();
+        foreach (var label in labels)
+        {
+            var givenTemplate = new GivenTemplate{Label = label, minRange = 1, maxRange = 10};
+            givens.Add(givenTemplate);
+        }
+        return givens;
+
+    }
+    private List<Response> createResponseList(List<string> labels, Response.CalculateResponseDelegate calcDelegate)
+    {
+        var responses = new List<Response>();
+        foreach(var label in labels)
+        {
+            var resp = new Response { Label = label, calculation = calcDelegate};
+            responses.Add(resp);
+        }
+        return responses;
+    }
+    private Problem createProblem(int problemNumber, List<string> givenLabels, List<string> responseLabels, Response.CalculateResponseDelegate calcDelegate)
+    {
+        var problem = new Problem { ProblemNumber = problemNumber, 
+                                    Givens = createGivensList(givenLabels), 
+                                    Responses = createResponseList(responseLabels, calcDelegate) };
+        return problem;
+    }
+
     }
 }

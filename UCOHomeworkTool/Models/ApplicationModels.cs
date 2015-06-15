@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Web;
 
 namespace UCOHomeworkTool.Models
@@ -151,7 +152,11 @@ namespace UCOHomeworkTool.Models
                 //setting expected to whatever value is stored in the template
                 newResp.Expected = resp.Expected;
                 //overriding the default only if an applicable equation exists to calculate the expected value
+                newResp.calculation = resp.calculation;
                 newResp.setExpected(this.Givens);
+                //nullify the delegate pointer for the calculation to avoid storing an redundant pointer in the DB
+                //this allows us to only keep a reference to the calculation in the template for the assignment
+                newResp.calculation = null;
                 newResp.Problem = this;
                 Responses.Add(newResp);
             }
@@ -234,37 +239,45 @@ namespace UCOHomeworkTool.Models
         {
             Label = toCopy.Label;
         }
+        public delegate void CalculateResponseDelegate(List<Given> givens, Response toCalculate);
+        public byte[] delegatePointer { get; set; }
+        [NotMapped]
+        public CalculateResponseDelegate calculation
+        {
+            get
+            {
+                if (delegatePointer != null && delegatePointer.Count() > 0)
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    using (var stream = new MemoryStream(delegatePointer))
+                    {
+                        return formatter.Deserialize(stream) as CalculateResponseDelegate;
+                    }
+                }
+                return null;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    delegatePointer = null;
+                }
+                else
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    using (var stream = new MemoryStream())
+                    {
+                        formatter.Serialize(stream, value);
+                        delegatePointer = stream.ToArray();
+                    }
+                }
+
+            }
+        }
         public void setExpected(List<Given> givens)
         {
-            //find and assign appropriate givens for this problem
-            Given R1given = givens.Find(g => g.Label == "R1") ?? new Given { Value = 0 };
-            Given R2given = givens.Find(g => g.Label == "R2") ?? new Given { Value = 0 };
-            Given R3given = givens.Find(g => g.Label == "R3") ?? new Given { Value = 0 };
-            Given V1given = givens.Find(g => g.Label == "V1") ?? new Given { Value = 0 };
-            Given V2given = givens.Find(g => g.Label == "V2") ?? new Given { Value = 0 };
-            double R1 = (double)R1given.Value;
-            double R2 = (double)R2given.Value;
-            double R3 = (double)R3given.Value;
-            double V1 = (double)V1given.Value;
-            double V2 = (double)V2given.Value;
-            //make sure none of the values are 0
-            if (R1 * R2 * R3 * V1 * V2 == 0)
-                return;
-            //calculate V0
-            double V0 = ((V1 / R1) + (V2 / R3)) * (1 / ((1 / R1) + (1 / R2) + (1 / R3)));
-            //based on what response we are trying to find, use the correct equation
-            if (this.Label == "i1")
-            {
-                Expected = Math.Round(((V0 - V1) / R1), 2, MidpointRounding.AwayFromZero);
-            }
-            else if (this.Label == "i2")
-            {
-                Expected = Math.Round((V0 / R2), 2, MidpointRounding.AwayFromZero);
-            }
-            else if (this.Label == "i3")
-            {
-                Expected = Math.Round(((V0 - V2) / R3), 2, MidpointRounding.AwayFromZero);
-            }
+            if(calculation != null)
+                calculation(givens, this);
         }
         public int Id { get; set; }
         public string Label { get; set; }
