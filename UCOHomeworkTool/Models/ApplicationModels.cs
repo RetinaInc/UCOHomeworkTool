@@ -28,6 +28,23 @@ namespace UCOHomeworkTool.Models
         public virtual List<Assignment> Templates { get; set; }
         public virtual List<Assignment> Assignments { get; set; }
         public virtual List<ApplicationUser> Students { get; set; }
+        public bool EnrollStudent(ApplicationDbContext context, ApplicationUser student)
+        {
+            bool enrolled = true;
+            var existingStudent = Students.Where(s => s.Id == student.Id).FirstOrDefault();
+            if(existingStudent == null)
+            {
+                enrolled = false;
+            }
+            //add student to course
+            if(!enrolled)
+            {
+                this.Students.Add(student);
+                student.Courses.Add(this);
+                context.SaveChanges();
+            }
+            return enrolled;
+        }
     }
     public class Assignment
     {
@@ -65,7 +82,7 @@ namespace UCOHomeworkTool.Models
         public bool MakeAssignment(List<int> probids, ApplicationDbContext db)
         {
             //removing from the db all problems that have does not have its id in the probids list and is currently marked as assigned
-            var currCourse = db.Courses.Find(this.Course.Id); 
+            var currCourse = db.Courses.Find(this.Course.Id);
             var toRemove = db.Assignments.Where(a => a.AssignmentNumber == this.AssignmentNumber && this.Course.Id == a.Course.Id && a.Student != null).ToList();
             foreach (var assignment in toRemove)
             {
@@ -84,7 +101,7 @@ namespace UCOHomeworkTool.Models
                     db.SaveChanges();
                 }
                 //if assignment is empty, delete it
-                if(db.Assignments.Find(assignment.Id).Problems.Count == 0)
+                if (db.Assignments.Find(assignment.Id).Problems.Count == 0)
                 {
                     db.Assignments.Remove(assignment);
                     db.SaveChanges();
@@ -97,7 +114,7 @@ namespace UCOHomeworkTool.Models
                 foreach (var student in Course.Students)
                 {
                     var existingAssignment = Course.Assignments.Where(a => a.Student.Id == student.Id && a.AssignmentNumber == this.AssignmentNumber).FirstOrDefault();
-                    if(existingAssignment == null)
+                    if (existingAssignment == null)
                     {
                         var newAssignment = new Assignment(this, probsToAssign);
                         newAssignment.Student = student;
@@ -107,7 +124,7 @@ namespace UCOHomeworkTool.Models
                     }
                     else
                     {
-                        foreach(var prob in probsToAssign)
+                        foreach (var prob in probsToAssign)
                         {
                             prob.ProblemNumber = existingAssignment.Problems.Count + 1;
                             var newProb = new Problem(prob);
@@ -276,7 +293,7 @@ namespace UCOHomeworkTool.Models
         }
         public void setExpected(List<Given> givens)
         {
-            if(calculation != null)
+            if (calculation != null)
                 calculation(givens, this);
         }
         public int Id { get; set; }

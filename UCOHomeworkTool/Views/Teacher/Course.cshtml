@@ -7,4 +7,13 @@
 {
     @{Html.RenderPartial("_Sidebar", Model);}
 }
+@section ContextLinks
+{
+    <ul class="navbar-nav nav">
+        <li>
+            @Html.ActionLink("Enroll", "Course", "Teacher", new {id = Model.FirstOrDefault().Course.Id },htmlAttributes: new { title = "enroll" })
+        </li>
+    </ul>
+}
+@{Html.RenderPartial("_Enrollment", Model.FirstOrDefault().Course );}
 

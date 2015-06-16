@@ -90,7 +90,7 @@ namespace UCOHomeworkTool.Migrations
             {
                 UserName = "1",
                 PasswordHash = passwordHash.HashPassword("pass"),
-                Courses = new List<Course> { courses[2] },
+                Courses = new List<Course>(),
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
@@ -98,7 +98,7 @@ namespace UCOHomeworkTool.Migrations
             {
                 UserName = "2",
                 PasswordHash = passwordHash.HashPassword("pass"),
-                Courses = new List<Course> {courses[0], courses[1], courses[2] },
+                Courses = new List<Course>(),
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
@@ -106,7 +106,7 @@ namespace UCOHomeworkTool.Migrations
             {
                 UserName = "3",
                 PasswordHash = passwordHash.HashPassword("pass"),
-                Courses = new List<Course> { courses[0], courses[2] },
+                Courses = new List<Course>(),
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
             List<ApplicationUser> students = new List<ApplicationUser> { student1, student2, student3 };

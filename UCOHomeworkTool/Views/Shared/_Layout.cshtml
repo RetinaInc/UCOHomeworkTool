@@ -19,6 +19,7 @@
                 @Html.ActionLink("UCO Homework Tool", "Index", "Home", null, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
+                @RenderSection("ContextLinks",required: false)
                 @Html.Partial("_LoginPartial")
             </div>
         </div>

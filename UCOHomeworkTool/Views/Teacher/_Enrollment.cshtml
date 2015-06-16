@@ -1,0 +1,43 @@
+﻿@model UCOHomeworkTool.Models.Course
+
+<h3 class="page-header">Enroll a student in @Model.Name</h3>
+    <form class="form-inline">
+        <div class="form-group">
+            <label class="sr-only" for="studentId">Student Id</label>
+            <input type="text" id="studentId" class="form-control" placeholder="Student Id" />
+        </div>
+        <div class="btn btn-primary" onclick="enrollStudent(@Model.Id);">Enroll</div>
+    </form>
+    <script>
+        function enrollStudent(courseId)
+        {
+            var studentId = $("#studentId").val();
+            $.ajax({
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                type: "POST",
+                data: JSON.stringify({"studentId" : studentId, "courseId" :courseId}),
+                url: "/Teacher/EnrollStudent",
+                success: function(message){
+                    $("#studentId").val("");
+                    if(message.includes("successfully"))
+                    {
+                        toastr.success(message);
+                    }
+                    else if(message.includes("register"))
+                    {
+                        toastr.error(message);
+                    }
+                    else if(message.includes("already"))
+                    {
+                        toastr.info(message);
+                    }
+                },
+                error: function(data)
+                {
+                    toastr.error("An error occurred, please try again later.");
+                }
+            });
+        }
+        //# sourceURL=enrollment.js:
+    </script>

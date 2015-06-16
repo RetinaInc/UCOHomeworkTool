@@ -79,5 +79,35 @@ namespace UCOHomeworkTool.Controllers
             }
             return Json(new { }, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult EnrollStudent(string studentId, int courseId)
+        {
+            string returnMessage;
+            using(var db = new ApplicationDbContext())
+            {
+                //get the course object from the database
+                var course = db.Courses.Find(courseId);
+                //get the student object if it exists from the db
+                var student = db.Users.Where(s => s.UserName.Equals(studentId, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                //handle case where student isnt registered
+                if (student == null)
+                {
+                    returnMessage = "The student was not found, please notify the student to register";
+                }
+                //enroll student
+                else
+                {
+                    var studentAlreadyEnrolled = course.EnrollStudent(db,student);
+                    if(studentAlreadyEnrolled)
+                    {
+                        returnMessage = "The student with id " + studentId + " is already enrolled in this course"; 
+                    }
+                    else
+                    {
+                        returnMessage = "The student with id " + studentId + " was enrolled successfully";
+                    }
+                }
+            }
+            return Json(returnMessage, JsonRequestBehavior.AllowGet);
+        }
     }
 }
