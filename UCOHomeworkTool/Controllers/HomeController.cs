@@ -40,13 +40,12 @@ namespace UCOHomeworkTool.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var assignmentModel = db.Assignments.Include("Problems").SingleOrDefault(x => x.Id == id);
-                var problemsModel = assignmentModel.Problems;
-                foreach (var prob in problemsModel)
+                foreach (var prob in assignmentModel.Problems)
                 {
                     db.Entry(prob).Collection("Givens").Load();
                     db.Entry(prob).Collection("Responses").Load();
                 }
-                return PartialView(problemsModel.ToList());
+                return PartialView(assignmentModel);
             }
         }
         public ActionResult Course(int id)
@@ -69,12 +68,14 @@ namespace UCOHomeworkTool.Controllers
             }
 
         }
-        public JsonResult CheckResponse(List<JsonResponseObject> responses, int probId)
+        public JsonResult CheckResponse(List<JsonResponseObject> responses, int probId,int assignId)
         {
             using (var db = new ApplicationDbContext())
             {
                 var p = db.Problems.Find(probId);
+                var assignment = db.Assignments.Find(assignId);
                 var jsonReply = new List<object>();
+                bool allCorrect = true;
                 if (p.TrysRemaining > 0)
                 {
                     foreach (var response in responses)
@@ -82,20 +83,31 @@ namespace UCOHomeworkTool.Controllers
                         Response r = db.Responses.Find(response.id);
                         switch (p.TrysRemaining)
                         {
-                            case 3:
+                            case 5:
                                 r.FirstAttempt = response.value;
                                 break;
-                            case 2:
+                            case 4:
                                 r.SecondAttempt = response.value;
                                 break;
-                            case 1:
+                            case 3:
                                 r.ThirdAttempt = response.value;
+                                break;
+                            case 2:
+                                r.FourthAttempt= response.value;
+                                break;
+                            case 1:
+                                r.FifthAttempt= response.value;
                                 break;
                         }
                         var isCorrect = r.Expected.Equals(response.value);
+                        allCorrect = allCorrect && isCorrect;
                         jsonReply.Add(new { id = response.id, correct = isCorrect, trysLeft = p.TrysRemaining - 1 });
                     }
                     p.TrysRemaining -= 1;
+                    if(allCorrect || p.TrysRemaining == 0)
+                    {
+                        assignment.GradeAssignment();
+                    }
                     db.SaveChanges();
                 }
                 return Json(jsonReply, JsonRequestBehavior.AllowGet);

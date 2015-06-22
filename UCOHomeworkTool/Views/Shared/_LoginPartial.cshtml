@@ -5,7 +5,7 @@
 {
     var firstName = string.Empty;
     var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-    var currentUser = userManager.FindById(User.Identity.GetUserId());
+    var currentUser = userManager.FindById(User.Identity.GetUserId()) ?? new ApplicationUser();
     firstName = currentUser.FirstName;
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {

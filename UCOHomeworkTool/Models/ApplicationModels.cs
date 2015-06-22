@@ -32,12 +32,12 @@ namespace UCOHomeworkTool.Models
         {
             bool enrolled = true;
             var existingStudent = Students.Where(s => s.Id == student.Id).FirstOrDefault();
-            if(existingStudent == null)
+            if (existingStudent == null)
             {
                 enrolled = false;
             }
             //add student to course
-            if(!enrolled)
+            if (!enrolled)
             {
                 this.Students.Add(student);
                 student.Courses.Add(this);
@@ -79,6 +79,33 @@ namespace UCOHomeworkTool.Models
         public virtual List<Problem> Problems { get; set; }
         public virtual Course Course { get; set; }
         public virtual ApplicationUser Student { get; set; }
+        public double Grade { get; set; }
+        public void GradeAssignment()
+        {
+            double totalPoints = 20.0;
+            double aggregateModifier = 0;
+            var modifierSegment = 1.0 / Problems.Count;
+            foreach (var prob in Problems)
+            {
+                if (prob.AllResponsesCorrect())
+                {
+                    switch (prob.TrysRemaining)
+                    {
+                        case 1:
+                            aggregateModifier += modifierSegment * .7;
+                            break;
+                        case 0:
+                            aggregateModifier += modifierSegment * .5;
+                            break;
+                        default:
+                            aggregateModifier += modifierSegment;
+                            break;
+                    }
+
+                }
+            }
+            this.Grade = Math.Round(totalPoints * aggregateModifier,2,MidpointRounding.AwayFromZero);
+        }
         public bool MakeAssignment(List<int> probids, ApplicationDbContext db)
         {
             //removing from the db all problems that have does not have its id in the probids list and is currently marked as assigned
@@ -152,10 +179,11 @@ namespace UCOHomeworkTool.Models
         public Problem(Problem toCopy)
         {
             IsAssigned = true;
+            Description = toCopy.Description;
             ProblemNumber = toCopy.ProblemNumber;
             Givens = new List<Given>();
             GeneratedFrom = toCopy.Id;
-            TrysRemaining = 3;
+            TrysRemaining = 5;
             foreach (GivenTemplate given in toCopy.Givens)
             {
                 var newGiven = new Given(given);
@@ -185,17 +213,23 @@ namespace UCOHomeworkTool.Models
             {
                 switch (this.TrysRemaining)
                 {
-                    case 3:
+                    case 5:
                         allCorrect = false;
                         break;
-                    case 2:
+                    case 4:
                         allCorrect = response.Expected.Equals(response.FirstAttempt);
                         break;
-                    case 1:
+                    case 3:
                         allCorrect = response.Expected.Equals(response.SecondAttempt);
                         break;
-                    case 0:
+                    case 2:
                         allCorrect = response.Expected.Equals(response.ThirdAttempt);
+                        break;
+                    case 1:
+                        allCorrect = response.Expected.Equals(response.FourthAttempt);
+                        break;
+                    case 0:
+                        allCorrect = response.Expected.Equals(response.FifthAttempt);
                         break;
                 }
             }
@@ -205,6 +239,7 @@ namespace UCOHomeworkTool.Models
         public int ProblemNumber { get; set; }
         public int GeneratedFrom { get; set; }
         public int TrysRemaining { get; set; }
+        public string Description { get; set; }
         public virtual List<Given> Givens { get; set; }
         public virtual List<Response> Responses { get; set; }
         public Boolean IsAssigned { get; set; }
@@ -302,6 +337,8 @@ namespace UCOHomeworkTool.Models
         public double FirstAttempt { get; set; }
         public double SecondAttempt { get; set; }
         public double ThirdAttempt { get; set; }
+        public double FourthAttempt { get; set; }
+        public double FifthAttempt { get; set; }
 
         public virtual Problem Problem { get; set; }
     }

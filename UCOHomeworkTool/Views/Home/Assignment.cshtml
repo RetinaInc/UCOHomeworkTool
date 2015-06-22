@@ -1,8 +1,8 @@
-﻿@model IEnumerable<UCOHomeworkTool.Models.Problem>
+﻿@model UCOHomeworkTool.Models.Assignment
 
 <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
-        @foreach (var problem in Model)
+        @foreach (var problem in Model.Problems)
         {
             var collapseLink = "#collapse" + problem.ProblemNumber;
             var collapseId = "collapse" + problem.ProblemNumber;
@@ -17,6 +17,11 @@
                     </h3>
                 </div>
                 <div id="@collapseId" class="panel-collapse collapse">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            @problem.Description
+                        </li>
+                    </ul>
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-6">
@@ -81,7 +86,7 @@
             $(".response-input" + probid).each(function () {
                 responses.push({ id: this.id, value: $(this).val() })
             });
-            responses = JSON.stringify({ "responses": responses, "probId": probid });
+            responses = JSON.stringify({ "responses": responses, "probId": probid, "assignId": @Model.Id });
             $.ajax({
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
