@@ -1,0 +1,11 @@
+﻿<ul class="navbar-nav nav">
+    <li>
+        @Html.ActionLink("Enroll", "Enrollment", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "enroll" })
+    </li>
+    <li>
+        @Html.ActionLink("Assignments", "Course", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "assignments" })
+    </li>
+    <li>
+        @Html.ActionLink("Grades", "Grades", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "grades" })
+    </li>
+</ul>

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Student ID</th>
+            <th>Grade</th>
+        </tr>
+    </thead>
+    @{
+        foreach(var assignment in Model)
+        {
+           <tr>
+               <td>@assignment.Student.LastName</td>
+               <td>@assignment.Student.FirstName</td>
+               <td>@assignment.Student.UserName</td>
+               <td>@assignment.Grade</td>
+           </tr> 
+        }
+    }
+
+</table>

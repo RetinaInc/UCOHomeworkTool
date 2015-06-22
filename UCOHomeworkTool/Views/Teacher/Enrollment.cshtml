@@ -5,11 +5,7 @@
 }
 @section ContextLinks
 {
-    <ul class="navbar-nav nav">
-        <li>
-            @Html.ActionLink("Enroll", "Enrollment", "Teacher", new {id = Model.Id },htmlAttributes: new { title = "enroll" })
-        </li>
-    </ul>
+    @{Html.RenderPartial("_ContextLinks");}
 }
 <h3 class="page-header">Enroll a student in @Model.Name</h3>
     <form class="form-inline">

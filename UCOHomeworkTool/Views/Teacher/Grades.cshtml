@@ -1,0 +1,40 @@
+﻿@model UCOHomeworkTool.Models.Course
+@{
+    ViewBag.Title = "Grades";
+}
+@section Sidebar
+{
+    @{Html.RenderPartial("_GradesSidebar", Model.Templates);}
+}
+@section ContextLinks
+{
+    @{Html.RenderPartial("_ContextLinks");}
+}
+<h3 class="page-header">Grades for @Model.Name</h3>
+<div class="tab-content">
+    @{
+        var templates = Model.Templates;
+        UCOHomeworkTool.Models.Assignment first = null;
+        if (templates.Any())
+        {
+            first = templates.First();
+        }
+        <div class="tab-content">
+            @if (first != null)
+            {
+                var gradeModel = Model.Assignments.Where(a => a.AssignmentNumber == first.AssignmentNumber).OrderBy(a => a.Student.LastName).ToList();
+                <div role="tabpanel" class="tab-pane fade in active" id="@first.AssignmentNumber">
+                    @{Html.RenderPartial("_GradeTable", gradeModel);}
+                </div>
+            }
+            @foreach (var assignment in templates)
+            {
+                var gradeModel = Model.Assignments.Where(a => a.AssignmentNumber == assignment.AssignmentNumber).OrderBy(a => a.Student.LastName).ToList();
+                <div role="tabpanel" class="tab-pane fade" id="@assignment.AssignmentNumber">
+                    @{Html.RenderPartial("_GradeTable", gradeModel);}
+                </div>
+            }
+        </div>
+    }
+</div>
+

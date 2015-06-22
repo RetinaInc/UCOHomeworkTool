@@ -120,5 +120,19 @@ namespace UCOHomeworkTool.Controllers
             }
             return Json(returnMessage, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult Grades(int id)
+        {
+            using(var db = new ApplicationDbContext())
+            {
+                var course = db.Courses.Find(id);
+                db.Entry(course).Collection("Templates").Load();
+                db.Entry(course).Collection("Assignments").Load();
+                foreach(var assignment in course.Assignments)
+                {
+                    db.Entry(assignment).Reference("Student").Load();
+                }
+                return View(course);
+            }
+        }
     }
 }

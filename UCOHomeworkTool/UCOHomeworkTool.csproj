@@ -258,6 +258,10 @@
     <Compile Include="Migrations\201506221614378_addDescriptionToProblem.Designer.cs">
       <DependentUpon>201506221614378_addDescriptionToProblem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506222235268_addTeacherToCourse.cs" />
+    <Compile Include="Migrations\201506222235268_addTeacherToCourse.Designer.cs">
+      <DependentUpon>201506222235268_addTeacherToCourse.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -339,6 +343,11 @@
     <Content Include="Views\Teacher\Assignment.cshtml" />
     <Content Include="Views\Shared\_Sidebar.cshtml" />
     <Content Include="Views\Teacher\Enrollment.cshtml" />
+    <Content Include="Views\Home\Grades.cshtml" />
+    <Content Include="Views\Teacher\Grades.cshtml" />
+    <Content Include="Views\Teacher\_ContextLinks.cshtml" />
+    <Content Include="Views\Teacher\_GradeTable.cshtml" />
+    <Content Include="Views\Teacher\_GradesSidebar.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -393,6 +402,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506221614378_addDescriptionToProblem.resx">
       <DependentUpon>201506221614378_addDescriptionToProblem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506222235268_addTeacherToCourse.resx">
+      <DependentUpon>201506222235268_addTeacherToCourse.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

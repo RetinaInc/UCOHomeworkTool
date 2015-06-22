@@ -28,6 +28,7 @@ namespace UCOHomeworkTool.Models
         public virtual List<Assignment> Templates { get; set; }
         public virtual List<Assignment> Assignments { get; set; }
         public virtual List<ApplicationUser> Students { get; set; }
+        public virtual ApplicationUser Teacher { get; set; }
         public bool EnrollStudent(ApplicationDbContext context, ApplicationUser student)
         {
             bool enrolled = true;

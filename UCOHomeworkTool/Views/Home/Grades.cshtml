@@ -1,0 +1,37 @@
+﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
+
+@{
+    ViewBag.Title = "Grades";
+}
+@section Sidebar
+{
+    @{Html.RenderPartial("_Sidebar", Model);}
+}
+@section ContextLinks
+{
+    <ul class="navbar-nav nav">
+        <li>
+            @Html.ActionLink("Grades", "Grades", "Home", new { id = @ViewBag.CourseId }, htmlAttributes: new { title = "grades" })
+        </li>
+    </ul>
+}
+<h3 class="page-header">Your Grades for @ViewBag.CourseName </h3>
+<div class="col-sm-4">
+    <table class="table table-hover">
+        @{
+            <thead>
+                <tr>
+                    <th>Assignment Number</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            foreach (var assignment in Model)
+            {
+                <tr>
+                    <td>@assignment.AssignmentNumber</td>
+                    <td>@assignment.Grade /20</td>
+                </tr>
+            }
+        }
+    </table>
+</div>

@@ -7,4 +7,11 @@
 {
     @{Html.RenderPartial("_Sidebar", Model);}
 }
-
+@section ContextLinks
+{
+    <ul class="navbar-nav nav">
+        <li>
+            @Html.ActionLink("Grades", "Grades", "Home", new { id = @ViewBag.CourseId }, htmlAttributes: new { title = "grades" })
+        </li>
+    </ul>
+}

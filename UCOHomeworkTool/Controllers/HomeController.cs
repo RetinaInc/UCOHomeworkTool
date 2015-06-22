@@ -52,6 +52,7 @@ namespace UCOHomeworkTool.Controllers
         {
 
             var userId = User.Identity.GetUserId();
+            ViewBag.CourseId = id;
             using (var db = new ApplicationDbContext())
             {
                 var assignmentList = db.Assignments.Where(x => x.Course.Id == id && x.Student.Id == userId).OrderBy(x => x.AssignmentNumber).ToList();
@@ -111,6 +112,17 @@ namespace UCOHomeworkTool.Controllers
                     db.SaveChanges();
                 }
                 return Json(jsonReply, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult Grades(int id)
+        {
+            var userId = User.Identity.GetUserId();
+            ViewBag.CourseId = id;
+            using(var db = new ApplicationDbContext())
+            {
+                ViewBag.CourseName = db.Courses.Find(id).Name;
+                var assignments = db.Assignments.Where(a => a.Student.Id == userId && a.Course.Id == id).ToList();
+                return View(assignments);
             }
         }
         public class JsonResponseObject

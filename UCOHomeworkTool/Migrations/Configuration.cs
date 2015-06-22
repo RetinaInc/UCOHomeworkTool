@@ -44,7 +44,6 @@ namespace UCOHomeworkTool.Migrations
             context.Database.ExecuteSqlCommand("delete from Problems");
             context.Database.ExecuteSqlCommand("delete from Assignments");
             context.Database.ExecuteSqlCommand("delete from Courses");
-            context.Database.ExecuteSqlCommand("delete from ApplicationUserCourses");
             context.Database.ExecuteSqlCommand("delete from AspNetUsers");
 
             //set up myUser for testing
@@ -79,12 +78,22 @@ namespace UCOHomeworkTool.Migrations
             //create Signals course for myUser and enroll myUser in course
             var courses = new List<Course>
             {
-                new Course {Name = "Signals", Assignments = new List<Assignment>(), Templates = new List<Assignment>()},
-                new Course {Name = "TestCourse", Assignments = new List<Assignment>(), Templates = new List<Assignment>()},
-                new Course {Name = "Electrical Science", Assignments = new List<Assignment>(), Templates = new List<Assignment>()},
+                new Course {Name = "Signals", 
+                            Assignments = new List<Assignment>(), 
+                            Templates = new List<Assignment>(),
+                            Students = new List<ApplicationUser>()},
+                new Course {Name = "TestCourse", 
+                            Assignments = new List<Assignment>(), 
+                            Templates = new List<Assignment>(),
+                            Students = new List<ApplicationUser>()},
+                new Course {Name = "Electrical Science", 
+                            Assignments = new List<Assignment>(), 
+                            Templates = new List<Assignment>(),
+                            Students = new List<ApplicationUser>()},
             };
             courses.ForEach(c => context.Courses.AddOrUpdate(u => u.Name, c));
             context.Users.Find(myUser.Id).Courses = courses;
+            courses.ForEach(c => c.Teacher = myUser);
             context.SaveChanges();
             //create dummy students and enroll them in testCourse to test problem randomization funcionality
 
