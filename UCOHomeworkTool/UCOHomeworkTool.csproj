@@ -338,7 +338,7 @@
     <Content Include="Views\Teacher\Course.cshtml" />
     <Content Include="Views\Teacher\Assignment.cshtml" />
     <Content Include="Views\Shared\_Sidebar.cshtml" />
-    <Content Include="Views\Teacher\_Enrollment.cshtml" />
+    <Content Include="Views\Teacher\Enrollment.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

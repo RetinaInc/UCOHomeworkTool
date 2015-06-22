@@ -47,8 +47,19 @@ namespace UCOHomeworkTool.Controllers
             var userId = User.Identity.GetUserId();
             using (var db = new ApplicationDbContext())
             {
-                var assignmentList = db.Courses.Find(id).Templates.ToList();
-                return View(assignmentList);
+                var course= db.Courses.Find(id);
+                db.Entry(course).Collection("Templates").Load();
+                return View(course);
+            }
+
+        }
+        public ActionResult Enrollment(int id)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var course= db.Courses.Find(id);
+                db.Entry(course).Collection("Templates").Load();
+                return View(course);
             }
 
         }

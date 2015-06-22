@@ -1,19 +1,18 @@
-﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
+﻿@model UCOHomeworkTool.Models.Course
 
 @{
     ViewBag.Title = "Course";
 }
 @section Sidebar
 {
-    @{Html.RenderPartial("_Sidebar", Model);}
+    @{Html.RenderPartial("_Sidebar", Model.Templates);}
 }
 @section ContextLinks
 {
     <ul class="navbar-nav nav">
         <li>
-            @Html.ActionLink("Enroll", "Course", "Teacher", new {id = Model.FirstOrDefault().Course.Id },htmlAttributes: new { title = "enroll" })
+            @Html.ActionLink("Enroll", "Enrollment", "Teacher", new {id = Model.Id },htmlAttributes: new { title = "enroll" })
         </li>
     </ul>
 }
-@{Html.RenderPartial("_Enrollment", Model.FirstOrDefault().Course );}
 
