@@ -94,7 +94,7 @@ namespace UCOHomeworkTool.Calculations
             }
             else if (toCalculate.Label == "P")
             {
-                toCalculate.Expected = Math.Round(I * Vx, 2, MidpointRounding.AwayFromZero);
+                toCalculate.Expected = Math.Round(I * a * Vx, 2, MidpointRounding.AwayFromZero);
             }
         }
         public static void a1p3(List<Given> givens, Response toCalculate)
@@ -459,6 +459,34 @@ namespace UCOHomeworkTool.Calculations
             if (toCalculate.Label == "Vo")
             {
                 toCalculate.Expected = Math.Round(Vo, 2, MidpointRounding.AwayFromZero);
+            }
+        }
+        public static void a4p3(List<Given> givens, Response toCalculate)
+        {
+            //find and assign appropriate givens for this problem
+            Given R1given = givens.Find(g => g.Label == "R1") ?? new Given { Value = 0 };
+            Given R2given = givens.Find(g => g.Label == "R2") ?? new Given { Value = 0 };
+            Given R3given = givens.Find(g => g.Label == "R3") ?? new Given { Value = 0 };
+            Given R4given = givens.Find(g => g.Label == "R4") ?? new Given { Value = 0 };
+            Given R5given = givens.Find(g => g.Label == "R5") ?? new Given { Value = 0 };
+            double R1 = (double)R1given.Value;
+            double R2 = (double)R2given.Value;
+            double R3 = (double)R3given.Value;
+            double R4 = (double)R4given.Value;
+            double R5 = (double)R5given.Value;
+            //make sure none of the values are 0
+            if (R5 * R1 * R2 * R3 * R4 == 0)
+                return;
+            //calculate intermediate values 
+            var C1 = 1 + R5 / R4;
+            var C2 = R2 / R1;
+            var C3 = R3 / R1;
+            var G = -(C1 * C2) / (1 + C1 * C3);
+
+            //based on what response we are trying to find, use the correct equation
+            if (toCalculate.Label == "Vo/Vi")
+            {
+                toCalculate.Expected = Math.Round(G, 2, MidpointRounding.AwayFromZero);
             }
         }
     }

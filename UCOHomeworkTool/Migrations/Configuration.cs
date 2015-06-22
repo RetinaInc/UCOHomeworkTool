@@ -55,6 +55,8 @@ namespace UCOHomeworkTool.Migrations
                 PasswordHash = passwordHash.HashPassword("password"),
                 Courses = new List<Course>(),
                 SecurityStamp = Guid.NewGuid().ToString(),
+                FirstName = "Steven",
+                LastName = "Chambers",
             };
             context.Users.AddOrUpdate(u => u.UserName, myUser);
             context.SaveChanges();
@@ -92,6 +94,8 @@ namespace UCOHomeworkTool.Migrations
                 PasswordHash = passwordHash.HashPassword("pass"),
                 Courses = new List<Course>(),
                 SecurityStamp = Guid.NewGuid().ToString(),
+                FirstName = "Bob",
+                LastName = "Costas",
             };
 
             var student2 = new ApplicationUser
@@ -100,6 +104,8 @@ namespace UCOHomeworkTool.Migrations
                 PasswordHash = passwordHash.HashPassword("pass"),
                 Courses = new List<Course>(),
                 SecurityStamp = Guid.NewGuid().ToString(),
+                FirstName = "Rob",
+                LastName = "Stark",
             };
 
             var student3 = new ApplicationUser
@@ -108,6 +114,8 @@ namespace UCOHomeworkTool.Migrations
                 PasswordHash = passwordHash.HashPassword("pass"),
                 Courses = new List<Course>(),
                 SecurityStamp = Guid.NewGuid().ToString(),
+                FirstName = "Joey",
+                LastName = "Diaz",
             };
             List<ApplicationUser> students = new List<ApplicationUser> { student1, student2, student3 };
             //create assignment templates to be used in Signals course
@@ -243,15 +251,21 @@ namespace UCOHomeworkTool.Migrations
                           new List<string>{"Vs1","Vs2","R1","R2","R3","R4","R5"},
                           new List<string>{"Vo"},
                           new Response.CalculateResponseDelegate(Calculations.a4p2)),
+            createProblem(3,
+                            new List<string>{"R1","R2","R3","R4","R5"},
+                            new List<string>{"Vo/Vi"},
+                            new Response.CalculateResponseDelegate(Calculations.a4p3)),
         };
         var assignment1 = new Assignment { AssignmentNumber = 1, Course = course, Problems = probs1 };
         var assignment2 = new Assignment { AssignmentNumber = 2, Course = course, Problems = probs2 };
         var assignment3 = new Assignment { AssignmentNumber = 3, Course = course, Problems = probs3 };
         var assignment4 = new Assignment { AssignmentNumber = 4, Course = course, Problems = probs4 };
+        var assignment5 = new Assignment { AssignmentNumber = 5, Course = course, Problems = new List<Problem>() };
         course.Templates.Add(assignment1);
         course.Templates.Add(assignment2);
         course.Templates.Add(assignment3);
         course.Templates.Add(assignment4);
+        course.Templates.Add(assignment5);
         context.SaveChanges();
         //create problem diagrams
         var path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
@@ -267,6 +281,7 @@ namespace UCOHomeworkTool.Migrations
         var diag33= Image.FromFile(path + "\\a3p3.png");
         var diag41= Image.FromFile(path + "\\a4p1.png");
         var diag42= Image.FromFile(path + "\\a4p2.png");
+        var diag43= Image.FromFile(path + "\\a4p3.png");
         var diagrams = new List<ProblemDiagram>{
             new ProblemDiagram{Diagram = diag11, ProblemId = probs1[0].Id},
             new ProblemDiagram{Diagram = diag12, ProblemId = probs1[1].Id},
@@ -280,6 +295,7 @@ namespace UCOHomeworkTool.Migrations
             new ProblemDiagram{Diagram = diag33, ProblemId = probs3[2].Id},
             new ProblemDiagram{Diagram = diag41, ProblemId = probs4[0].Id},
             new ProblemDiagram{Diagram = diag42, ProblemId = probs4[1].Id},
+            new ProblemDiagram{Diagram = diag43, ProblemId = probs4[2].Id},
         };
         diagrams.ForEach(d => context.ProblemDiagrams.AddOrUpdate(d));
     }

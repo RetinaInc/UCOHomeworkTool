@@ -8,6 +8,8 @@ namespace UCOHomeworkTool.Models
     public class ApplicationUser : IdentityUser
     {
         public virtual List<Course> Courses { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
