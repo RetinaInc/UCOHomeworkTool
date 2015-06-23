@@ -43,7 +43,7 @@
                                     @foreach (var response in problem.Responses)
                                     {
                                             <div class="col-sm-3">
-                                                <div style="font-weight: bolder">@response.Label</div>
+                                                <div style="font-weight: bolder" class="pull-right">@response.Label</div>
                                             </div>
                                             <div class="col-sm-5">
                                                 <input id="@response.Id" class="form-control response-input@(problem.Id)" type="text" style="text-align: right;" />
