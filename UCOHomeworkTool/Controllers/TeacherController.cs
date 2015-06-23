@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using System.Data.Entity.Migrations;
 using UCOHomeworkTool.Migrations;
 using System.Data.Entity.Validation;
+using System.IO;
 
 namespace UCOHomeworkTool.Controllers
 {
@@ -49,6 +50,7 @@ namespace UCOHomeworkTool.Controllers
             {
                 var course= db.Courses.Find(id);
                 db.Entry(course).Collection("Templates").Load();
+                db.Entry(course).Collection("Assignments").Load();
                 return View(course);
             }
 
@@ -59,6 +61,7 @@ namespace UCOHomeworkTool.Controllers
             {
                 var course= db.Courses.Find(id);
                 db.Entry(course).Collection("Templates").Load();
+                db.Entry(course).Collection("Assignments").Load();
                 return View(course);
             }
 
@@ -132,6 +135,22 @@ namespace UCOHomeworkTool.Controllers
                     db.Entry(assignment).Reference("Student").Load();
                 }
                 return View(course);
+            }
+        }
+        public ActionResult ExportGrades(int courseId)
+        {
+            using(var db = new ApplicationDbContext())
+            {
+                var course = db.Courses.Find(courseId);
+                if(course.Assignments.Count > 0)
+                {
+                    var memoryStream = course.ExportGrades();
+                    return File(memoryStream, 
+                                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                                  string.Format("{0}Grades.xlsx",course.Name.Replace(" ","")));
+                }
+                //if we got this far there are no grades to export, return a redirect to course page to take no action
+                return RedirectToAction("Course", "Teacher", new { id = courseId });
             }
         }
     }

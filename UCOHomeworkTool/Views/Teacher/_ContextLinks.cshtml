@@ -1,4 +1,5 @@
-﻿<ul class="navbar-nav nav">
+﻿@model UCOHomeworkTool.Models.Course
+<ul class="navbar-nav nav">
     <li>
         @Html.ActionLink("Enroll", "Enrollment", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "enroll" })
     </li>
@@ -6,6 +7,22 @@
         @Html.ActionLink("Assignments", "Course", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "assignments" })
     </li>
     <li>
-        @Html.ActionLink("Grades", "Grades", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "grades" })
+        @Html.ActionLink("View Grades", "Grades", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "grades" })
+    </li>
+    <li>
+        @Html.ActionLink("Export Grades", "ExportGrades", "Teacher", new { courseId = Model.Id }, htmlAttributes: new { title = "export grades", id = "exportLink" })
     </li>
 </ul>
+@{
+    if(Model.Assignments.Count == 0)
+    {
+        <script>
+            $(document).ready(function () {
+                $("#exportLink").click(function (event) {
+                    event.preventDefault();
+                    toastr.error("There is no grade data to export because no assignments have been made.");
+                });
+            });
+        </script>
+    }
+}

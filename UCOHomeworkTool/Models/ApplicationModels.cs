@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -45,6 +46,64 @@ namespace UCOHomeworkTool.Models
                 context.SaveChanges();
             }
             return enrolled;
+        }
+        public Stream ExportGrades()
+        {
+            //create excel workbook object
+            //filter assignment list
+            using (var package = new ExcelPackage())
+            {
+                var distinctAssignmentNumbers = Assignments.Select(a => a.AssignmentNumber).Distinct().ToList().OrderBy(a => a);
+                foreach (var assignmentNumber in distinctAssignmentNumbers)
+                {
+                    var currentAssignments = Assignments.Where(a => a.AssignmentNumber == assignmentNumber).OrderBy(a => a.Student.LastName).ToList();
+                    //create new book for this set of assignments
+                    var worksheet = package.Workbook.Worksheets.Add(string.Format("Assignment {0}", assignmentNumber));
+                    int colIndex = 1;
+                    worksheet.Cells[1, colIndex++].Value = "Last Name";
+                    worksheet.Cells[1, colIndex++].Value = "First Name";
+                    worksheet.Cells[1, colIndex++].Value = "Student ID";
+                    worksheet.Cells[1, colIndex++].Value = "Assignment Grade";
+                    foreach(var prob in currentAssignments.First().Problems)
+                    {
+                        foreach(var given in prob.Givens)
+                        {
+                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Given {1}", prob.ProblemNumber, given.Label);
+                        }
+                        foreach(var response in prob.Responses)
+                        {
+                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} First Try", prob.ProblemNumber, response.Label);
+                        }
+                        foreach(var response in prob.Responses)
+                        {
+                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} Second Try", prob.ProblemNumber, response.Label);
+                        }
+                        foreach(var response in prob.Responses)
+                        {
+                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} Third Try", prob.ProblemNumber, response.Label);
+                        }
+                        foreach(var response in prob.Responses)
+                        {
+                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} Fourth Try", prob.ProblemNumber, response.Label);
+                        }
+                        foreach(var response in prob.Responses)
+                        {
+                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} Fifth Try", prob.ProblemNumber, response.Label);
+                        }
+
+                    }
+
+                    //parse assignment for data to add to excel wookbook
+                    foreach (var assignment in currentAssignments)
+                    {
+
+                    }
+                    worksheet.Cells.AutoFitColumns();
+                }
+                //convert to memory stream for easy return from controller as FileStreamResult
+                MemoryStream ms = new MemoryStream(package.GetAsByteArray());
+                return ms;
+            }
         }
     }
     public class Assignment
@@ -105,7 +164,7 @@ namespace UCOHomeworkTool.Models
 
                 }
             }
-            this.Grade = Math.Round(totalPoints * aggregateModifier,2,MidpointRounding.AwayFromZero);
+            this.Grade = Math.Round(totalPoints * aggregateModifier, 2, MidpointRounding.AwayFromZero);
         }
         public bool MakeAssignment(List<int> probids, ApplicationDbContext db)
         {
