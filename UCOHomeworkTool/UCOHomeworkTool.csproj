@@ -194,73 +194,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201505211534349_initial.cs" />
-    <Compile Include="Migrations\201505211534349_initial.Designer.cs">
-      <DependentUpon>201505211534349_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201505261935338_addTemplatesAndStudentToAssignment.cs" />
-    <Compile Include="Migrations\201505261935338_addTemplatesAndStudentToAssignment.Designer.cs">
-      <DependentUpon>201505261935338_addTemplatesAndStudentToAssignment.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201505262001420_fixTypo.cs" />
-    <Compile Include="Migrations\201505262001420_fixTypo.Designer.cs">
-      <DependentUpon>201505262001420_fixTypo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201505271820529_addImagesAndGeneratedFromKey.cs" />
-    <Compile Include="Migrations\201505271820529_addImagesAndGeneratedFromKey.Designer.cs">
-      <DependentUpon>201505271820529_addImagesAndGeneratedFromKey.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506011453043_changeDatatypeOfGivens.cs" />
-    <Compile Include="Migrations\201506011453043_changeDatatypeOfGivens.Designer.cs">
-      <DependentUpon>201506011453043_changeDatatypeOfGivens.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506011804355_enumerateAttemptsAndAddTrysRemainingCount.cs" />
-    <Compile Include="Migrations\201506011804355_enumerateAttemptsAndAddTrysRemainingCount.Designer.cs">
-      <DependentUpon>201506011804355_enumerateAttemptsAndAddTrysRemainingCount.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506012008212_addLockedParamToProblem.cs" />
-    <Compile Include="Migrations\201506012008212_addLockedParamToProblem.Designer.cs">
-      <DependentUpon>201506012008212_addLockedParamToProblem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506012028323_removeLockedFromProblemAndMoveTrysToProblem.cs" />
-    <Compile Include="Migrations\201506012028323_removeLockedFromProblemAndMoveTrysToProblem.Designer.cs">
-      <DependentUpon>201506012028323_removeLockedFromProblemAndMoveTrysToProblem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506082000180_addRequiredRelationships.cs" />
-    <Compile Include="Migrations\201506082000180_addRequiredRelationships.Designer.cs">
-      <DependentUpon>201506082000180_addRequiredRelationships.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506082050437_addIsAssignedToProblem.cs" />
-    <Compile Include="Migrations\201506082050437_addIsAssignedToProblem.Designer.cs">
-      <DependentUpon>201506082050437_addIsAssignedToProblem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506082134063_removeRequiredFields.cs" />
-    <Compile Include="Migrations\201506082134063_removeRequiredFields.Designer.cs">
-      <DependentUpon>201506082134063_removeRequiredFields.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506151512206_addDelegateMapping.cs" />
-    <Compile Include="Migrations\201506151512206_addDelegateMapping.Designer.cs">
-      <DependentUpon>201506151512206_addDelegateMapping.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506221442119_addFirstAndLastNameToUser.cs" />
-    <Compile Include="Migrations\201506221442119_addFirstAndLastNameToUser.Designer.cs">
-      <DependentUpon>201506221442119_addFirstAndLastNameToUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506221501050_addMoreAttemptsToProblems.cs" />
-    <Compile Include="Migrations\201506221501050_addMoreAttemptsToProblems.Designer.cs">
-      <DependentUpon>201506221501050_addMoreAttemptsToProblems.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506221547515_AddGrade.cs" />
-    <Compile Include="Migrations\201506221547515_AddGrade.Designer.cs">
-      <DependentUpon>201506221547515_AddGrade.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506221614378_addDescriptionToProblem.cs" />
-    <Compile Include="Migrations\201506221614378_addDescriptionToProblem.Designer.cs">
-      <DependentUpon>201506221614378_addDescriptionToProblem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506222235268_addTeacherToCourse.cs" />
-    <Compile Include="Migrations\201506222235268_addTeacherToCourse.Designer.cs">
-      <DependentUpon>201506222235268_addTeacherToCourse.cs</DependentUpon>
+    <Compile Include="Migrations\201506230217528_initial.cs" />
+    <Compile Include="Migrations\201506230217528_initial.Designer.cs">
+      <DependentUpon>201506230217528_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -349,63 +285,14 @@
     <Content Include="Views\Teacher\_GradeTable.cshtml" />
     <Content Include="Views\Teacher\_GradesSidebar.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201506230217528_initial.resx">
+      <DependentUpon>201506230217528_initial.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201505211534349_initial.resx">
-      <DependentUpon>201505211534349_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201505261935338_addTemplatesAndStudentToAssignment.resx">
-      <DependentUpon>201505261935338_addTemplatesAndStudentToAssignment.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201505262001420_fixTypo.resx">
-      <DependentUpon>201505262001420_fixTypo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201505271820529_addImagesAndGeneratedFromKey.resx">
-      <DependentUpon>201505271820529_addImagesAndGeneratedFromKey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506011453043_changeDatatypeOfGivens.resx">
-      <DependentUpon>201506011453043_changeDatatypeOfGivens.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506011804355_enumerateAttemptsAndAddTrysRemainingCount.resx">
-      <DependentUpon>201506011804355_enumerateAttemptsAndAddTrysRemainingCount.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506012008212_addLockedParamToProblem.resx">
-      <DependentUpon>201506012008212_addLockedParamToProblem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506012028323_removeLockedFromProblemAndMoveTrysToProblem.resx">
-      <DependentUpon>201506012028323_removeLockedFromProblemAndMoveTrysToProblem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506082000180_addRequiredRelationships.resx">
-      <DependentUpon>201506082000180_addRequiredRelationships.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506082050437_addIsAssignedToProblem.resx">
-      <DependentUpon>201506082050437_addIsAssignedToProblem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506082134063_removeRequiredFields.resx">
-      <DependentUpon>201506082134063_removeRequiredFields.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506151512206_addDelegateMapping.resx">
-      <DependentUpon>201506151512206_addDelegateMapping.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506221442119_addFirstAndLastNameToUser.resx">
-      <DependentUpon>201506221442119_addFirstAndLastNameToUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506221501050_addMoreAttemptsToProblems.resx">
-      <DependentUpon>201506221501050_addMoreAttemptsToProblems.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506221547515_AddGrade.resx">
-      <DependentUpon>201506221547515_AddGrade.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506221614378_addDescriptionToProblem.resx">
-      <DependentUpon>201506221614378_addDescriptionToProblem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506222235268_addTeacherToCourse.resx">
-      <DependentUpon>201506222235268_addTeacherToCourse.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

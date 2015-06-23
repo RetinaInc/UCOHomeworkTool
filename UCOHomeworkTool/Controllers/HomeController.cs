@@ -24,8 +24,8 @@ namespace UCOHomeworkTool.Controllers
             var userId = User.Identity.GetUserId();
             using (var db = new ApplicationDbContext())
             {
-                var user = db.Users.Find(userId);
-                var userCourses = user.Courses;
+                var user = db.Students.Find(userId);
+                var userCourses = user.CoursesTaking;
                 return View(userCourses.ToList());
             }
         }

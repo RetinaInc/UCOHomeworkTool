@@ -27,9 +27,9 @@ namespace UCOHomeworkTool.Models
         public string Name { get; set; }
         public virtual List<Assignment> Templates { get; set; }
         public virtual List<Assignment> Assignments { get; set; }
-        public virtual List<ApplicationUser> Students { get; set; }
-        public virtual ApplicationUser Teacher { get; set; }
-        public bool EnrollStudent(ApplicationDbContext context, ApplicationUser student)
+        public virtual List<Student> Students { get; set; }
+        public virtual Teacher Teacher { get; set; }
+        public bool EnrollStudent(ApplicationDbContext context, Student student)
         {
             bool enrolled = true;
             var existingStudent = Students.Where(s => s.Id == student.Id).FirstOrDefault();
@@ -41,7 +41,7 @@ namespace UCOHomeworkTool.Models
             if (!enrolled)
             {
                 this.Students.Add(student);
-                student.Courses.Add(this);
+                student.CoursesTaking.Add(this);
                 context.SaveChanges();
             }
             return enrolled;

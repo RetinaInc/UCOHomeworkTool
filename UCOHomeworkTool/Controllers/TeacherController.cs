@@ -21,8 +21,8 @@ namespace UCOHomeworkTool.Controllers
             var userId = User.Identity.GetUserId();
             using (var db = new ApplicationDbContext())
             {
-                var user = db.Users.Find(userId);
-                var userCourses = user.Courses;
+                var user = db.Teachers.Find(userId);
+                var userCourses = user.CoursesTeaching;
                 return View(userCourses.ToList());
             }
         }
@@ -98,7 +98,7 @@ namespace UCOHomeworkTool.Controllers
                 //get the course object from the database
                 var course = db.Courses.Find(courseId);
                 //get the student object if it exists from the db
-                var student = db.Users.Where(s => s.UserName.Equals(studentId, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                var student = db.Students.Where(s => s.UserName.Equals(studentId, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                 //handle case where student isnt registered
                 if (student == null)
                 {

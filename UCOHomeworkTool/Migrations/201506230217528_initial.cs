@@ -13,11 +13,21 @@ namespace UCOHomeworkTool.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         AssignmentNumber = c.Int(nullable: false),
+                        Grade = c.Double(nullable: false),
                         Course_Id = c.Int(),
+                        Course_Id1 = c.Int(),
+                        Course_Id2 = c.Int(),
+                        Student_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Courses", t => t.Course_Id)
-                .Index(t => t.Course_Id);
+                .ForeignKey("dbo.Courses", t => t.Course_Id1)
+                .ForeignKey("dbo.Courses", t => t.Course_Id2)
+                .ForeignKey("dbo.AspNetUsers", t => t.Student_Id)
+                .Index(t => t.Course_Id)
+                .Index(t => t.Course_Id1)
+                .Index(t => t.Course_Id2)
+                .Index(t => t.Student_Id);
             
             CreateTable(
                 "dbo.Courses",
@@ -25,14 +35,19 @@ namespace UCOHomeworkTool.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(),
+                        Teacher_Id = c.String(maxLength: 128),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.Teacher_Id)
+                .Index(t => t.Teacher_Id);
             
             CreateTable(
                 "dbo.AspNetUsers",
                 c => new
                     {
                         Id = c.String(nullable: false, maxLength: 128),
+                        FirstName = c.String(),
+                        LastName = c.String(),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),
@@ -44,6 +59,7 @@ namespace UCOHomeworkTool.Migrations
                         LockoutEnabled = c.Boolean(nullable: false),
                         AccessFailedCount = c.Int(nullable: false),
                         UserName = c.String(nullable: false, maxLength: 256),
+                        Discriminator = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.UserName, unique: true, name: "UserNameIndex");
@@ -91,7 +107,11 @@ namespace UCOHomeworkTool.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        ProblemNumeber = c.Int(nullable: false),
+                        ProblemNumber = c.Int(nullable: false),
+                        GeneratedFrom = c.Int(nullable: false),
+                        TrysRemaining = c.Int(nullable: false),
+                        Description = c.String(),
+                        IsAssigned = c.Boolean(nullable: false),
                         Assignment_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
@@ -104,7 +124,10 @@ namespace UCOHomeworkTool.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Label = c.String(),
-                        Value = c.Double(nullable: false),
+                        Value = c.Int(nullable: false),
+                        minRange = c.Int(),
+                        maxRange = c.Int(),
+                        Discriminator = c.String(nullable: false, maxLength: 128),
                         Problem_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
@@ -116,13 +139,29 @@ namespace UCOHomeworkTool.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        delegatePointer = c.Binary(),
                         Label = c.String(),
                         Expected = c.Double(nullable: false),
+                        FirstAttempt = c.Double(nullable: false),
+                        SecondAttempt = c.Double(nullable: false),
+                        ThirdAttempt = c.Double(nullable: false),
+                        FourthAttempt = c.Double(nullable: false),
+                        FifthAttempt = c.Double(nullable: false),
                         Problem_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Problems", t => t.Problem_Id)
                 .Index(t => t.Problem_Id);
+            
+            CreateTable(
+                "dbo.ProblemDiagrams",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ProblemId = c.Int(nullable: false),
+                        ImageContent = c.Binary(),
+                    })
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.AspNetRoles",
@@ -135,16 +174,16 @@ namespace UCOHomeworkTool.Migrations
                 .Index(t => t.Name, unique: true, name: "RoleNameIndex");
             
             CreateTable(
-                "dbo.ApplicationUserCourses",
+                "dbo.StudentCourses",
                 c => new
                     {
-                        ApplicationUser_Id = c.String(nullable: false, maxLength: 128),
+                        Student_Id = c.String(nullable: false, maxLength: 128),
                         Course_Id = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => new { t.ApplicationUser_Id, t.Course_Id })
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id, cascadeDelete: true)
+                .PrimaryKey(t => new { t.Student_Id, t.Course_Id })
+                .ForeignKey("dbo.AspNetUsers", t => t.Student_Id, cascadeDelete: true)
                 .ForeignKey("dbo.Courses", t => t.Course_Id, cascadeDelete: true)
-                .Index(t => t.ApplicationUser_Id)
+                .Index(t => t.Student_Id)
                 .Index(t => t.Course_Id);
             
         }
@@ -152,17 +191,21 @@ namespace UCOHomeworkTool.Migrations
         public override void Down()
         {
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropForeignKey("dbo.Assignments", "Student_Id", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Problems", "Assignment_Id", "dbo.Assignments");
             DropForeignKey("dbo.Responses", "Problem_Id", "dbo.Problems");
             DropForeignKey("dbo.Givens", "Problem_Id", "dbo.Problems");
-            DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.ApplicationUserCourses", "Course_Id", "dbo.Courses");
-            DropForeignKey("dbo.ApplicationUserCourses", "ApplicationUser_Id", "dbo.AspNetUsers");
-            DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Assignments", "Course_Id2", "dbo.Courses");
+            DropForeignKey("dbo.Assignments", "Course_Id1", "dbo.Courses");
+            DropForeignKey("dbo.Courses", "Teacher_Id", "dbo.AspNetUsers");
+            DropForeignKey("dbo.StudentCourses", "Course_Id", "dbo.Courses");
+            DropForeignKey("dbo.StudentCourses", "Student_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.Assignments", "Course_Id", "dbo.Courses");
-            DropIndex("dbo.ApplicationUserCourses", new[] { "Course_Id" });
-            DropIndex("dbo.ApplicationUserCourses", new[] { "ApplicationUser_Id" });
+            DropIndex("dbo.StudentCourses", new[] { "Course_Id" });
+            DropIndex("dbo.StudentCourses", new[] { "Student_Id" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.Responses", new[] { "Problem_Id" });
             DropIndex("dbo.Givens", new[] { "Problem_Id" });
@@ -172,9 +215,14 @@ namespace UCOHomeworkTool.Migrations
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
+            DropIndex("dbo.Courses", new[] { "Teacher_Id" });
+            DropIndex("dbo.Assignments", new[] { "Student_Id" });
+            DropIndex("dbo.Assignments", new[] { "Course_Id2" });
+            DropIndex("dbo.Assignments", new[] { "Course_Id1" });
             DropIndex("dbo.Assignments", new[] { "Course_Id" });
-            DropTable("dbo.ApplicationUserCourses");
+            DropTable("dbo.StudentCourses");
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.ProblemDiagrams");
             DropTable("dbo.Responses");
             DropTable("dbo.Givens");
             DropTable("dbo.Problems");
