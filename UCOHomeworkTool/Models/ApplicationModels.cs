@@ -60,43 +60,28 @@ namespace UCOHomeworkTool.Models
                     //create new book for this set of assignments
                     var worksheet = package.Workbook.Worksheets.Add(string.Format("Assignment {0}", assignmentNumber));
                     int colIndex = 1;
-                    worksheet.Cells[1, colIndex++].Value = "Last Name";
-                    worksheet.Cells[1, colIndex++].Value = "First Name";
-                    worksheet.Cells[1, colIndex++].Value = "Student ID";
-                    worksheet.Cells[1, colIndex++].Value = "Assignment Grade";
-                    foreach(var prob in currentAssignments.First().Problems)
+                    int rowIndex = 1;
+                    worksheet.Cells[rowIndex, colIndex++].Value = "Last Name";
+                    worksheet.Cells[rowIndex, colIndex++].Value = "First Name";
+                    worksheet.Cells[rowIndex, colIndex++].Value = "Student ID";
+                    foreach (var prob in currentAssignments.First().Problems)
                     {
-                        foreach(var given in prob.Givens)
-                        {
-                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Given {1}", prob.ProblemNumber, given.Label);
-                        }
-                        foreach(var response in prob.Responses)
-                        {
-                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} First Try", prob.ProblemNumber, response.Label);
-                        }
-                        foreach(var response in prob.Responses)
-                        {
-                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} Second Try", prob.ProblemNumber, response.Label);
-                        }
-                        foreach(var response in prob.Responses)
-                        {
-                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} Third Try", prob.ProblemNumber, response.Label);
-                        }
-                        foreach(var response in prob.Responses)
-                        {
-                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} Fourth Try", prob.ProblemNumber, response.Label);
-                        }
-                        foreach(var response in prob.Responses)
-                        {
-                            worksheet.Cells[1, colIndex++].Value = string.Format("Prob {0} Response {1} Fifth Try", prob.ProblemNumber, response.Label);
-                        }
-
+                        worksheet.Cells[rowIndex, colIndex++].Value = string.Format("Problem {0} Grade", prob.ProblemNumber);
                     }
+                    worksheet.Cells[rowIndex, colIndex++].Value = "Assignment Grade";
 
                     //parse assignment for data to add to excel wookbook
                     foreach (var assignment in currentAssignments)
                     {
-
+                        colIndex = 1;
+                        worksheet.Cells[++rowIndex, colIndex++].Value = assignment.Student.LastName;
+                        worksheet.Cells[rowIndex, colIndex++].Value = assignment.Student.FirstName;
+                        worksheet.Cells[rowIndex, colIndex++].Value = assignment.Student.UserName;
+                        foreach (var prob in assignment.Problems)
+                        {
+                            worksheet.Cells[rowIndex, colIndex++].Value = prob.GetGrade(); 
+                        }
+                        worksheet.Cells[rowIndex, colIndex++].Value = assignment.Grade;
                     }
                     worksheet.Cells.AutoFitColumns();
                 }
@@ -265,6 +250,22 @@ namespace UCOHomeworkTool.Models
                 newResp.Problem = this;
                 Responses.Add(newResp);
             }
+        }
+        public double GetGrade()
+        {
+            if (AllResponsesCorrect())
+            {
+                switch (TrysRemaining)
+                {
+                    case 1:
+                        return 0.5;
+                    case 2:
+                        return 0.7;
+                    default:
+                        return 1.0;
+                }
+            }
+            return 0.0;
         }
         public bool AllResponsesCorrect()
         {
