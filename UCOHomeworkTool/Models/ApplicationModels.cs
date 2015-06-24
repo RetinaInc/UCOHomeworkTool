@@ -76,9 +76,19 @@ namespace UCOHomeworkTool.Models
                         colIndex = 1;
                         worksheet.Cells[++rowIndex, colIndex++].Value = assignment.Student.LastName;
                         worksheet.Cells[rowIndex, colIndex++].Value = assignment.Student.FirstName;
-                        worksheet.Cells[rowIndex, colIndex++].Value = assignment.Student.UserName;
+                        long idNumber;
+                        if(Int64.TryParse(assignment.Student.UserName, out idNumber))
+                        {
+                            worksheet.Cells[rowIndex, colIndex++].Value = idNumber;
+                        }
+                        else
+                        {
+                            worksheet.Cells[rowIndex, colIndex++].Value = assignment.Student.UserName;
+                        }
                         foreach (var prob in assignment.Problems)
                         {
+
+                            worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
                             worksheet.Cells[rowIndex, colIndex++].Value = prob.GetGrade(); 
                         }
                         worksheet.Cells[rowIndex, colIndex++].Value = assignment.Grade;
