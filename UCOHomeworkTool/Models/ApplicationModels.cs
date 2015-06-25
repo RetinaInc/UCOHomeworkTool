@@ -267,9 +267,9 @@ namespace UCOHomeworkTool.Models
             {
                 switch (TrysRemaining)
                 {
-                    case 1:
+                    case 0:
                         return 0.5;
-                    case 2:
+                    case 1:
                         return 0.7;
                     default:
                         return 1.0;
