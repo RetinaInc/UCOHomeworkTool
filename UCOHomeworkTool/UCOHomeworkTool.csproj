@@ -203,6 +203,10 @@
     <Compile Include="Migrations\201506230217528_initial.Designer.cs">
       <DependentUpon>201506230217528_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506292158141_implementCascadingDelete.cs" />
+    <Compile Include="Migrations\201506292158141_implementCascadingDelete.Designer.cs">
+      <DependentUpon>201506292158141_implementCascadingDelete.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -307,6 +311,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201506230217528_initial.resx">
       <DependentUpon>201506230217528_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506292158141_implementCascadingDelete.resx">
+      <DependentUpon>201506292158141_implementCascadingDelete.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
