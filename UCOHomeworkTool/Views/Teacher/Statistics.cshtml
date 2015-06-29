@@ -1,0 +1,42 @@
+﻿@model UCOHomeworkTool.Models.CourseStatistics
+
+@section Sidebar
+{
+    @{Html.RenderPartial("_GradesSidebar", Model.Assignments.Select(a => a.AssignmentNumber).OrderBy(a=>a).ToList());}
+}
+@section ContextLinks
+{
+    @{Html.RenderPartial("_ContextLinks",Model.Course);}
+}
+<h3 class="page-header">Statistics for @Model.Course.Name</h3>
+
+<div class="tab-content">
+    @{
+        var assignments= Model.Assignments;
+        UCOHomeworkTool.Models.AssignmentStatistics first = null;
+        if (assignments.Any())
+        {
+            first = assignments.First();
+        }
+        <div class="tab-content">
+            @if (first != null)
+            {
+                var statModel = Model.Assignments.Where(a => a.AssignmentNumber == first.AssignmentNumber).FirstOrDefault();
+                <div role="tabpanel" class="tab-pane fade in active" id="@first.AssignmentNumber">
+                    @{Html.RenderPartial("_StatTable", statModel);}
+                </div>
+            }
+            @foreach (var assignment in assignments)
+            {
+                var statModel = Model.Assignments.Where(a => a.AssignmentNumber == assignment.AssignmentNumber).FirstOrDefault();
+                <div role="tabpanel" class="tab-pane fade" id="@assignment.AssignmentNumber">
+                    @{Html.RenderPartial("_StatTable", statModel);}
+                </div>
+            }
+        </div>
+     }
+</div>
+@if (Model.Assignments.Count > 0)
+{
+   <input type="button" class="btn btn-primary pull-right" value="Export Statistics" onclick="location.href='@Url.Action("ExportStatistics", "Teacher", new { courseId = Model.Course.Id })'" />
+}

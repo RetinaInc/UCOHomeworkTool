@@ -1,0 +1,30 @@
+﻿@model UCOHomeworkTool.Models.AssignmentStatistics
+
+<table class="table table-hover">
+    <caption>Percent of students answering problem correct on given try</caption>
+    <thead>
+        <tr>
+            <th>Problem</th>
+            <th>First Try</th>
+            <th>Second Try</th>
+            <th>Third Try</th>
+            <th>Fourth Try</th>
+            <th>Fifth Try</th>
+        </tr>
+    </thead>
+    @{
+        foreach (var problem in Model.Problems)
+        {
+            <tr>
+                <td>@problem.ProblemNumber</td>
+                <td>@problem.FirstTry.ToString("P")</td>
+                <td>@problem.SecondTry.ToString("P")</td>
+                <td>@problem.ThirdTry.ToString("P")</td>
+                <td>@problem.FourthTry.ToString("P")</td>
+                <td>@problem.FifthTry.ToString("P")</td>
+            </tr>
+        }
+    }
+
+</table>
+

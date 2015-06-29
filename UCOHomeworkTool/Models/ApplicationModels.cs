@@ -47,6 +47,31 @@ namespace UCOHomeworkTool.Models
             }
             return enrolled;
         }
+        public CourseStatistics GetStatistics()
+        {
+            var courseStats = new CourseStatistics() {Assignments = new List<AssignmentStatistics>() };
+            var distinctAssignmentNumbers = Assignments.Select(a => a.AssignmentNumber).Distinct().ToList().OrderBy(a => a);
+            foreach(var assignmentNum in distinctAssignmentNumbers)
+            {
+                var assignment = Assignments.Where(a => a.AssignmentNumber == assignmentNum).FirstOrDefault();
+                var distinctProblemNumbers = assignment.Problems.Select(p => p.ProblemNumber).Distinct().ToList().OrderBy(p => p);
+                var assignmentStats = new AssignmentStatistics() { AssignmentNumber = assignment.AssignmentNumber, Problems = new List<ProblemStatistics>() };
+                foreach (var pnum in distinctProblemNumbers)
+                {
+                    var probSet = new List<Problem>();
+                    Assignments.Where(a => a.AssignmentNumber == assignment.AssignmentNumber).ToList().ForEach(a => probSet.AddRange(a.Problems.Where(p => p.ProblemNumber == pnum).ToList()));
+                    var probStats = new ProblemStatistics() { ProblemNumber = pnum };
+                    probStats.FirstTry = (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 4).Count() / probSet.Count; 
+                    probStats.SecondTry= (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 3).Count() / probSet.Count; 
+                    probStats.ThirdTry= (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 2).Count() / probSet.Count; 
+                    probStats.FourthTry= (double)probSet.Where(p => p.GetGrade() == 0.7).Count() / probSet.Count; 
+                    probStats.FifthTry= (double)probSet.Where(p => p.GetGrade() == 0.5).Count() / probSet.Count; 
+                    assignmentStats.Problems.Add(probStats);
+                }
+                courseStats.Assignments.Add(assignmentStats);
+            }
+            return courseStats;
+        }
         public Stream ExportGrades()
         {
             //create excel workbook object
@@ -77,7 +102,7 @@ namespace UCOHomeworkTool.Models
                         worksheet.Cells[++rowIndex, colIndex++].Value = assignment.Student.LastName;
                         worksheet.Cells[rowIndex, colIndex++].Value = assignment.Student.FirstName;
                         long idNumber;
-                        if(Int64.TryParse(assignment.Student.UserName, out idNumber))
+                        if (Int64.TryParse(assignment.Student.UserName, out idNumber))
                         {
                             worksheet.Cells[rowIndex, colIndex++].Value = idNumber;
                         }
@@ -88,10 +113,52 @@ namespace UCOHomeworkTool.Models
                         foreach (var prob in assignment.Problems)
                         {
 
-                            worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
-                            worksheet.Cells[rowIndex, colIndex++].Value = prob.GetGrade(); 
+                            worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%";
+                            worksheet.Cells[rowIndex, colIndex++].Value = prob.GetGrade();
                         }
                         worksheet.Cells[rowIndex, colIndex++].Value = assignment.Grade;
+                    }
+                    worksheet.Cells.AutoFitColumns();
+                }
+                //convert to memory stream for easy return from controller as FileStreamResult
+                MemoryStream ms = new MemoryStream(package.GetAsByteArray());
+                return ms;
+            }
+        }
+        public Stream ExportStats()
+        {
+            //create excel workbook object
+            //filter assignment list
+            using (var package = new ExcelPackage())
+            {
+                var statModel = GetStatistics();
+                foreach (var assignment in statModel.Assignments)
+                {
+                    //create new book for this set of assignments
+                    var worksheet = package.Workbook.Worksheets.Add(string.Format("Assignment {0}",assignment.AssignmentNumber));
+                    int colIndex = 1;
+                    int rowIndex = 1;
+                    worksheet.Cells[rowIndex, colIndex++].Value = "Problem";
+                    worksheet.Cells[rowIndex, colIndex++].Value = "First Try";
+                    worksheet.Cells[rowIndex, colIndex++].Value = "Second Try";
+                    worksheet.Cells[rowIndex, colIndex++].Value = "Third Try";
+                    worksheet.Cells[rowIndex, colIndex++].Value = "Fourth Try";
+                    worksheet.Cells[rowIndex, colIndex++].Value = "Fifth Try";
+                    //parse assignment for data to add to excel wookbook
+                    foreach (var problem in assignment.Problems)
+                    {
+                        colIndex = 1;
+                        worksheet.Cells[++rowIndex, colIndex++].Value = problem.ProblemNumber;
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FirstTry; 
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.SecondTry; 
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.ThirdTry; 
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FourthTry; 
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FifthTry; 
                     }
                     worksheet.Cells.AutoFitColumns();
                 }
@@ -142,22 +209,23 @@ namespace UCOHomeworkTool.Models
             var modifierSegment = 1.0 / Problems.Count;
             foreach (var prob in Problems)
             {
-                if (prob.AllResponsesCorrect())
-                {
-                    switch (prob.TrysRemaining)
-                    {
-                        case 1:
-                            aggregateModifier += modifierSegment * .7;
-                            break;
-                        case 0:
-                            aggregateModifier += modifierSegment * .5;
-                            break;
-                        default:
-                            aggregateModifier += modifierSegment;
-                            break;
-                    }
+                //if (prob.AllResponsesCorrect())
+                //{
+                //    switch (prob.TrysRemaining)
+                //    {
+                //        case 1:
+                //            aggregateModifier += modifierSegment * .7;
+                //            break;
+                //        case 0:
+                //            aggregateModifier += modifierSegment * .5;
+                //            break;
+                //        default:
+                //            aggregateModifier += modifierSegment;
+                //            break;
+                //    }
 
-                }
+                //}
+                aggregateModifier += modifierSegment * prob.GetGrade();
             }
             this.Grade = Math.Round(totalPoints * aggregateModifier, 2, MidpointRounding.AwayFromZero);
         }

@@ -4,7 +4,7 @@
 }
 @section Sidebar
 {
-    @{Html.RenderPartial("_GradesSidebar", Model.Templates);}
+    @{Html.RenderPartial("_GradesSidebar", Model.Templates.Select(a => a.AssignmentNumber).OrderBy(a=>a).ToList());}
 }
 @section ContextLinks
 {
@@ -35,6 +35,10 @@
                 </div>
             }
         </div>
-    }
+        }
 </div>
+@if(Model.Assignments.Count > 0)
+{
+    <input type="button" class="btn btn-primary pull-right" value="Export Grades" onclick="location.href='@Url.Action("ExportGrades","Teacher", new { courseId = Model.Id})'" />
+}
 

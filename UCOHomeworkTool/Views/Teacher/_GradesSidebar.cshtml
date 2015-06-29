@@ -1,19 +1,19 @@
-﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
+﻿@model IEnumerable<int>
 
 @{
     if (Model.Any())
     {
         var first = Model.First();
         <li role="presentation" class="active">
-            <a href="#@first.AssignmentNumber" aria-controls="@first.AssignmentNumber"
-               role="tab" data-toggle="tab">Assignment @first.AssignmentNumber</a>
+            <a href="#@first" aria-controls="@first"
+               role="tab" data-toggle="tab">Assignment @first</a>
         </li>
 }
     foreach (var assignment in Model.Skip(1))
     {
         <li role="presentation">
-            <a href="#@assignment.AssignmentNumber" aria-controls="@assignment.AssignmentNumber"
-               role="tab" data-toggle="tab">Assignment @assignment.AssignmentNumber</a>
+            <a href="#@assignment" aria-controls="@assignment"
+               role="tab" data-toggle="tab">Assignment @assignment</a>
         </li>
     }
 }

@@ -95,10 +95,6 @@
                 success: function(data)
                 {
                     toastr.success("The problems were assigned successfully!");  
-                    if(probids.length > 0)
-                    {
-                        $("#exportLink").unbind('click');
-                    }
                 }
             })
     }

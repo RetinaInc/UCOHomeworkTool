@@ -7,22 +7,10 @@
         @Html.ActionLink("Assignments", "Course", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "assignments" })
     </li>
     <li>
-        @Html.ActionLink("View Grades", "Grades", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "grades" })
+        @Html.ActionLink("Grades", "Grades", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "grades" })
     </li>
     <li>
-        @Html.ActionLink("Export Grades", "ExportGrades", "Teacher", new { courseId = Model.Id }, htmlAttributes: new { title = "export grades", id = "exportLink" })
+        @Html.ActionLink("Statistics", "Statistics", "Teacher", new { id = Model.Id }, htmlAttributes: new { title = "stats" })
     </li>
 </ul>
-@{
-    if(Model.Assignments.Count == 0)
-    {
-        <script>
-            $(document).ready(function () {
-                $("#exportLink").click(function (event) {
-                    event.preventDefault();
-                    toastr.error("There is no grade data to export because no assignments have been made.");
-                });
-            });
-        </script>
-    }
-}
+

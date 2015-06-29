@@ -137,6 +137,17 @@ namespace UCOHomeworkTool.Controllers
                 return View(course);
             }
         }
+        public ActionResult Statistics(int id)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var course = db.Courses.Find(id);
+                var statModel = course.GetStatistics();
+                statModel.Course = course;
+                db.Entry(course).Collection("Assignments").Load();
+                return View(statModel);
+            }
+        }
         public ActionResult ExportGrades(int courseId)
         {
             using(var db = new ApplicationDbContext())
@@ -152,6 +163,22 @@ namespace UCOHomeworkTool.Controllers
                 //if we got this far there are no grades to export, return a redirect to course page to take no action
                 return RedirectToAction("Course", "Teacher", new { id = courseId });
             }
+        }
+        public ActionResult ExportStatistics(int courseId)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var course = db.Courses.Find(courseId);
+                if (course.Assignments.Count > 0)
+                {
+                    var memoryStream = course.ExportStats();
+                    return File(memoryStream,
+                                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                  string.Format("{0}Stats.xlsx", course.Name.Replace(" ", "")));
+                }
+                //if we got this far there are no stats to export, return a redirect to course page to take no action
+                return RedirectToAction("Course", "Teacher", new { id = courseId });
+            } 
         }
     }
 }
