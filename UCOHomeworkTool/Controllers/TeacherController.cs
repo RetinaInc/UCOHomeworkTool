@@ -8,7 +8,6 @@ using System.Web.Security;
 using UCOHomeworkTool.Models;
 using Microsoft.AspNet.Identity;
 using System.Data.Entity.Migrations;
-using UCOHomeworkTool.Migrations;
 using System.Data.Entity.Validation;
 using System.IO;
 

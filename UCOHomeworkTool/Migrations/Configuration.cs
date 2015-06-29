@@ -74,6 +74,17 @@ namespace UCOHomeworkTool.Migrations
                 {
                     var userResult = um.AddToRole(myUser.Id, "Teacher");
                 }
+                if (!rm.RoleExists("Admin"))
+                {
+                    var roleResult = rm.Create(new IdentityRole("Admin"));
+                    if (!roleResult.Succeeded)
+                        throw new ApplicationException("Creating role Admin failed with errors: " + roleResult.Errors);
+                }
+                if (!um.IsInRole(myUser.Id, "Admin"))
+                {
+                    var userResult = um.AddToRole(myUser.Id, "Admin");
+                }
+
             }
 
             //create Signals course for myUser and enroll myUser in course
@@ -360,4 +371,3 @@ namespace UCOHomeworkTool.Migrations
 
     }
 }
-

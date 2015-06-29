@@ -8,7 +8,6 @@ using System.Web.Security;
 using UCOHomeworkTool.Models;
 using Microsoft.AspNet.Identity;
 using System.Data.Entity.Migrations;
-using UCOHomeworkTool.Migrations;
 
 namespace UCOHomeworkTool.Controllers
 {
@@ -29,12 +28,12 @@ namespace UCOHomeworkTool.Controllers
                 return View(userCourses.ToList());
             }
         }
-        public void DebugDB()
-        {
-            var configuration = new Configuration();
-            var migrator = new DbMigrator(configuration);
-            migrator.Update();
-        }
+        //public void DebugDB()
+        //{
+        //    var configuration = new Configuration();
+        //    var migrator = new DbMigrator(configuration);
+        //    migrator.Update();
+        //}
         public ActionResult Assignment(int id)
         {
             using (var db = new ApplicationDbContext())

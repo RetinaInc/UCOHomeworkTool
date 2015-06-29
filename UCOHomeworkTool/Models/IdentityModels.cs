@@ -9,6 +9,13 @@ namespace UCOHomeworkTool.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string FirstAndLastName
+        {
+            get
+            {
+                return string.Format("{0} {1}", this.FirstName, this.LastName);
+            }
+        }
     }
     public class Teacher : ApplicationUser
     {
@@ -23,8 +30,16 @@ namespace UCOHomeworkTool.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema:false)
+            : base("DefaultConnection", throwIfV1Schema: false)
         {
+        }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //modelBuilder.Entity<Course>().HasMany<Assignment>(c => c.Assignments).WithOptional(a => a.Course).WillCascadeOnDelete(true);
+            //modelBuilder.Entity<Assignment>().HasMany<Problem>(a => a.Problems).WithOptional().WillCascadeOnDelete(true);
+            //modelBuilder.Entity<Problem>().HasMany<Given>(p => p.Givens).WithOptional(g => g.Problem).WillCascadeOnDelete(true);
+            //modelBuilder.Entity<Problem>().HasMany<Response>(p => p.Responses).WithOptional(r => r.Problem).WillCascadeOnDelete(true);
         }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
