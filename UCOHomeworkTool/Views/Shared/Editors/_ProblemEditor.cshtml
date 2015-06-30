@@ -21,7 +21,11 @@
                  @Html.TextBoxFor(m => m.Diagram, new {@type="file"})
                  @Html.ValidationMessageFor(m => m.Diagram, null, new { @class="text-danger"})
              </p>
-            <input type="button" value="Delete" class="btn btn-default" onclick="$(this).parent().remove();"/>
+            <p>
+                @Html.LabelFor(m => m.Givens)
+                @Html.CollectionEditorFor(m => m.Givens, "Editors/_GivenEditor", "/Assignments/GetGivenEditor", "Add Given Value", new { @class="btn btn-primary"})
+            </p>
+            <input type="button" value="Delete Problem" class="btn btn-default" onclick="$(this).parent().remove();"/>
         }
     </div>
 </li>

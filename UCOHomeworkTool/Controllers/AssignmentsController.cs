@@ -58,6 +58,12 @@ namespace UCOHomeworkTool.Controllers
                     Problems = assignment.Problems.Select(p => new Problem { 
                                                                             ProblemNumber = p.ProblemNumber,
                                                                             Description = p.Description,
+                                                                            Givens = p.Givens.Select(g => new GivenTemplate
+                                                                            {
+                                                                                Label = g.Label,
+                                                                                minRange = g.MinValue,
+                                                                                maxRange = g.MaxValue,
+                                                                            }).Cast<Given>().ToList(),
                                                                            }).ToList(),
                     Course = course,
                 };
@@ -89,6 +95,12 @@ namespace UCOHomeworkTool.Controllers
                     Id = p.Id,
                     Description = p.Description,
                     ProblemNumber = p.ProblemNumber,
+                    Givens = p.Givens.Select(g => new EditGivenViewModel
+                    {
+                        Label = g.Label,
+                        MinValue = ((GivenTemplate) g).minRange,
+                        MaxValue = ((GivenTemplate) g).maxRange,
+                    }).ToList(),
                 }
                 ).ToList(),
                 Course = assignment.Course.Name,
@@ -185,6 +197,10 @@ namespace UCOHomeworkTool.Controllers
         public ActionResult GetProblemEditor()
         {
             return PartialView("Editors/_ProblemEditor", new EditProblemViewModel());
+        }
+        public ActionResult GetGivenEditor()
+        {
+            return PartialView("Editors/_GivenEditor", new EditGivenViewModel());
         }
     }
 }
