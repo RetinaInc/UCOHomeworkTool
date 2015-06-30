@@ -25,6 +25,7 @@ namespace UCOHomeworkTool.Models
     public class Course
     {
         public int Id { get; set; }
+        [Display(Name="Course Name")]
         public string Name { get; set; }
         public virtual List<Assignment> Templates { get; set; }
         public virtual List<Assignment> Assignments { get; set; }
@@ -197,6 +198,7 @@ namespace UCOHomeworkTool.Models
         }
 
         public int Id { get; set; }
+        [Display(Name="Assignment Number")]
         public int AssignmentNumber { get; set; }
         public virtual List<Problem> Problems { get; set; }
         public virtual Course Course { get; set; }

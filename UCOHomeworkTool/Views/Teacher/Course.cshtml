@@ -5,7 +5,7 @@
 }
 @section Sidebar
 {
-    @{Html.RenderPartial("_Sidebar", Model.Templates);}
+    @{Html.RenderPartial("_Sidebar", Model.Templates.OrderBy(t => t.AssignmentNumber));}
 }
 @section ContextLinks
 {

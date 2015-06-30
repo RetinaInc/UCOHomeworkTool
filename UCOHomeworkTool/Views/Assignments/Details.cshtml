@@ -1,4 +1,4 @@
-﻿@model UCOHomeworkTool.Models.Course
+﻿@model UCOHomeworkTool.Models.Assignment
 
 @{
     ViewBag.Title = "Details";
@@ -10,23 +10,16 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Course</h4>
+    <h4>Assignment</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.AssignmentNumber)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.AssignmentNumber)
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Teacher)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Teacher.FirstAndLastName)
-        </dd>
-
     </dl>
 </div>
 <p>

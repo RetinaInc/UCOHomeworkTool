@@ -3,7 +3,10 @@
 @{
     ViewBag.Title = "Edit";
 }
-
+@section ContextLinks
+{
+    @{Html.RenderPartial("~/Views/Admin/_ContextLinks.cshtml");}
+}
 <h2>Edit</h2>
 
 @using (Html.BeginForm())

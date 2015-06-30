@@ -1,4 +1,4 @@
-﻿@model UCOHomeworkTool.Models.Course
+﻿@model UCOHomeworkTool.Models.Assignment
 
 @{
     ViewBag.Title = "Delete";
@@ -6,21 +6,21 @@
 @section ContextLinks
 {
     @{Html.RenderPartial("~/Views/Admin/_ContextLinks.cshtml");}
-}<h2>Delete</h2>
+}
+<h2>Delete</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Course</h4>
+    <h4>Assignment</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.AssignmentNumber)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.AssignmentNumber)
         </dd>
-
     </dl>
 
     @using (Html.BeginForm()) {

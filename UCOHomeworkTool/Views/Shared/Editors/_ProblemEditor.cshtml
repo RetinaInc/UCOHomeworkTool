@@ -1,0 +1,27 @@
+﻿@using MyToolkit.Html
+@model UCOHomeworkTool.Models.EditProblemViewModel
+
+<li>
+    <div class="panel panel-default panel-body">
+        @using (Html.BeginCollectionItem("Problems"))
+        {
+             @Html.HiddenFor(model => model.Id)
+             <p>
+                 @Html.LabelFor(m => m.ProblemNumber)
+                 @Html.TextBoxFor(m => m.ProblemNumber, new {@class = "form-control"})
+                 @Html.ValidationMessageFor(m => m.ProblemNumber, null, new { @class="text-danger"})
+             </p>
+             <p>
+                 @Html.LabelFor(m => m.Description)
+                 @Html.TextBoxFor(m => m.Description, new {@class = "form-control"})
+                 @Html.ValidationMessageFor(m => m.Description, null, new { @class="text-danger"})
+             </p>
+             <p>
+                 @Html.LabelFor(m => m.Diagram)
+                 @Html.TextBoxFor(m => m.Diagram, new {@type="file"})
+                 @Html.ValidationMessageFor(m => m.Diagram, null, new { @class="text-danger"})
+             </p>
+            <input type="button" value="Delete" class="btn btn-default" onclick="$(this).parent().remove();"/>
+        }
+    </div>
+</li>
