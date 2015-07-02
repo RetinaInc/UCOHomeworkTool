@@ -194,12 +194,14 @@ namespace UCOHomeworkTool.Controllers
             }
             base.Dispose(disposing);
         }
-        public ActionResult GetProblemEditor()
+        public ActionResult GetProblemEditor(string collectionIndex)
         {
+            ViewData["index"] = collectionIndex;
             return PartialView("Editors/_ProblemEditor", new EditProblemViewModel());
         }
-        public ActionResult GetGivenEditor()
+        public ActionResult GetGivenEditor(string collectionIndex)
         {
+            ViewData["index"] = collectionIndex;
             return PartialView("Editors/_GivenEditor", new EditGivenViewModel());
         }
     }

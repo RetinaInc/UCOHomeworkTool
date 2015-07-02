@@ -3,25 +3,28 @@
 
 <li>
     <div class="panel panel-default panel-body">
-        @using (Html.BeginCollectionItem("Givens"))
-        {
-            @Html.HiddenFor(model => model.Id)
-            <p>
-                @Html.LabelFor(m => m.Label )
-                @Html.TextBoxFor(m => m.Label, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Label, null, new { @class = "text-danger" })
-            </p>
-            <p>
-                @Html.LabelFor(m => m.MinValue)
-                @Html.TextBoxFor(m => m.MinValue, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.MinValue, null, new { @class = "text-danger" })
-            </p>
-            <p>
-                @Html.LabelFor(m => m.MaxValue)
-                @Html.TextBoxFor(m => m.MaxValue, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.MaxValue, null, new { @class = "text-danger" })
-            </p>
-            <input type="button" value="Delete Given" class="btn btn-default" onclick="$(this).parent().remove();" />
+        @{
+            string givenIndex;
+            using (Html.BeginCollectionItem(string.Format("Problems[{0}].Givens", (string)ViewData["index"]), out givenIndex))
+            {
+                @Html.HiddenFor(model => model.Id)
+                <p>
+                    @Html.LabelFor(m => m.Label)
+                    @Html.TextBoxFor(m => m.Label, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Label, null, new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.MinValue)
+                    @Html.TextBoxFor(m => m.MinValue, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.MinValue, null, new { @class = "text-danger" })
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.MaxValue)
+                    @Html.TextBoxFor(m => m.MaxValue, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.MaxValue, null, new { @class = "text-danger" })
+                </p>
+                <input type="button" value="Delete Given" class="btn btn-default" onclick="$(this).parent().remove();" />
+            }
         }
     </div>
 </li>

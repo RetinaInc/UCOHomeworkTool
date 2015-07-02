@@ -31,29 +31,29 @@ namespace MyToolkit.Html
         /// <returns>The HTML string. </returns>
         public static IHtmlString CollectionEditorFor<TModel, TItem>(this HtmlHelper<TModel> html,
             Func<TModel, IEnumerable<TItem>> collection, string partialViewName,
-            string controllerActionPath, string addButtonTitle, object addButtonHtmlAttributes = null)
+            string controllerActionPath, string addButtonTitle, object addButtonHtmlAttributes = null, string collectionIndex = "")
         {
             var editorId = "CollectionEditor_" + Guid.NewGuid().ToString("N");
             var addButtonId = "CollectionEditorAdd_" + Guid.NewGuid().ToString("N");
 
             var output = new StringBuilder();
 
-            RenderInitialCollection(output, html, collection, partialViewName, editorId);
+            RenderInitialCollection(output, html, collection, partialViewName, editorId,collectionIndex);
             RenderAddButton(output, addButtonId, addButtonTitle, addButtonHtmlAttributes);
-            RenderEditorScript(controllerActionPath, output, editorId, addButtonId);
+            RenderEditorScript(controllerActionPath, output, editorId, addButtonId,collectionIndex);
 
             return new HtmlString(output.ToString());
         }
 
         private static void RenderInitialCollection<TModel, TItem>(StringBuilder output, HtmlHelper<TModel> html,
-            Func<TModel, IEnumerable<TItem>> collection, string partialViewName, string editorId)
+            Func<TModel, IEnumerable<TItem>> collection, string partialViewName, string editorId, string collectionId)
         {
             output.AppendLine(@"<ul id=""" + editorId + @""" style=""list-style-type: none; padding: 0"">");
             var items = collection(html.ViewData.Model);
             if (items != null)
             {
                 foreach (var item in collection(html.ViewData.Model))
-                    output.AppendLine(html.Partial(partialViewName, item).ToString());
+                    output.AppendLine(html.Partial(partialViewName, item, new ViewDataDictionary{{"index",collectionId}}).ToString());
             }
             output.AppendLine(@"</ul>");
         }
@@ -74,14 +74,14 @@ namespace MyToolkit.Html
             output.AppendLine(@"</p>");
         }
 
-        private static void RenderEditorScript(string controllerActionPath, StringBuilder output, string editorId, string addButtonId)
+        private static void RenderEditorScript(string controllerActionPath, StringBuilder output, string editorId, string addButtonId,string collectionIndex)
         {
             output.AppendLine(
                 @"<script type=""text/javascript"">
                     $(function() {
                         $(""#" + editorId + @""").sortable();
                         $(""#" + addButtonId + @""").click(function() {
-                            $.get('" + controllerActionPath + @"', { '_': $.now() }, function (template) {
+                            $.get('" + controllerActionPath + @"', { '_': $.now(), 'collectionIndex':'"+collectionIndex+@"' }, function (template) {
                                 var itemList = $(""#" + editorId + @""");
                                 itemList.append(template);
                                 var form = itemList.closest(""form"");
@@ -100,9 +100,9 @@ namespace MyToolkit.Html
         /// <param name="html">The HTML helper.</param>
         /// <param name="collectionPropertyName">The name of the collection property in the master view model.</param>
         /// <returns>The disposable. </returns>
-        public static IDisposable BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionPropertyName)
+        public static IDisposable BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionPropertyName, out string itemIndex)
         {
-            var itemIndex = GetCollectionItemIndex(collectionPropertyName);
+            itemIndex = GetCollectionItemIndex(collectionPropertyName);
             var collectionItemName = String.Format("{0}[{1}]", collectionPropertyName, itemIndex);
 
             var hiddenInput = new TagBuilder("input");
