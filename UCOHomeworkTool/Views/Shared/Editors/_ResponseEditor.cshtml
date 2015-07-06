@@ -1,0 +1,20 @@
+﻿@using MyToolkit.Html
+@model UCOHomeworkTool.Models.EditResponseViewModel
+
+<li>
+    <div class="panel panel-default panel-body">
+        @{
+            string responseIndex;
+            using (Html.BeginCollectionItem(string.Format("Problems[{0}].Responses", (string)ViewData["index"]), out responseIndex))
+            {
+                @Html.HiddenFor(model => model.Id)
+                <p>
+                    @Html.LabelFor(m => m.Label)
+                    @Html.TextBoxFor(m => m.Label, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Label, null, new { @class = "text-danger" })
+                </p>
+                            <input type="button" value="Delete Response" class="btn btn-default" onclick="$(this).parent().remove();" />
+            }
+        }
+    </div>
+</li>

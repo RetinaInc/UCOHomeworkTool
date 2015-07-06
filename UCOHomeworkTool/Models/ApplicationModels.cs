@@ -384,6 +384,9 @@ namespace UCOHomeworkTool.Models
         public virtual List<Given> Givens { get; set; }
         public virtual List<Response> Responses { get; set; }
         public Boolean IsAssigned { get; set; }
+        //Temporary holding place to put image data while creating new problem in /Assignments/Create
+        [NotMapped]
+        public HttpPostedFileBase ImageData { get; set; }
     }
     public class ProblemDiagram
     {

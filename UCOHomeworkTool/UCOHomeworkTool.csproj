@@ -348,6 +348,7 @@
     <Content Include="Views\Assignments\Index.cshtml" />
     <Content Include="Views\Shared\Editors\_ProblemEditor.cshtml" />
     <Content Include="Views\Shared\Editors\_GivenEditor.cshtml" />
+    <Content Include="Views\Shared\Editors\_ResponseEditor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

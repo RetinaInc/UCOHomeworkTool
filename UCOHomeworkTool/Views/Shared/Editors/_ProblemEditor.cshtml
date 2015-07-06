@@ -27,6 +27,10 @@
                     @Html.LabelFor(m => m.Givens)
                     @Html.CollectionEditorFor(m => m.Givens, "Editors/_GivenEditor", "/Assignments/GetGivenEditor", "Add Given Value", new { @class = "btn btn-primary" },@problemIndex)
                 </p>
+                <p>
+                    @Html.LabelFor(m => m.Responses)
+                    @Html.CollectionEditorFor(m => m.Responses, "Editors/_ResponseEditor", "/Assignments/GetResponseEditor", "Add Response", new { @class = "btn btn-primary" },@problemIndex)
+                </p>
                 <input type="button" value="Delete Problem" class="btn btn-default" onclick="$(this).parent().remove();" />
             }
         }

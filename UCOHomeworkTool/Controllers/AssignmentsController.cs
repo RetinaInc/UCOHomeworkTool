@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -55,24 +56,38 @@ namespace UCOHomeworkTool.Controllers
                 var toAdd = new Assignment
                 {
                     AssignmentNumber = assignment.AssignmentNumber,
-                    Problems = assignment.Problems.Select(p => new Problem { 
-                                                                            ProblemNumber = p.ProblemNumber,
-                                                                            Description = p.Description,
-                                                                            Givens = p.Givens.Select(g => new GivenTemplate
-                                                                            {
-                                                                                Label = g.Label,
-                                                                                minRange = g.MinValue,
-                                                                                maxRange = g.MaxValue,
-                                                                            }).Cast<Given>().ToList(),
-                                                                           }).ToList(),
+                    Problems = assignment.Problems.Select(p => new Problem
+                    {
+                        ProblemNumber = p.ProblemNumber,
+                        Description = p.Description,
+                        ImageData = p.Diagram,
+                        Givens = p.Givens.Select(g => new GivenTemplate
+                        {
+                            Label = g.Label,
+                            minRange = g.MinValue,
+                            maxRange = g.MaxValue,
+                        }).Cast<Given>().ToList(),
+                        Responses = p.Responses.Select(r => new Response
+                        {
+                            Label = r.Label,
+                        }).ToList(),
+                    }).ToList(),
                     Course = course,
                 };
-                if(course != null)
+                //handle problem diagrams
+                if (course != null)
                 {
                     course.Templates.Add(toAdd);
                 }
                 db.Assignments.Add(toAdd);
                 db.SaveChanges();
+                foreach (var prob in toAdd.Problems)
+                {
+                    var image = Image.FromStream(prob.ImageData.InputStream, true, true);
+                    var diagram = new ProblemDiagram { Diagram = image, ProblemId = prob.Id };
+                    db.ProblemDiagrams.Add(diagram);
+                    db.SaveChanges();
+                }
                 return RedirectToAction("Index");
             }
 
@@ -97,9 +112,14 @@ namespace UCOHomeworkTool.Controllers
                     ProblemNumber = p.ProblemNumber,
                     Givens = p.Givens.Select(g => new EditGivenViewModel
                     {
+                        Id = g.Id,
                         Label = g.Label,
-                        MinValue = ((GivenTemplate) g).minRange,
-                        MaxValue = ((GivenTemplate) g).maxRange,
+                        MinValue = ((GivenTemplate)g).minRange,
+                        MaxValue = ((GivenTemplate)g).maxRange,
+                    }).ToList(),
+                    Responses = p.Responses.Select(r => new EditResponseViewModel
+                    {
+                        Label = r.Label,
                     }).ToList(),
                 }
                 ).ToList(),
@@ -138,6 +158,17 @@ namespace UCOHomeworkTool.Controllers
                         {
                             ProblemNumber = problem.ProblemNumber,
                             Description = problem.Description,
+                            Givens = problem.Givens.Select(g => new GivenTemplate
+                            {
+                                Label = g.Label,
+                                minRange = g.MinValue,
+                                maxRange = g.MaxValue,
+                            }).Cast<Given>().ToList(),
+                            Responses = problem.Responses.Select(r => new Response
+                            {
+                                Label = r.Label,
+
+                            }).ToList(),
                         });
                     }
                     else
@@ -145,6 +176,25 @@ namespace UCOHomeworkTool.Controllers
                         var probToUpdate = dbAssignment.Problems.Where(p => p.Id == problem.Id).FirstOrDefault();
                         probToUpdate.Description = problem.Description;
                         probToUpdate.ProblemNumber = problem.ProblemNumber;
+                        //establish new givens from viewmodel
+                        probToUpdate.Givens.Clear();
+                        probToUpdate.Givens.AddRange(problem.Givens.Select(g => new GivenTemplate
+                            {
+                                Id = g.Id,
+                                Label = g.Label,
+                                minRange = g.MinValue,
+                                maxRange = g.MaxValue,
+                            }).Cast<Given>().ToList());
+                        //establish new responses from viewmodel
+                        probToUpdate.Responses.Clear();
+                        probToUpdate.Responses.AddRange(problem.Responses.Select(r => new Response
+                           {
+                               Id = r.Id,
+                               Label = r.Label,
+                           }).ToList());
+                        //remove orphans
+                        db.SaveChanges();
+                        db.Givens.RemoveRange(db.Givens.Where(g => g.Problem == null));
                     }
                 }
                 if (!dbAssignment.Course.Name.Equals(assignment.Course))
@@ -204,5 +254,11 @@ namespace UCOHomeworkTool.Controllers
             ViewData["index"] = collectionIndex;
             return PartialView("Editors/_GivenEditor", new EditGivenViewModel());
         }
+        public ActionResult GetResponseEditor(string collectionIndex)
+        {
+            ViewData["index"] = collectionIndex;
+            return PartialView("Editors/_ResponseEditor", new EditResponseViewModel());
+        }
+
     }
 }
