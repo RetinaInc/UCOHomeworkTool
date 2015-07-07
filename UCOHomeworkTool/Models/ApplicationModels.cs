@@ -322,11 +322,11 @@ namespace UCOHomeworkTool.Models
                 //setting expected to whatever value is stored in the template
                 newResp.Expected = resp.Expected;
                 //overriding the default only if an applicable equation exists to calculate the expected value
-                newResp.calculation = resp.calculation;
+                newResp.Calculation = resp.Calculation;
                 newResp.setExpected(this.Givens);
                 //nullify the delegate pointer for the calculation to avoid storing an redundant pointer in the DB
                 //this allows us to only keep a reference to the calculation in the template for the assignment
-                newResp.calculation = null;
+                newResp.Calculation = null;
                 newResp.Problem = this;
                 Responses.Add(newResp);
             }
@@ -437,16 +437,16 @@ namespace UCOHomeworkTool.Models
             Label = toCopy.Label;
         }
         public delegate void CalculateResponseDelegate(List<Given> givens, Response toCalculate);
-        public byte[] delegatePointer { get; set; }
+        public byte[] DelegatePointer { get; set; }
         [NotMapped]
-        public CalculateResponseDelegate calculation
+        public CalculateResponseDelegate Calculation
         {
             get
             {
-                if (delegatePointer != null && delegatePointer.Count() > 0)
+                if (DelegatePointer != null && DelegatePointer.Count() > 0)
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
-                    using (var stream = new MemoryStream(delegatePointer))
+                    using (var stream = new MemoryStream(DelegatePointer))
                     {
                         return formatter.Deserialize(stream) as CalculateResponseDelegate;
                     }
@@ -457,7 +457,7 @@ namespace UCOHomeworkTool.Models
             {
                 if (value == null)
                 {
-                    delegatePointer = null;
+                    DelegatePointer = null;
                 }
                 else
                 {
@@ -465,7 +465,7 @@ namespace UCOHomeworkTool.Models
                     using (var stream = new MemoryStream())
                     {
                         formatter.Serialize(stream, value);
-                        delegatePointer = stream.ToArray();
+                        DelegatePointer = stream.ToArray();
                     }
                 }
 
@@ -473,8 +473,8 @@ namespace UCOHomeworkTool.Models
         }
         public void setExpected(List<Given> givens)
         {
-            if (calculation != null)
-                calculation(givens, this);
+            if (Calculation != null)
+                Calculation(givens, this);
         }
         public int Id { get; set; }
         public string Label { get; set; }

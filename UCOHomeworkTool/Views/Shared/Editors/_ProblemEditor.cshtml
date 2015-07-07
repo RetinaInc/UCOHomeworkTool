@@ -28,6 +28,11 @@
                                 @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
                             </p>
                             <p>
+                                @Html.LabelFor(m => m.CalcString)
+                                @Html.TextBoxFor(m => m.CalcString, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.CalcString, null, new { @class = "text-danger" })
+                            </p>
+                            <p>
                                 @Html.LabelFor(m => m.Diagram)
                                 <img class="img-responsive img-rounded" src="@Url.Action("DiagramImage","Home",new {id = Model.Id})" />
                                 @Html.TextBoxFor(m => m.Diagram, new { @type = "file" })

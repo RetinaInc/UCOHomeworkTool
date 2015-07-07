@@ -19,7 +19,7 @@ namespace UCOHomeworkTool.Controllers
         // GET: Assignments
         public ActionResult Index()
         {
-            return View(db.Assignments.ToList().OrderBy(a => a.Course.Name).ThenBy(a => a.AssignmentNumber));
+            return View(db.Assignments.Where(a => a.Student == null).ToList().OrderBy(a => a.Course.Name).ThenBy(a => a.AssignmentNumber));
         }
 
         // GET: Assignments/Details/5
@@ -70,6 +70,7 @@ namespace UCOHomeworkTool.Controllers
                         Responses = p.Responses.Select(r => new Response
                         {
                             Label = r.Label,
+                            Calculation = Calculations.Calculations.GetCalculation(p.CalcString),
                         }).ToList(),
                     }).ToList(),
                     Course = course,
@@ -171,7 +172,7 @@ namespace UCOHomeworkTool.Controllers
                             Responses = problem.Responses.Select(r => new Response
                             {
                                 Label = r.Label,
-
+                                Calculation = Calculations.Calculations.GetCalculation(problem.CalcString),
                             }).ToList(),
                         };
                         dbAssignment.Problems.Add(toAdd);
@@ -201,23 +202,35 @@ namespace UCOHomeworkTool.Controllers
                             }).Cast<Given>().ToList());
                         //establish new responses from viewmodel
                         probToUpdate.Responses.Clear();
-                        probToUpdate.Responses.AddRange(problem.Responses.Select(r => new Response
-                           {
-                               Id = r.Id,
-                               Label = r.Label,
-                           }).ToList());
+                        if (problem.CalcString == null)
+                        {
+                            probToUpdate.Responses.AddRange(problem.Responses.Select(r => new Response
+                               {
+                                   Id = r.Id,
+                                   Label = r.Label,
+                               }).ToList());
+                        }
+                        else
+                        {
+                            probToUpdate.Responses.AddRange(problem.Responses.Select(r => new Response
+                               {
+                                   Id = r.Id,
+                                   Label = r.Label,
+                                   Calculation = Calculations.Calculations.GetCalculation(problem.CalcString),
+                               }).ToList());
+                        }
                         //remove orphans
                         db.SaveChanges();
                         db.Givens.RemoveRange(db.Givens.Where(g => g.Problem == null));
                         //handle diagram
-                        if(problem.Diagram != null)
+                        if (problem.Diagram != null)
                         {
                             //remove existing diagram
                             var existingDiagram = db.ProblemDiagrams.Where(d => d.Problem.Id == probToUpdate.Id).FirstOrDefault();
                             db.ProblemDiagrams.Remove(existingDiagram);
                             //create new diagram
                             var image = Image.FromStream(problem.Diagram.InputStream, true, true);
-                            var diagram = new ProblemDiagram { Diagram = image, Problem = probToUpdate};
+                            var diagram = new ProblemDiagram { Diagram = image, Problem = probToUpdate };
                             db.ProblemDiagrams.Add(diagram);
                             db.SaveChanges();
                         }
@@ -273,7 +286,7 @@ namespace UCOHomeworkTool.Controllers
         public ActionResult GetProblemEditor(string collectionIndex, int? pno)
         {
             ViewData["index"] = collectionIndex;
-            return PartialView("Editors/_ProblemEditor", new EditProblemViewModel() {ProblemNumber = (int)pno });
+            return PartialView("Editors/_ProblemEditor", new EditProblemViewModel() { ProblemNumber = (int)pno });
         }
         public ActionResult GetGivenEditor(string collectionIndex)
         {

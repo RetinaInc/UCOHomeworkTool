@@ -36,6 +36,8 @@ namespace UCOHomeworkTool.Models
         public List<EditGivenViewModel> Givens { get; set; }
         public List<EditResponseViewModel> Responses { get; set; }
         public HttpPostedFileBase Diagram{ get; set; }
+        [Display(Name="Calculation String")]
+        public string CalcString { get; set; }
 
     }
     public class EditGivenViewModel
@@ -45,9 +47,11 @@ namespace UCOHomeworkTool.Models
         public string Label{ get; set; }
         [Required]
         [Display(Name="Minimum Value")]
+        [Range(1.0,Double.MaxValue)]
         public int MinValue { get; set; }
         [Required]
         [Display(Name="Maximum Value")]
+        [Range(1.0, Double.MaxValue)]
         public int MaxValue { get; set; }
 
     }

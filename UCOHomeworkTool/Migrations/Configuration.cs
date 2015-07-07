@@ -352,7 +352,7 @@ namespace UCOHomeworkTool.Migrations
             var responses = new List<Response>();
             foreach (var label in labels)
             {
-                var resp = new Response { Label = label, calculation = calcDelegate };
+                var resp = new Response { Label = label, Calculation = calcDelegate };
                 responses.Add(resp);
             }
             return responses;
