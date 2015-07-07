@@ -61,6 +61,7 @@ namespace UCOHomeworkTool.Controllers
                         ProblemNumber = p.ProblemNumber,
                         Description = p.Description,
                         ImageData = p.Diagram,
+                        Calculation = Calculations.Calculations.GetCalculation(p.CalcString),
                         Givens = p.Givens.Select(g => new GivenTemplate
                         {
                             Label = g.Label,
@@ -70,7 +71,6 @@ namespace UCOHomeworkTool.Controllers
                         Responses = p.Responses.Select(r => new Response
                         {
                             Label = r.Label,
-                            Calculation = Calculations.Calculations.GetCalculation(p.CalcString),
                         }).ToList(),
                     }).ToList(),
                     Course = course,
@@ -146,6 +146,10 @@ namespace UCOHomeworkTool.Controllers
             if (ModelState.IsValid)
             {
                 var dbAssignment = db.Assignments.Find(assignment.Id);
+                if (assignment.Problems == null)
+                {
+                    assignment.Problems = new List<EditProblemViewModel>();
+                }
                 //search for problems that need to be deleted
                 var toDelete = dbAssignment.Problems.Select(d => d.Id).Except(assignment.Problems.Select(p => p.Id)).ToList();
                 foreach (var id in toDelete)
@@ -163,6 +167,7 @@ namespace UCOHomeworkTool.Controllers
                             ProblemNumber = problem.ProblemNumber,
                             Description = problem.Description,
                             ImageData = problem.Diagram,
+                            Calculation = Calculations.Calculations.GetCalculation(problem.CalcString),
                             Givens = problem.Givens.Select(g => new GivenTemplate
                             {
                                 Label = g.Label,
@@ -172,7 +177,6 @@ namespace UCOHomeworkTool.Controllers
                             Responses = problem.Responses.Select(r => new Response
                             {
                                 Label = r.Label,
-                                Calculation = Calculations.Calculations.GetCalculation(problem.CalcString),
                             }).ToList(),
                         };
                         dbAssignment.Problems.Add(toAdd);
@@ -191,37 +195,47 @@ namespace UCOHomeworkTool.Controllers
                         var probToUpdate = dbAssignment.Problems.Where(p => p.Id == problem.Id).FirstOrDefault();
                         probToUpdate.Description = problem.Description;
                         probToUpdate.ProblemNumber = problem.ProblemNumber;
-                        //establish new givens from viewmodel
-                        probToUpdate.Givens.Clear();
-                        probToUpdate.Givens.AddRange(problem.Givens.Select(g => new GivenTemplate
+                        if (problem.CalcString != null)
+                        {
+                            probToUpdate.Calculation = Calculations.Calculations.GetCalculation(problem.CalcString);
+                        }
+                        //remove Givens not present in the view model
+                        probToUpdate.Givens.Select(g => g.Id).Except(problem.Givens.Select(g => g.Id)).ToList().ForEach(
+                            id => probToUpdate.Givens.Remove(probToUpdate.Givens.Where(g => g.Id == id).FirstOrDefault()));
+                        //update givens still in view model
+                        problem.Givens.ForEach(g => probToUpdate.Givens.Where(u => g.Id == u.Id)
+                            .Cast<GivenTemplate>().ToList().ForEach(u =>
                             {
-                                Id = g.Id,
-                                Label = g.Label,
-                                minRange = g.MinValue,
-                                maxRange = g.MaxValue,
-                            }).Cast<Given>().ToList());
+                                u.Label = g.Label;
+                                u.minRange = g.MinValue;
+                                u.maxRange = g.MaxValue;
+                            }));
+                        //add new Givens from view model
+                        problem.Givens.Where(g => g.Id == 0).ToList().ForEach(a => probToUpdate.Givens.Add(new GivenTemplate
+                        {
+                            Label = a.Label,
+                            minRange = a.MinValue,
+                            maxRange = a.MaxValue,
+                        }));
                         //establish new responses from viewmodel
-                        probToUpdate.Responses.Clear();
-                        if (problem.CalcString == null)
+                        //remove Responses not present in the view model
+                        probToUpdate.Responses.Select(g => g.Id).Except(problem.Responses.Select(g => g.Id)).ToList().ForEach(
+                            id => probToUpdate.Responses.Remove(probToUpdate.Responses.Where(g => g.Id == id).FirstOrDefault()));
+                        //update responses still in view model
+                        problem.Responses.ForEach(g => probToUpdate.Responses.Where(u => g.Id == u.Id).ToList()
+                            .ForEach(u =>
+                            {
+                                u.Label = g.Label;
+                            }));
+                        //add new Responses from view model
+                        problem.Responses.Where(g => g.Id == 0).ToList().ForEach(a => probToUpdate.Responses.Add(new Response 
                         {
-                            probToUpdate.Responses.AddRange(problem.Responses.Select(r => new Response
-                               {
-                                   Id = r.Id,
-                                   Label = r.Label,
-                               }).ToList());
-                        }
-                        else
-                        {
-                            probToUpdate.Responses.AddRange(problem.Responses.Select(r => new Response
-                               {
-                                   Id = r.Id,
-                                   Label = r.Label,
-                                   Calculation = Calculations.Calculations.GetCalculation(problem.CalcString),
-                               }).ToList());
-                        }
+                            Label = a.Label,
+                        }));
                         //remove orphans
                         db.SaveChanges();
                         db.Givens.RemoveRange(db.Givens.Where(g => g.Problem == null));
+                        db.Responses.RemoveRange(db.Responses.Where(r => r.Problem == null));
                         //handle diagram
                         if (problem.Diagram != null)
                         {

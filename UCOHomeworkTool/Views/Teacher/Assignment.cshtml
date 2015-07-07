@@ -19,6 +19,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $(".panel-heading").click(function (event) {
+            $(event.target).find('a').trigger('click');
+        });
         $("input:checkbox").change(function (event) {
             var pid = $(event.target).data("pid");
             if (this.checked) {

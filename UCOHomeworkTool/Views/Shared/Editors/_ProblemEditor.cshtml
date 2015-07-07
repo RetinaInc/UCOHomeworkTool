@@ -24,12 +24,12 @@
                             </p>
                             <p>
                                 @Html.LabelFor(m => m.Description)
-                                @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                                @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @placeholder ="Problem Description" })
                                 @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
                             </p>
                             <p>
                                 @Html.LabelFor(m => m.CalcString)
-                                @Html.TextBoxFor(m => m.CalcString, new { @class = "form-control" })
+                                @Html.TextBoxFor(m => m.CalcString, new { @class = "form-control", @placeholder = "String associated with calculation" })
                                 @Html.ValidationMessageFor(m => m.CalcString, null, new { @class = "text-danger" })
                             </p>
                             <p>

@@ -189,7 +189,7 @@ namespace UCOHomeworkTool.Migrations
                                             "",
                                             new List<string> { "R1", "R2", "R3", "V1", "V2" },
                                             new List<string> { "i1", "i2", "i3" },
-                                            new Response.CalculateResponseDelegate(Calculations.a5p1));
+                                            new Problem.CalculateResponseDelegate(Calculations.a5p1));
             //create assignment for that problem
             var testAssignment = new Assignment
             {
@@ -227,73 +227,73 @@ namespace UCOHomeworkTool.Migrations
                           "Calculate the values for v1, v2, and v3",
                           new List<string>{"Vs1","Vs2","Vs3"},
                           new List<string>{"v1","v2","v3"},
-                          new Response.CalculateResponseDelegate(Calculations.a1p1)),
+                          new Problem.CalculateResponseDelegate(Calculations.a1p1)),
             createProblem(2,
                           "Calculate the power P consumed by the dependent source",
                           new List<string>{"Vs1","R1","R2","R3","a"},
                           new List<string>{"Vx","P"},
-                          new Response.CalculateResponseDelegate(Calculations.a1p2)),
+                          new Problem.CalculateResponseDelegate(Calculations.a1p2)),
             createProblem(3,
                           "Calculate the values for V0 and I0",
                           new List<string>{"Vs","R1","R2","R3","R4"},
                           new List<string>{"V0","I0"},
-                          new Response.CalculateResponseDelegate(Calculations.a1p3)),
+                          new Problem.CalculateResponseDelegate(Calculations.a1p3)),
             createProblem(4,
                           "The lightbulb is rated Vb V, IbA. Calculate Vs, to make the lightbulb operate at the rated conditions.",
                           new List<string>{"Vb","Ib", "R1", "R2"},
                           new List<string>{"Vs"},
-                          new Response.CalculateResponseDelegate(Calculations.a1p4)),
+                          new Problem.CalculateResponseDelegate(Calculations.a1p4)),
         };
             var probs2 = new List<Problem>{
             createProblem(1, 
                           "Using nodal analysis, determine Vo and Ix in the circuit",
                           new List<string>{"Vs","R1","R2","R3","R4","a"},
                           new List<string>{"V0","Ix"},
-                          new Response.CalculateResponseDelegate(Calculations.a2p1)),
+                          new Problem.CalculateResponseDelegate(Calculations.a2p1)),
             createProblem(2,
                           "Use mesh analysis to obtain io and i1 in the circuit.",
                           new List<string>{"Vs1","Vs2","Is","R1","R2","R3","R4"},
                           new List<string>{"i0","i1"},
-                          new Response.CalculateResponseDelegate(Calculations.a2p2)),
+                          new Problem.CalculateResponseDelegate(Calculations.a2p2)),
             createProblem(3,
                           "Find the nodal voltage V1 through V4 in the circuit.",
                           new List<string>{"Vs","Is","R1","R2","R3","R4","R5"},
                           new List<string>{"V1","V2","V3","V4"},
-                          new Response.CalculateResponseDelegate(Calculations.a2p3)),
+                          new Problem.CalculateResponseDelegate(Calculations.a2p3)),
         };
             var probs3 = new List<Problem>{
             createProblem(1, 
                           "Use superposition to find i. Find the contribution of each source to the value of i.",
                           new List<string>{"Vs1","Vs2","R1","R2","R3","R4","Is3"},
                           new List<string>{"i due to source Vs1","i due to source Vs2", "i due to source Is3", "i total"},
-                          new Response.CalculateResponseDelegate(Calculations.a3p1)),
+                          new Problem.CalculateResponseDelegate(Calculations.a3p1)),
             createProblem(2,
                           "Apply source transformation to find Vx.",
                           new List<string>{"Vs1","Vs2","Is","R1","R2","R3","R4"},
                           new List<string>{"Vx"},
-                          new Response.CalculateResponseDelegate(Calculations.a3p2)),
+                          new Problem.CalculateResponseDelegate(Calculations.a3p2)),
             createProblem(3,
                           "Obtain the Thevenin equivalent as seen from terminals (a-b) and (b-c).",
                           new List<string>{"Vs","Is","R1","R2","R3","R4","R5"},
                           new List<string>{"Vth_ab","Rth_ab","Vth_bc","Rth_bc"},
-                          new Response.CalculateResponseDelegate(Calculations.a3p3)),
+                          new Problem.CalculateResponseDelegate(Calculations.a3p3)),
         };
             var probs4 = new List<Problem>{
             createProblem(1, 
                           "Calculate the value of io (in microAmp).",
                           new List<string>{"Vs","R1","R2","R3","R4","R5"},
                           new List<string>{"io (in microAmp)"},
-                          new Response.CalculateResponseDelegate(Calculations.a4p1)),
+                          new Problem.CalculateResponseDelegate(Calculations.a4p1)),
             createProblem(2,
                           "Determine Vo in the circuit.",
                           new List<string>{"Vs1","Vs2","R1","R2","R3","R4","R5"},
                           new List<string>{"Vo"},
-                          new Response.CalculateResponseDelegate(Calculations.a4p2)),
+                          new Problem.CalculateResponseDelegate(Calculations.a4p2)),
             createProblem(3,
                           "Calculate the value for the gain (Vo/Vi).",
                             new List<string>{"R1","R2","R3","R4","R5"},
                             new List<string>{"Vo/Vi"},
-                            new Response.CalculateResponseDelegate(Calculations.a4p3)),
+                            new Problem.CalculateResponseDelegate(Calculations.a4p3)),
         };
             var assignment1 = new Assignment { AssignmentNumber = 1, Course = course, Problems = probs1 };
             var assignment2 = new Assignment { AssignmentNumber = 2, Course = course, Problems = probs2 };
@@ -347,24 +347,25 @@ namespace UCOHomeworkTool.Migrations
             return givens;
 
         }
-        private List<Response> createResponseList(List<string> labels, Response.CalculateResponseDelegate calcDelegate)
+        private List<Response> createResponseList(List<string> labels)
         {
             var responses = new List<Response>();
             foreach (var label in labels)
             {
-                var resp = new Response { Label = label, Calculation = calcDelegate };
+                var resp = new Response { Label = label};
                 responses.Add(resp);
             }
             return responses;
         }
-        private Problem createProblem(int problemNumber, string description, List<string> givenLabels, List<string> responseLabels, Response.CalculateResponseDelegate calcDelegate)
+        private Problem createProblem(int problemNumber, string description, List<string> givenLabels, List<string> responseLabels, Problem.CalculateResponseDelegate calcDelegate)
         {
             var problem = new Problem
             {
                 ProblemNumber = problemNumber,
                 Description = description,
                 Givens = createGivensList(givenLabels),
-                Responses = createResponseList(responseLabels, calcDelegate)
+                Responses = createResponseList(responseLabels),
+                Calculation = calcDelegate,
             };
             return problem;
         }

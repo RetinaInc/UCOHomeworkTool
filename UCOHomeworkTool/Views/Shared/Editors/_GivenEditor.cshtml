@@ -10,7 +10,7 @@
                 @Html.HiddenFor(model => model.Id)
                 <p>
                     @Html.LabelFor(m => m.Label)
-                    @Html.TextBoxFor(m => m.Label, new { @class = "form-control" })
+                    @Html.TextBoxFor(m => m.Label, new { @class = "form-control", @placeholder = "Label" })
                     @Html.ValidationMessageFor(m => m.Label, null, new { @class = "text-danger" })
                 </p>
                 <p>

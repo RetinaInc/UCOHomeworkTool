@@ -8,36 +8,36 @@ namespace UCOHomeworkTool.Calculations
 {
     public class Calculations
     {
-        public static Response.CalculateResponseDelegate GetCalculation(string calcString)
+        public static Problem.CalculateResponseDelegate GetCalculation(string calcString)
         {
             switch(calcString.ToLower())
             {
                 case "a1p1":
-                    return new Response.CalculateResponseDelegate(a1p1);
+                    return new Problem.CalculateResponseDelegate(a1p1);
                 case "a1p2":
-                    return new Response.CalculateResponseDelegate(a1p2);
+                    return new Problem.CalculateResponseDelegate(a1p2);
                 case "a1p3":
-                    return new Response.CalculateResponseDelegate(a1p3);
+                    return new Problem.CalculateResponseDelegate(a1p3);
                 case "a1p4":
-                    return new Response.CalculateResponseDelegate(a1p4);
+                    return new Problem.CalculateResponseDelegate(a1p4);
                 case "a2p1":
-                    return new Response.CalculateResponseDelegate(a2p1);
+                    return new Problem.CalculateResponseDelegate(a2p1);
                 case "a2p2":
-                    return new Response.CalculateResponseDelegate(a2p2);
+                    return new Problem.CalculateResponseDelegate(a2p2);
                 case "a2p3":
-                    return new Response.CalculateResponseDelegate(a2p3);
+                    return new Problem.CalculateResponseDelegate(a2p3);
                 case "a3p1":
-                    return new Response.CalculateResponseDelegate(a3p1);
+                    return new Problem.CalculateResponseDelegate(a3p1);
                 case "a3p2":
-                    return new Response.CalculateResponseDelegate(a3p2);
+                    return new Problem.CalculateResponseDelegate(a3p2);
                 case "a3p3":
-                    return new Response.CalculateResponseDelegate(a3p3);
+                    return new Problem.CalculateResponseDelegate(a3p3);
                 case "a4p1":
-                    return new Response.CalculateResponseDelegate(a4p1);
+                    return new Problem.CalculateResponseDelegate(a4p1);
                 case "a4p2":
-                    return new Response.CalculateResponseDelegate(a4p2);
+                    return new Problem.CalculateResponseDelegate(a4p2);
                 case "a4p3":
-                    return new Response.CalculateResponseDelegate(a4p3);
+                    return new Problem.CalculateResponseDelegate(a4p3);
                 default:
                     return null;
             }

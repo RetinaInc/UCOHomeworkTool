@@ -217,6 +217,10 @@
     <Compile Include="Migrations\201507061738015_MakeProblemRequiredInProblemDiagram.Designer.cs">
       <DependentUpon>201507061738015_MakeProblemRequiredInProblemDiagram.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507071924322_moveCalcDelegatePointerToProblem.cs" />
+    <Compile Include="Migrations\201507071924322_moveCalcDelegatePointerToProblem.Designer.cs">
+      <DependentUpon>201507071924322_moveCalcDelegatePointerToProblem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\EditViewModels.cs" />
@@ -375,6 +379,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507061738015_MakeProblemRequiredInProblemDiagram.resx">
       <DependentUpon>201507061738015_MakeProblemRequiredInProblemDiagram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507071924322_moveCalcDelegatePointerToProblem.resx">
+      <DependentUpon>201507071924322_moveCalcDelegatePointerToProblem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

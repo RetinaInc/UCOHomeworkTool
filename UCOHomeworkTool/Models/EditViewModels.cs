@@ -42,6 +42,11 @@ namespace UCOHomeworkTool.Models
     }
     public class EditGivenViewModel
     { 
+        public EditGivenViewModel()
+        {
+            MinValue = 1;
+            MaxValue = 10;
+        }
         public int Id { get; set; }
         [Required]
         public string Label{ get; set; }

@@ -306,6 +306,7 @@ namespace UCOHomeworkTool.Models
             IsAssigned = true;
             Description = toCopy.Description;
             ProblemNumber = toCopy.ProblemNumber;
+            Calculation = toCopy.Calculation; 
             Givens = new List<Given>();
             GeneratedFrom = toCopy.Id;
             TrysRemaining = 5;
@@ -319,17 +320,16 @@ namespace UCOHomeworkTool.Models
             foreach (var resp in toCopy.Responses)
             {
                 var newResp = new Response(resp);
+                newResp.Problem = this;
                 //setting expected to whatever value is stored in the template
                 newResp.Expected = resp.Expected;
                 //overriding the default only if an applicable equation exists to calculate the expected value
-                newResp.Calculation = resp.Calculation;
                 newResp.setExpected(this.Givens);
-                //nullify the delegate pointer for the calculation to avoid storing an redundant pointer in the DB
-                //this allows us to only keep a reference to the calculation in the template for the assignment
-                newResp.Calculation = null;
-                newResp.Problem = this;
                 Responses.Add(newResp);
             }
+            //nullify the delegate pointer for the calculation to avoid storing an redundant pointer in the DB
+            //this allows us to only keep a reference to the calculation in the template for the assignment
+            Calculation = null;
         }
         public double GetGrade()
         {
@@ -387,6 +387,41 @@ namespace UCOHomeworkTool.Models
         //Temporary holding place to put image data while creating new problem in /Assignments/Create
         [NotMapped]
         public HttpPostedFileBase ImageData { get; set; }
+        public delegate void CalculateResponseDelegate(List<Given> givens, Response toCalculate);
+        public byte[] DelegatePointer { get; set; }
+        [NotMapped]
+        public CalculateResponseDelegate Calculation
+        {
+            get
+            {
+                if (DelegatePointer != null && DelegatePointer.Count() > 0)
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    using (var stream = new MemoryStream(DelegatePointer))
+                    {
+                        return formatter.Deserialize(stream) as CalculateResponseDelegate;
+                    }
+                }
+                return null;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    DelegatePointer = null;
+                }
+                else
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    using (var stream = new MemoryStream())
+                    {
+                        formatter.Serialize(stream, value);
+                        DelegatePointer = stream.ToArray();
+                    }
+                }
+
+            }
+        }
     }
     public class ProblemDiagram
     {
@@ -436,45 +471,11 @@ namespace UCOHomeworkTool.Models
         {
             Label = toCopy.Label;
         }
-        public delegate void CalculateResponseDelegate(List<Given> givens, Response toCalculate);
-        public byte[] DelegatePointer { get; set; }
-        [NotMapped]
-        public CalculateResponseDelegate Calculation
-        {
-            get
-            {
-                if (DelegatePointer != null && DelegatePointer.Count() > 0)
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    using (var stream = new MemoryStream(DelegatePointer))
-                    {
-                        return formatter.Deserialize(stream) as CalculateResponseDelegate;
-                    }
-                }
-                return null;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    DelegatePointer = null;
-                }
-                else
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    using (var stream = new MemoryStream())
-                    {
-                        formatter.Serialize(stream, value);
-                        DelegatePointer = stream.ToArray();
-                    }
-                }
 
-            }
-        }
         public void setExpected(List<Given> givens)
         {
-            if (Calculation != null)
-                Calculation(givens, this);
+            if (Problem.Calculation != null)
+                Problem.Calculation(givens, this);
         }
         public int Id { get; set; }
         public string Label { get; set; }
