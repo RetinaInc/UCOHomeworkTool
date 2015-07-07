@@ -83,10 +83,13 @@ namespace UCOHomeworkTool.Controllers
                 db.SaveChanges();
                 foreach (var prob in toAdd.Problems)
                 {
-                    var image = Image.FromStream(prob.ImageData.InputStream, true, true);
-                    var diagram = new ProblemDiagram { Diagram = image, ProblemId = prob.Id };
-                    db.ProblemDiagrams.Add(diagram);
-                    db.SaveChanges();
+                    if (prob.ImageData != null)
+                    {
+                        var image = Image.FromStream(prob.ImageData.InputStream, true, true);
+                        var diagram = new ProblemDiagram { Diagram = image, Problem = prob };
+                        db.ProblemDiagrams.Add(diagram);
+                        db.SaveChanges();
+                    }
                 }
                 return RedirectToAction("Index");
             }
@@ -154,10 +157,11 @@ namespace UCOHomeworkTool.Controllers
                 {
                     if (problem.Id == 0)
                     {
-                        dbAssignment.Problems.Add(new Problem
+                        var toAdd = new Problem
                         {
                             ProblemNumber = problem.ProblemNumber,
                             Description = problem.Description,
+                            ImageData = problem.Diagram,
                             Givens = problem.Givens.Select(g => new GivenTemplate
                             {
                                 Label = g.Label,
@@ -169,7 +173,17 @@ namespace UCOHomeworkTool.Controllers
                                 Label = r.Label,
 
                             }).ToList(),
-                        });
+                        };
+                        dbAssignment.Problems.Add(toAdd);
+                        db.SaveChanges();
+                        if (problem.Diagram != null)
+                        {
+                            var image = Image.FromStream(toAdd.ImageData.InputStream, true, true);
+                            var diagram = new ProblemDiagram { Diagram = image, Problem = toAdd };
+                            db.ProblemDiagrams.Add(diagram);
+                            db.SaveChanges();
+                        }
+
                     }
                     else
                     {
@@ -195,6 +209,18 @@ namespace UCOHomeworkTool.Controllers
                         //remove orphans
                         db.SaveChanges();
                         db.Givens.RemoveRange(db.Givens.Where(g => g.Problem == null));
+                        //handle diagram
+                        if(problem.Diagram != null)
+                        {
+                            //remove existing diagram
+                            var existingDiagram = db.ProblemDiagrams.Where(d => d.Problem.Id == probToUpdate.Id).FirstOrDefault();
+                            db.ProblemDiagrams.Remove(existingDiagram);
+                            //create new diagram
+                            var image = Image.FromStream(problem.Diagram.InputStream, true, true);
+                            var diagram = new ProblemDiagram { Diagram = image, Problem = probToUpdate};
+                            db.ProblemDiagrams.Add(diagram);
+                            db.SaveChanges();
+                        }
                     }
                 }
                 if (!dbAssignment.Course.Name.Equals(assignment.Course))
@@ -244,10 +270,10 @@ namespace UCOHomeworkTool.Controllers
             }
             base.Dispose(disposing);
         }
-        public ActionResult GetProblemEditor(string collectionIndex)
+        public ActionResult GetProblemEditor(string collectionIndex, int? pno)
         {
             ViewData["index"] = collectionIndex;
-            return PartialView("Editors/_ProblemEditor", new EditProblemViewModel());
+            return PartialView("Editors/_ProblemEditor", new EditProblemViewModel() {ProblemNumber = (int)pno });
         }
         public ActionResult GetGivenEditor(string collectionIndex)
         {

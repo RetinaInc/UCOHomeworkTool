@@ -1,0 +1,54 @@
+﻿@model UCOHomeworkTool.Models.Problem
+@{
+    var problem = Model;
+    var collapseLink = "#collapse" + problem.ProblemNumber;
+    var collapseId = "collapse" + problem.ProblemNumber;
+    var panelString = problem.IsAssigned ? "panel-success" : "panel-default";
+    <div id="accordion" class="panel-group">
+        <div id="panel@(problem.Id)" class="panel @(panelString)">
+            <div class=" panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="@collapseLink">Problem @problem.ProblemNumber</a>
+                </h3>
+            </div>
+            <div id="@collapseId" class="panel-collapse collapse">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @problem.Description
+                    </li>
+                </ul>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            @*http://placehold.it/600x400&text=Problem Diagram for placeholder*@
+                            <img class="img-responsive img-rounded" src="@Url.Action("DiagramImage","Home",new {id = problem.Id})" />
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="col-md-6">
+                                Given Values:
+                                <ul class="list-group">
+                                    @foreach (UCOHomeworkTool.Models.GivenTemplate given in problem.Givens)
+                                    {
+                                        <li class="list-group-item">@given.Label : @given.minRange - @given.maxRange</li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                Calculated Values:
+                                <ul class="list-group">
+                                    @foreach (var response in problem.Responses)
+                                    {
+                                        <li class="list-group-item">@response.Label</li>
+                                    }
+                                </ul>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

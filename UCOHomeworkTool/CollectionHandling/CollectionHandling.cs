@@ -78,10 +78,10 @@ namespace MyToolkit.Html
         {
             output.AppendLine(
                 @"<script type=""text/javascript"">
-                    $(function() {
+                    $(document).ready(function() {
                         $(""#" + editorId + @""").sortable();
                         $(""#" + addButtonId + @""").click(function() {
-                            $.get('" + controllerActionPath + @"', { '_': $.now(), 'collectionIndex':'"+collectionIndex+@"' }, function (template) {
+                            $.get('" + controllerActionPath + @"', { '_': $.now(), 'collectionIndex':'"+collectionIndex+@"', 'pno': $('.panel-title').length + 1 }, function (template) {
                                 var itemList = $(""#" + editorId + @""");
                                 itemList.append(template);
                                 var form = itemList.closest(""form"");

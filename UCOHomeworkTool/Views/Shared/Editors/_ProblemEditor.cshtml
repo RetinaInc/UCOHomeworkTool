@@ -2,37 +2,62 @@
 @model UCOHomeworkTool.Models.EditProblemViewModel
 
 <li>
-    <div class="panel panel-default panel-body">
-        @{
-            string problemIndex;
-            using (Html.BeginCollectionItem("Problems", out problemIndex))
-            {
-                @Html.HiddenFor(model => model.Id)
-                <p>
-                    @Html.LabelFor(m => m.ProblemNumber)
-                    @Html.TextBoxFor(m => m.ProblemNumber, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.ProblemNumber, null, new { @class = "text-danger" })
-                </p>
-                <p>
-                    @Html.LabelFor(m => m.Description)
-                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
-                </p>
-                <p>
-                    @Html.LabelFor(m => m.Diagram)
-                    @Html.TextBoxFor(m => m.Diagram, new { @type = "file" })
-                    @Html.ValidationMessageFor(m => m.Diagram, null, new { @class = "text-danger" })
-                </p>
-                <p>
-                    @Html.LabelFor(m => m.Givens)
-                    @Html.CollectionEditorFor(m => m.Givens, "Editors/_GivenEditor", "/Assignments/GetGivenEditor", "Add Given Value", new { @class = "btn btn-primary" },@problemIndex)
-                </p>
-                <p>
-                    @Html.LabelFor(m => m.Responses)
-                    @Html.CollectionEditorFor(m => m.Responses, "Editors/_ResponseEditor", "/Assignments/GetResponseEditor", "Add Response", new { @class = "btn btn-primary" },@problemIndex)
-                </p>
-                <input type="button" value="Delete Problem" class="btn btn-default" onclick="$(this).parent().remove();" />
-            }
+
+    @{
+        string problemIndex;
+        using (Html.BeginCollectionItem("Problems", out problemIndex))
+        {
+            <div id="accordian" class="panel-group">
+                <div id="panel@(Model.Id)" class="panel panel-default">
+                    <div class=" panel-heading">
+                        <h3 class="panel-title">
+                            <a id="title_@(problemIndex)" data-toggle="collapse" data-parent="#accordion" href="#collapse@(problemIndex)">Problem @Model.ProblemNumber</a>
+                        </h3>
+                    </div>
+                    <div class="panel-collapse collapse" id="collapse@(problemIndex)">
+                        <div class="panel-body">
+                            @Html.HiddenFor(model => model.Id)
+                            <p>
+                                @Html.LabelFor(m => m.ProblemNumber)
+                                @Html.TextBoxFor(m => m.ProblemNumber, new { @class = "form-control", @id = @problemIndex })
+                                @Html.ValidationMessageFor(m => m.ProblemNumber, null, new { @class = "text-danger" })
+                            </p>
+                            <p>
+                                @Html.LabelFor(m => m.Description)
+                                @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
+                            </p>
+                            <p>
+                                @Html.LabelFor(m => m.Diagram)
+                                <img class="img-responsive img-rounded" src="@Url.Action("DiagramImage","Home",new {id = Model.Id})" />
+                                @Html.TextBoxFor(m => m.Diagram, new { @type = "file" })
+                                @Html.ValidationMessageFor(m => m.Diagram, null, new { @class = "text-danger" })
+                            </p>
+                            <p>
+                                @Html.LabelFor(m => m.Givens)
+                                @Html.CollectionEditorFor(m => m.Givens, "Editors/_GivenEditor", "/Assignments/GetGivenEditor", "Add Given Value", new { @class = "btn btn-primary" }, @problemIndex)
+                            </p>
+                            <p>
+                                @Html.LabelFor(m => m.Responses)
+                                @Html.CollectionEditorFor(m => m.Responses, "Editors/_ResponseEditor", "/Assignments/GetResponseEditor", "Add Response", new { @class = "btn btn-primary" }, @problemIndex)
+                            </p>
+                            <input type="button" value="Delete Problem" class="btn btn-default" onclick="$(this).parent().parent().parent().remove();" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </div>
+    }
+
 </li>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".panel-heading").click(function (event) {
+            $(event.target).find('a').trigger('click');
+        });
+        $('#@(problemIndex)').focusout(function (event) {
+            var pno = "Problem " + $(event.target).val();
+            $(event.target).parent().parent().parent().parent().find('a').html(pno);
+        });
+    })
+</script>

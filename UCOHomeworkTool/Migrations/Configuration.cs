@@ -178,10 +178,10 @@ namespace UCOHomeworkTool.Migrations
             var diagram4 = Image.FromFile(path + "\\h1p4.png");
             var problemDiagrams = new List<ProblemDiagram>()
             {
-                new ProblemDiagram{Diagram = diagram1, ProblemId = assignmentsTemplate[0].Problems[0].Id },
-                new ProblemDiagram{Diagram = diagram2, ProblemId = assignmentsTemplate[0].Problems[1].Id },
-                new ProblemDiagram{Diagram = diagram3, ProblemId = assignmentsTemplate[0].Problems[2].Id },
-                new ProblemDiagram{Diagram = diagram4, ProblemId = assignmentsTemplate[0].Problems[3].Id },
+                new ProblemDiagram{Diagram = diagram1, Problem = assignmentsTemplate[0].Problems[0] },
+                new ProblemDiagram{Diagram = diagram2, Problem = assignmentsTemplate[0].Problems[1] },
+                new ProblemDiagram{Diagram = diagram3, Problem = assignmentsTemplate[0].Problems[2] },
+                new ProblemDiagram{Diagram = diagram4, Problem = assignmentsTemplate[0].Problems[3] },
             };
             problemDiagrams.ForEach(p => context.ProblemDiagrams.AddOrUpdate(p));
             //create a single problem to give to dummy students 
@@ -203,7 +203,7 @@ namespace UCOHomeworkTool.Migrations
             //set up diagram for test problem
             var testDiagram = new ProblemDiagram
             {
-                ProblemId = testProblem.Id,
+                Problem = testProblem,
                 Diagram = diagram,
             };
             context.ProblemDiagrams.AddOrUpdate(p => p.Id, testDiagram);
@@ -320,19 +320,19 @@ namespace UCOHomeworkTool.Migrations
             var diag42 = Image.FromFile(path + "\\a4p2.png");
             var diag43 = Image.FromFile(path + "\\a4p3.png");
             var diagrams = new List<ProblemDiagram>{
-            new ProblemDiagram{Diagram = diag11, ProblemId = probs1[0].Id},
-            new ProblemDiagram{Diagram = diag12, ProblemId = probs1[1].Id},
-            new ProblemDiagram{Diagram = diag13, ProblemId = probs1[2].Id},
-            new ProblemDiagram{Diagram = diag14, ProblemId = probs1[3].Id},
-            new ProblemDiagram{Diagram = diag21, ProblemId = probs2[0].Id},
-            new ProblemDiagram{Diagram = diag22, ProblemId = probs2[1].Id},
-            new ProblemDiagram{Diagram = diag23, ProblemId = probs2[2].Id},
-            new ProblemDiagram{Diagram = diag31, ProblemId = probs3[0].Id},
-            new ProblemDiagram{Diagram = diag32, ProblemId = probs3[1].Id},
-            new ProblemDiagram{Diagram = diag33, ProblemId = probs3[2].Id},
-            new ProblemDiagram{Diagram = diag41, ProblemId = probs4[0].Id},
-            new ProblemDiagram{Diagram = diag42, ProblemId = probs4[1].Id},
-            new ProblemDiagram{Diagram = diag43, ProblemId = probs4[2].Id},
+            new ProblemDiagram{Diagram = diag11, Problem = probs1[0]},
+            new ProblemDiagram{Diagram = diag12, Problem = probs1[1]},
+            new ProblemDiagram{Diagram = diag13, Problem = probs1[2]},
+            new ProblemDiagram{Diagram = diag14, Problem = probs1[3]},
+            new ProblemDiagram{Diagram = diag21, Problem = probs2[0]},
+            new ProblemDiagram{Diagram = diag22, Problem = probs2[1]},
+            new ProblemDiagram{Diagram = diag23, Problem = probs2[2]},
+            new ProblemDiagram{Diagram = diag31, Problem = probs3[0]},
+            new ProblemDiagram{Diagram = diag32, Problem = probs3[1]},
+            new ProblemDiagram{Diagram = diag33, Problem = probs3[2]},
+            new ProblemDiagram{Diagram = diag41, Problem = probs4[0]},
+            new ProblemDiagram{Diagram = diag42, Problem = probs4[1]},
+            new ProblemDiagram{Diagram = diag43, Problem = probs4[2]},
         };
             diagrams.ForEach(d => context.ProblemDiagrams.AddOrUpdate(d));
         }

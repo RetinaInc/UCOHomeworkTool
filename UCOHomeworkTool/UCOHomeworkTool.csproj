@@ -209,6 +209,14 @@
     <Compile Include="Migrations\201506292158141_implementCascadingDelete.Designer.cs">
       <DependentUpon>201506292158141_implementCascadingDelete.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507061735203_ChangeProblemIdtoProblemInProblemDiagramClass.cs" />
+    <Compile Include="Migrations\201507061735203_ChangeProblemIdtoProblemInProblemDiagramClass.Designer.cs">
+      <DependentUpon>201507061735203_ChangeProblemIdtoProblemInProblemDiagramClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507061738015_MakeProblemRequiredInProblemDiagram.cs" />
+    <Compile Include="Migrations\201507061738015_MakeProblemRequiredInProblemDiagram.Designer.cs">
+      <DependentUpon>201507061738015_MakeProblemRequiredInProblemDiagram.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\EditViewModels.cs" />
@@ -349,6 +357,7 @@
     <Content Include="Views\Shared\Editors\_ProblemEditor.cshtml" />
     <Content Include="Views\Shared\Editors\_GivenEditor.cshtml" />
     <Content Include="Views\Shared\Editors\_ResponseEditor.cshtml" />
+    <Content Include="Views\Teacher\_Problem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -360,6 +369,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506292158141_implementCascadingDelete.resx">
       <DependentUpon>201506292158141_implementCascadingDelete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507061735203_ChangeProblemIdtoProblemInProblemDiagramClass.resx">
+      <DependentUpon>201507061735203_ChangeProblemIdtoProblemInProblemDiagramClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507061738015_MakeProblemRequiredInProblemDiagram.resx">
+      <DependentUpon>201507061738015_MakeProblemRequiredInProblemDiagram.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

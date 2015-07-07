@@ -391,7 +391,8 @@ namespace UCOHomeworkTool.Models
     public class ProblemDiagram
     {
         public int Id { get; set; }
-        public int ProblemId { get; set; }
+        [Required]
+        public Problem Problem { get; set; }
         [NotMapped]
         public Image Diagram { get; set; }
         public byte[] ImageContent

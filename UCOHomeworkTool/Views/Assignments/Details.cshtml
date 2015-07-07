@@ -20,6 +20,24 @@
         <dd>
             @Html.DisplayFor(model => model.AssignmentNumber)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Course)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Course.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Problems)
+        </dt>
+
+        <dd>
+            @foreach(var problem in Model.Problems.OrderBy(p => p.ProblemNumber))
+            {
+                Html.RenderPartial("~/Views/Teacher/_Problem.cshtml",problem);
+            }
+        </dd>
+
     </dl>
 </div>
 <p>

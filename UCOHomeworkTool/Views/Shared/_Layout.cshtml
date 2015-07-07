@@ -52,6 +52,9 @@
 @RenderSection("scripts", false)
 <script type="text/javascript">
     $(document).ready(function () {
+        $(".panel-heading").click(function (event) {
+            $(event.target).find('a').trigger('click');
+        });
         $('[data-toggle=offcanvas]').click(function () {
             $('.row-offcanvas').toggleClass('active');
         });
