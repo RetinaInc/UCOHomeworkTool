@@ -8,43 +8,67 @@
     @{Html.RenderPartial("_ContextLinks");}
 }
 <h3 class="page-header">Enroll a student in @Model.Name</h3>
-    <form class="form-inline">
-        <div class="form-group">
-            <label class="sr-only" for="studentId">Student Id</label>
-            <input type="text" id="studentId" class="form-control" placeholder="Student Id" />
-        </div>
-        <div class="btn btn-primary" onclick="enrollStudent(@Model.Id);">Enroll</div>
-    </form>
-    <script>
-        function enrollStudent(courseId)
-        {
-            var studentId = $("#studentId").val();
-            $.ajax({
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                type: "POST",
-                data: JSON.stringify({"studentId" : studentId, "courseId" :courseId}),
-                url: "/Teacher/EnrollStudent",
-                success: function(message){
-                    $("#studentId").val("");
-                    if(message.includes("successfully"))
-                    {
-                        toastr.success(message);
-                    }
-                    else if(message.includes("register"))
-                    {
-                        toastr.error(message);
-                    }
-                    else if(message.includes("already"))
-                    {
-                        toastr.info(message);
-                    }
-                },
-                error: function(data)
+<form class="form-inline">
+    <div class="form-group">
+        <label class="sr-only" for="studentId">Student Id</label>
+        <input type="text" id="studentId" class="form-control" placeholder="Student Id" />
+    </div>
+    <div class="btn btn-primary" onclick="enrollStudent(@Model.Id);">Enroll</div>
+</form>
+<div class="btn-toolbar"></div>
+<h4>Current Roster:</h4>
+<div class="col-sm-6">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Student Id</th>
+            </tr>
+        </thead>
+        <tbody id="student_table_body">
+            @foreach (var student in Model.Students.OrderBy(s => s.LastName))
+            {
+                <tr>
+                    <td>@student.LastName</td>
+                    <td>@student.FirstName</td>
+                    <td>@student.UserName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    function enrollStudent(courseId)
+    {
+        var studentId = $("#studentId").val();
+        $.ajax({
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            type: "POST",
+            data: JSON.stringify({"studentId" : studentId, "courseId" :courseId}),
+            url: "/Teacher/EnrollStudent",
+            success: function(data){
+                $("#studentId").val("");
+                if(data.message.includes("successfully"))
                 {
-                    toastr.error("An error occurred, please try again later.");
+                    toastr.success(data.message);
+                    $("#student_table_body").append("<tr><td>"+data.student.LastName+"</td><td>"+data.student.FirstName+"</td><td>"+data.student.StudentId+"</td></tr>");
                 }
-            });
-        }
-        //# sourceURL=enrollment.js:
-    </script>
+                else if(data.message.includes("register"))
+                {
+                    toastr.error(data.message);
+                }
+                else if(data.message.includes("already"))
+                {
+                    toastr.info(data.message);
+                }
+            },
+            error: function(data)
+            {
+                toastr.error("An error occurred, please try again later.");
+            }
+        });
+    }
+    //# sourceURL=enrollment.js:
+</script>

@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
 using System.IO;
+using System.Web.Script.Serialization;
 
 namespace UCOHomeworkTool.Controllers
 {
@@ -61,6 +62,7 @@ namespace UCOHomeworkTool.Controllers
                 var course= db.Courses.Find(id);
                 db.Entry(course).Collection("Templates").Load();
                 db.Entry(course).Collection("Assignments").Load();
+                db.Entry(course).Collection("Students").Load();
                 return View(course);
             }
 
@@ -95,6 +97,7 @@ namespace UCOHomeworkTool.Controllers
         public ActionResult EnrollStudent(string studentId, int courseId)
         {
             string returnMessage;
+            Object addedStudent = null;
             using(var db = new ApplicationDbContext())
             {
                 //get the course object from the database
@@ -116,11 +119,14 @@ namespace UCOHomeworkTool.Controllers
                     }
                     else
                     {
+
+                        addedStudent = new {LastName=student.LastName, FirstName=student.FirstName, StudentId=student.UserName};
                         returnMessage = "The student with id " + studentId + " was enrolled successfully";
                     }
                 }
             }
-            return Json(returnMessage, JsonRequestBehavior.AllowGet);
+
+            return Json(new { message = returnMessage, student = addedStudent }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Grades(int id)
         {
@@ -180,4 +186,5 @@ namespace UCOHomeworkTool.Controllers
             } 
         }
     }
+
 }

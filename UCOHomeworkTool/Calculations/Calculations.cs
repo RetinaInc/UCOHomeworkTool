@@ -219,7 +219,7 @@ namespace UCOHomeworkTool.Calculations
             var V1 = V0 * C3 / C1;
             var Ix = V1 / R2;
             //based on what response we are trying to find, use the correct equation
-            if (toCalculate.Label == "V0")
+            if (toCalculate.Label == "Vo")
             {
                 toCalculate.Expected = Math.Round(V0, 2, MidpointRounding.AwayFromZero);
             }
