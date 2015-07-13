@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using UCOHomeworkTool.Models;
+using PagedList;
 
 namespace UCOHomeworkTool.Controllers
 {
@@ -18,9 +19,15 @@ namespace UCOHomeworkTool.Controllers
         // GET: Courses
         public ActionResult Index()
         {
-            return View(db.Courses.ToList());
+            int pageSize = 5;
+            int pageNumber = 1;
+            return View(db.Courses.OrderBy(course=> course.Name).ToPagedList(pageNumber, pageSize));
         }
-
+        public PartialViewResult CourseTablePage(int page)
+        {
+            int pageSize = 5;
+            return PartialView("_CourseTable", db.Courses.OrderBy(course => course.Name).ToPagedList(page, pageSize));
+        }
         // GET: Courses/Details/5
         public ActionResult Details(int? id)
         {

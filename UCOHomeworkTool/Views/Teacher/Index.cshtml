@@ -1,8 +1,15 @@
 ﻿@model IEnumerable<UCOHomeworkTool.Models.Course>
+@using UCOHomeworkTool.HtmlHelpers
 @{
     ViewBag.Title = "Home Page";
 }
-
+@section ContextLinks{
+    <ul class="navbar-nav nav">
+        <li>
+            @Html.ActionLink("Admin", "Index", "Admin", null, htmlAttributes: new { title = "admin" }).If(User.IsInRole("Admin"))
+        </li>
+    </ul>
+}
 <div class="col-md-4">
     <h3 class="page-header">Your Courses</h3>
     <div class="list-group">

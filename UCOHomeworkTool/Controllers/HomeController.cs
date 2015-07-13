@@ -20,6 +20,10 @@ namespace UCOHomeworkTool.Controllers
             {
                 return RedirectToAction("Index", "Teacher");
             }
+            if(User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
             var userId = User.Identity.GetUserId();
             using (var db = new ApplicationDbContext())
             {

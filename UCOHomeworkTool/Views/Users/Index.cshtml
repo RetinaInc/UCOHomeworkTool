@@ -1,0 +1,18 @@
+﻿@model PagedList.IPagedList<UCOHomeworkTool.Models.ApplicationUser>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+}
+@section ContextLinks
+{
+    @{Html.RenderPartial("~/Views/Admin/_ContextLinks.cshtml");}
+}
+<h3 class="page-header">Users</h3>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div id="userTable">
+@Html.Partial("_UserTable", Model)
+</div>
+<br/>
+

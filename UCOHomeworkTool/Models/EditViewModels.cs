@@ -65,4 +65,35 @@ namespace UCOHomeworkTool.Models
         public int Id { get; set; }
         public string Label { get; set; }
     }
+    public class EditUserViewModel
+    {
+        public EditUserViewModel()
+        {
+
+        }
+        public EditUserViewModel(ApplicationUser appUser)
+        {
+            Id = appUser.Id;
+            FirstName = appUser.FirstName;
+            LastName = appUser.LastName;
+            UserName = appUser.UserName;
+        }
+        public string Id { get; set; }
+        [Required]
+        [Display(Name="First Name")]
+        public string FirstName { get; set; }
+        [Required]
+        [Display(Name="Last Name")]
+        public string LastName{ get; set; }
+        [Required]
+        [Display(Name="Username")]
+        public string UserName { get; set; }
+        [Display(Name="Password")]
+        public string Password { get; set; }
+
+        [Display(Name="Is a Teacher")]
+        public bool IsTeacher { get; set; }
+        [Display(Name = "Is an Admin")]
+        public bool IsAdmin { get; set; }
+    }
 }
