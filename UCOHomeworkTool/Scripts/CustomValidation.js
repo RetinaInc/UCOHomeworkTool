@@ -6,9 +6,7 @@
             valid = value !== "";
         return valid;
     });
-    //$.validator.unobtrusive.adapters.add("requiredwhencreating", function (options) {
-    //    options.messages["requiredwhencreating"] = options.message;
-    //});
     $.validator.unobtrusive.adapters.addBool("requiredwhencreating");
+    $.validator.defaults.ignore = "input[type=hidden]";
 //# sourceURL=customValidation.js
 }(jQuery));
