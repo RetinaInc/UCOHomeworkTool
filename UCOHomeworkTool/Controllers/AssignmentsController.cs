@@ -72,6 +72,10 @@ namespace UCOHomeworkTool.Controllers
                     ModelState.AddModelError("Course", "That course does not exist.");
                     return View(assignment);
                 }
+                if(assignment.Problems == null)
+                {
+                    assignment.Problems = new List<EditProblemViewModel>();
+                }
                 var toAdd = new Assignment
                 {
                     AssignmentNumber = assignment.AssignmentNumber,
