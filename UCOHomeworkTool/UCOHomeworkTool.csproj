@@ -208,7 +208,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="HtmlHelpers\Helpers.cs" />
+    <Compile Include="HtmlHelperExtensions\HelperExtensions.cs" />
     <Compile Include="Migrations\201506230217528_initial.cs" />
     <Compile Include="Migrations\201506230217528_initial.Designer.cs">
       <DependentUpon>201506230217528_initial.cs</DependentUpon>
@@ -348,7 +348,7 @@
     <Content Include="Views\Teacher\Index.cshtml" />
     <Content Include="Views\Teacher\Course.cshtml" />
     <Content Include="Views\Teacher\Assignment.cshtml" />
-    <Content Include="Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Views\Teacher\_AssignmentSidebar.cshtml" />
     <Content Include="Views\Teacher\Enrollment.cshtml" />
     <Content Include="Views\Home\Grades.cshtml" />
     <Content Include="Views\Teacher\Grades.cshtml" />
@@ -381,6 +381,7 @@
     <Content Include="Views\Users\_AdminFormGroup.cshtml" />
     <Content Include="Views\Users\_UserTable.cshtml" />
     <Content Include="Views\Courses\_CourseTable.cshtml" />
+    <Content Include="Views\Assignments\_AssignmentTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

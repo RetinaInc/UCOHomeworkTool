@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace UCOHomeworkTool.HtmlHelpers
 {
-    public static class Helpers
+    public static class HelperExtensions
     {
         public static MvcHtmlString If(this MvcHtmlString value, bool evaluation)
         {

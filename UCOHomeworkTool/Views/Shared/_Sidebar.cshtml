@@ -1,7 +1,0 @@
-﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
-
-@foreach (var item in Model)
-{
-    <li><a data-assignment="@item.Id" href="/Home/Assignment/@item.Id">Assignment @item.AssignmentNumber</a></li>
-}
-

@@ -1,0 +1,28 @@
+﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AssignmentNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Course.Name)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+                <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssignmentNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.Name)
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>

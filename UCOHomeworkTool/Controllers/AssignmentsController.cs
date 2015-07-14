@@ -21,7 +21,19 @@ namespace UCOHomeworkTool.Controllers
         {
             return View(db.Assignments.Where(a => a.Student == null).ToList().OrderBy(a => a.Course.Name).ThenBy(a => a.AssignmentNumber));
         }
-
+        public PartialViewResult AssignmentTable(int? course)
+        {
+            List<Assignment> model;
+            if(course == null )
+            {
+                model = db.Assignments.Where(a => a.Student == null).OrderBy(a => a.Course.Name).ThenBy(a => a.AssignmentNumber).ToList();
+            }
+            else
+            {
+                model = db.Assignments.Where(a => a.Student == null && a.Course.Id == course).OrderBy(a => a.AssignmentNumber).ToList();
+            }
+            return PartialView("_AssignmentTable", model);
+        }
         // GET: Assignments/Details/5
         public ActionResult Details(int? id)
         {

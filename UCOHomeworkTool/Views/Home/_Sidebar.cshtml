@@ -2,6 +2,18 @@
 
 @foreach (var item in Model)
 {
-    <li><a data-assignment="@item.Id" href="/Home/Assignment/@item.Id">Assignment @item.AssignmentNumber</a></li>
+    <li>
+        @Ajax.ActionLink("Assignment " + @item.AssignmentNumber,
+                         "Assignment",
+                         new { id = @item.Id },
+                         new AjaxOptions
+                         {
+                             HttpMethod = "GET",
+                             OnComplete = "activateLink('#aLink" + @item.Id + "');",
+                             UpdateTargetId = "pageContent"
+                         },
+                         new { @id = "aLink" + @item.Id }
+                         )
+    </li>
 }
 
