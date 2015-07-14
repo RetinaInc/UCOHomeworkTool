@@ -129,6 +129,16 @@ namespace UCOHomeworkTool.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Course course = db.Courses.Find(id);
+            var toRemove = new List<Assignment>();
+            foreach(var template in course.Templates)
+            {
+                toRemove.Add(template);
+            }
+            foreach(var assignment in course.Assignments)
+            {
+                toRemove.Add(assignment);
+            }
+            db.Assignments.RemoveRange(toRemove);
             db.Courses.Remove(course);
             db.SaveChanges();
             return RedirectToAction("Index");
