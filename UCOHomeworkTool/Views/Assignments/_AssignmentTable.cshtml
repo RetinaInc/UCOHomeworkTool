@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
-
+<p>
+    @Html.ActionLink("Create New", "Create", new { courseName = ViewData["CourseName"], assignmentNumber = ViewData["AssignmentNumber"] })
+</p>
 <table class="table">
     <tr>
         <th>

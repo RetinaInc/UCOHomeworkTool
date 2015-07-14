@@ -23,16 +23,18 @@ namespace UCOHomeworkTool.Controllers
         }
         public PartialViewResult AssignmentTable(int? course)
         {
-            List<Assignment> model;
             if(course == null )
             {
-                model = db.Assignments.Where(a => a.Student == null).OrderBy(a => a.Course.Name).ThenBy(a => a.AssignmentNumber).ToList();
+                var model = db.Assignments.Where(a => a.Student == null).OrderBy(a => a.Course.Name).ThenBy(a => a.AssignmentNumber).ToList();
+                return PartialView("_AssignmentTable", model);
             }
             else
             {
-                model = db.Assignments.Where(a => a.Student == null && a.Course.Id == course).OrderBy(a => a.AssignmentNumber).ToList();
+                var model = db.Assignments.Where(a => a.Student == null && a.Course.Id == course).OrderBy(a => a.AssignmentNumber).ToList();
+                ViewData["CourseName"] = db.Courses.Find(course).Name;
+                ViewData["AssignmentNumber"] = model.Count + 1;
+                return PartialView("_AssignmentTable", model);
             }
-            return PartialView("_AssignmentTable", model);
         }
         // GET: Assignments/Details/5
         public ActionResult Details(int? id)
@@ -50,9 +52,9 @@ namespace UCOHomeworkTool.Controllers
         }
 
         // GET: Assignments/Create
-        public ActionResult Create()
+        public ActionResult Create(string courseName, int? assignmentNumber)
         {
-            return View(new EditAssignmentViewModel());
+            return View(new EditAssignmentViewModel() { Course = courseName, AssignmentNumber = (assignmentNumber ?? 1) });
         }
 
         // POST: Assignments/Create
@@ -65,6 +67,11 @@ namespace UCOHomeworkTool.Controllers
             if (ModelState.IsValid)
             {
                 var course = db.Courses.Where(c => c.Name.Equals(assignment.Course)).FirstOrDefault();
+                if(course == null)
+                {
+                    ModelState.AddModelError("Course", "That course does not exist.");
+                    return View(assignment);
+                }
                 var toAdd = new Assignment
                 {
                     AssignmentNumber = assignment.AssignmentNumber,
@@ -157,6 +164,12 @@ namespace UCOHomeworkTool.Controllers
         {
             if (ModelState.IsValid)
             {
+                var course = db.Courses.Where(c => c.Name.Equals(assignment.Course)).FirstOrDefault();
+                if (course == null)
+                {
+                    ModelState.AddModelError("Course", "That course does not exist.");
+                    return View(assignment);
+                }
                 var dbAssignment = db.Assignments.Find(assignment.Id);
                 if (assignment.Problems == null)
                 {
@@ -169,7 +182,6 @@ namespace UCOHomeworkTool.Controllers
                     db.Problems.Remove(db.Problems.Find(id));
                 }
                 dbAssignment.AssignmentNumber = assignment.AssignmentNumber;
-                var course = db.Courses.Where(c => c.Name.Equals(assignment.Course)).FirstOrDefault();
                 foreach (var problem in assignment.Problems)
                 {
                     if (problem.Id == 0)

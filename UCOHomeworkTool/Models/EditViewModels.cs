@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using UCOHomeworkTool.CustomValidation;
 
 namespace UCOHomeworkTool.Models
 {
@@ -37,6 +38,7 @@ namespace UCOHomeworkTool.Models
         public List<EditResponseViewModel> Responses { get; set; }
         public HttpPostedFileBase Diagram{ get; set; }
         [Display(Name="Calculation String")]
+        [RequiredWhenCreating(ErrorMessage="You must enter a value for Calculation String when creating a new problem.")]
         public string CalcString { get; set; }
 
     }
