@@ -24,7 +24,7 @@ namespace UCOHomeworkTool.CustomValidation
         {
             ModelClientValidationRule requiredWhenCreatingRule = new ModelClientValidationRule();
             requiredWhenCreatingRule.ErrorMessage = ErrorMessage;
-            requiredWhenCreatingRule.ValidationType = "required";
+            requiredWhenCreatingRule.ValidationType = "requiredwhencreating";
             yield return requiredWhenCreatingRule;
         }
     }
