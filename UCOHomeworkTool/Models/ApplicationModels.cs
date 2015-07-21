@@ -44,6 +44,14 @@ namespace UCOHomeworkTool.Models
             {
                 this.Students.Add(student);
                 student.CoursesTaking.Add(this);
+                foreach(var template in this.Templates.Where(t => t.HasProblemsAssigned()))
+                {
+                    var probsToAssign = template.Problems.Where(p => p.IsAssigned).ToList();
+                    var newAssignment = new Assignment(template, probsToAssign);
+                    newAssignment.Student = student;
+                    newAssignment.Course = this;
+                    this.Assignments.Add(newAssignment);
+                }
                 context.SaveChanges();
             }
             return enrolled;
@@ -296,6 +304,18 @@ namespace UCOHomeworkTool.Models
                 prob.IsAssigned = false;
             }
             return success;
+        }
+        public bool HasProblemsAssigned()
+        {
+            bool hasProblemsAssigned = false;
+            foreach(var prob in Problems)
+            {
+                if (prob.IsAssigned)
+                {
+                    hasProblemsAssigned = true;
+                }
+            }
+            return hasProblemsAssigned;
         }
     }
     public class Problem
