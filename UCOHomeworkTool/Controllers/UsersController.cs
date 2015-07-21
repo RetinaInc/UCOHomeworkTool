@@ -259,8 +259,11 @@ namespace UCOHomeworkTool.Controllers
         public ActionResult DeleteConfirmed(string id)
         {
             var applicationUser = db.Users.Find(id);
+            //check to see if any assignments have been made for this user if they are a student and if so, delete them
             var assignmentsToRemove = db.Assignments.Where(a => a.Student.Id == applicationUser.Id).ToList();
             db.Assignments.RemoveRange(assignmentsToRemove);
+            //remove course associations if this user is a teacher
+            db.Courses.Where(c => c.Teacher.Id == applicationUser.Id).ToList().ForEach(c => c.Teacher = null);
             db.Users.Remove(applicationUser);
             db.SaveChanges();
             return RedirectToAction("Index");
