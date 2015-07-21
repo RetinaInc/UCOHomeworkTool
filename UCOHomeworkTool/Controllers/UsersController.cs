@@ -258,7 +258,9 @@ namespace UCOHomeworkTool.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            ApplicationUser applicationUser = db.Users.Find(id);
+            var applicationUser = db.Users.Find(id);
+            var assignmentsToRemove = db.Assignments.Where(a => a.Student.Id == applicationUser.Id).ToList();
+            db.Assignments.RemoveRange(assignmentsToRemove);
             db.Users.Remove(applicationUser);
             db.SaveChanges();
             return RedirectToAction("Index");
