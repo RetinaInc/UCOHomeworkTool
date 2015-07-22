@@ -198,6 +198,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Calculations\Calculations.cs" />
     <Compile Include="Calculations\ElectricalScience.cs" />
+    <Compile Include="Calculations\Signals.cs" />
     <Compile Include="CollectionHandling\CollectionHandling.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />

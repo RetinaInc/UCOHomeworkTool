@@ -189,7 +189,7 @@ namespace UCOHomeworkTool.Migrations
                                             "",
                                             new List<string> { "R1", "R2", "R3", "V1", "V2" },
                                             new List<string> { "i1", "i2", "i3" },
-                                            new Problem.CalculateResponseDelegate(Calculations.a5p1));
+                                            new Problem.CalculateResponseDelegate(Signals.a5p1));
             //create assignment for that problem
             var testAssignment = new Assignment
             {

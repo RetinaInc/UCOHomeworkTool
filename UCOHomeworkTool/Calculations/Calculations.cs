@@ -16,6 +16,9 @@ namespace UCOHomeworkTool.Calculations
                 case "electrical science":
                     type = typeof(ElectricalScience);
                     break;
+                case "signals":
+                    type = typeof(Signals);
+                    break;
                 default:
                     type = null;
                     break;
@@ -58,39 +61,12 @@ namespace UCOHomeworkTool.Calculations
             //        return null;
             //}
         }
-
-        public static void a5p1(List<Given> givens, Response toCalculate)
+        public static void SetExpectedResponse(Response response, string label, double value)
         {
-            //find and assign appropriate givens for this problem
-            Given R1given = givens.Find(g => g.Label == "R1") ?? new Given { Value = 0 };
-            Given R2given = givens.Find(g => g.Label == "R2") ?? new Given { Value = 0 };
-            Given R3given = givens.Find(g => g.Label == "R3") ?? new Given { Value = 0 };
-            Given V1given = givens.Find(g => g.Label == "V1") ?? new Given { Value = 0 };
-            Given V2given = givens.Find(g => g.Label == "V2") ?? new Given { Value = 0 };
-            double R1 = (double)R1given.Value;
-            double R2 = (double)R2given.Value;
-            double R3 = (double)R3given.Value;
-            double V1 = (double)V1given.Value;
-            double V2 = (double)V2given.Value;
-            //make sure none of the values are 0
-            if (R1 * R2 * R3 * V1 * V2 == 0)
-                return;
-            //calculate V0
-            double V0 = ((V1 / R1) + (V2 / R3)) * (1 / ((1 / R1) + (1 / R2) + (1 / R3)));
-            //based on what response we are trying to find, use the correct equation
-            if (toCalculate.Label == "i1")
+            if (response.Label == label)
             {
-                toCalculate.Expected = Math.Round(((V0 - V1) / R1), 2, MidpointRounding.AwayFromZero);
-            }
-            else if (toCalculate.Label == "i2")
-            {
-                toCalculate.Expected = Math.Round((V0 / R2), 2, MidpointRounding.AwayFromZero);
-            }
-            else if (toCalculate.Label == "i3")
-            {
-                toCalculate.Expected = Math.Round(((V0 - V2) / R3), 2, MidpointRounding.AwayFromZero);
+                response.Expected = Math.Round(value, 2, MidpointRounding.AwayFromZero);
             }
         }
-
     }
 }
