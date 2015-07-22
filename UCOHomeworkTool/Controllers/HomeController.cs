@@ -68,7 +68,11 @@ namespace UCOHomeworkTool.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var imageData = db.ProblemDiagrams.Where(d => d.Problem.Id == id).Select(d => d.ImageContent).FirstOrDefault();
-                return File(imageData, "image/jpg");
+                if(imageData != null)
+                {
+                    return File(imageData, "image/jpg");
+                }
+                return null;
             }
 
         }
