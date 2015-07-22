@@ -84,7 +84,7 @@ namespace UCOHomeworkTool.Controllers
                         ProblemNumber = p.ProblemNumber,
                         Description = p.Description,
                         ImageData = p.Diagram,
-                        Calculation = Calculations.Calculations.GetCalculation(p.CalcString),
+                        Calculation = Calculations.Calculations.GetCalculation(p.CalcString, course.Name),
                         Givens = p.Givens.Select(g => new GivenTemplate
                         {
                             Label = g.Label,
@@ -195,7 +195,7 @@ namespace UCOHomeworkTool.Controllers
                             ProblemNumber = problem.ProblemNumber,
                             Description = problem.Description,
                             ImageData = problem.Diagram,
-                            Calculation = Calculations.Calculations.GetCalculation(problem.CalcString),
+                            Calculation = Calculations.Calculations.GetCalculation(problem.CalcString, course.Name),
                             Givens = problem.Givens.Select(g => new GivenTemplate
                             {
                                 Label = g.Label,
@@ -225,7 +225,7 @@ namespace UCOHomeworkTool.Controllers
                         probToUpdate.ProblemNumber = problem.ProblemNumber;
                         if (problem.CalcString != null)
                         {
-                            probToUpdate.Calculation = Calculations.Calculations.GetCalculation(problem.CalcString);
+                            probToUpdate.Calculation = Calculations.Calculations.GetCalculation(problem.CalcString, course.Name);
                         }
                         //remove Givens not present in the view model
                         probToUpdate.Givens.Select(g => g.Id).Except(problem.Givens.Select(g => g.Id)).ToList().ForEach(
