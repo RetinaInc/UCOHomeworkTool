@@ -24,26 +24,33 @@
                 @Html.ActionLink("UCO Homework Tool", "Index", "Home", null, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                @RenderSection("ContextLinks",required: false)
+                @RenderSection("ContextLinks", required: false)
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-3 col-md-2 sidebar">
-                <ul class="nav nav-sidebar">
-                    @RenderSection("Sidebar", required: false)
-                </ul>
-            </div>
-            <div class="col-sm-9 col-md-10 col-sm-offset-3 col-md-offset-2 main">
-                <div id="pageContent">
+    <div id="wrapper">
 
-                    @RenderBody()
+        <div class="container-fluid">
+            <div class="row">
+                <div id="sidebar-wrapper">
+                    <div class="sidebar">
+                        <ul class="nav nav-sidebar">
+                            @RenderSection("Sidebar", required: false)
+                        </ul>
+                    </div>
+                </div>
+                <div id="page-content-wrapper">
+                    <div class="col-sm-9 col-md-10 col-sm-offset-3 col-md-offset-2 main">
+                        @RenderSection("Toggle", required:false)
+                        <div id="pageContent">
+
+                            @RenderBody()
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 
 </body>
@@ -53,11 +60,16 @@
 @RenderSection("scripts", false)
 <script type="text/javascript">
     $(document).ready(function () {
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        $("a").not("#menu-toggle").click(function (e) {
+            $("#wrapper").removeClass("toggled");
+        });
+
         $(".panel-heading").click(function (event) {
             $(event.target).find('a').trigger('click');
-        });
-        $('[data-toggle=offcanvas]').click(function () {
-            $('.row-offcanvas').toggleClass('active');
         });
     });
 </script>

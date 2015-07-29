@@ -35,6 +35,7 @@ namespace UCOHomeworkTool
                        "~/Content/dashboard.css",
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
+                      "~/Content/simple-sidebar.css",
                       "~/Content/toastr.css"));
         }
     }

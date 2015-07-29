@@ -5,12 +5,12 @@
     @{Html.RenderPartial("_ContextLinks");}
 }
 <h3 class="page-header">Enroll a student in @Model.Name</h3>
-<form class="form-inline">
+<form class="form-inline" onsubmit="return false;">
     <div class="form-group">
         <label class="sr-only" for="studentId">Student Id</label>
         <input type="text" id="studentId" class="form-control" placeholder="Student Id" />
     </div>
-    <div class="btn btn-primary" onclick="enrollStudent(@Model.Id);">Enroll</div>
+    <div id="enrollBtn" class="btn btn-primary" onclick="enrollStudent(@Model.Id);">Enroll</div>
 </form>
 <div class="btn-toolbar"></div>
 <h4>Current Roster:</h4>
@@ -36,6 +36,15 @@
     </table>
 </div>
 <script>
+    $(document).ready(function(){
+        $("#studentId").keypress(function (event) {
+            if (event.keyCode == 13)
+            {
+                $("#enrollBtn").click();
+            }
+        });
+
+    });
     function enrollStudent(courseId)
     {
         var studentId = $("#studentId").val();
