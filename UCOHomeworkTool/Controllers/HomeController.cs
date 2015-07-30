@@ -8,6 +8,7 @@ using System.Web.Security;
 using UCOHomeworkTool.Models;
 using Microsoft.AspNet.Identity;
 using System.Data.Entity.Migrations;
+using UCOHomeworkTool.Migrations;
 
 namespace UCOHomeworkTool.Controllers
 {

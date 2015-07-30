@@ -38,14 +38,14 @@ namespace UCOHomeworkTool.Migrations
             //clear database maunally because not doing so causes AddOrUpdate to throw error from not using unique identifiers
             //Unique identifiers (keys) cannot be used without generating them manually, its easier to just let EF handle that.
 
-            context.Database.ExecuteSqlCommand("delete from Responses");
-            context.Database.ExecuteSqlCommand("delete from Givens");
-            context.Database.ExecuteSqlCommand("delete from ProblemDiagrams");
-            context.Database.ExecuteSqlCommand("delete from Problems");
-            context.Database.ExecuteSqlCommand("delete from Assignments");
-            context.Database.ExecuteSqlCommand("delete from Courses");
-            context.Database.ExecuteSqlCommand("delete from StudentCourses");
-            context.Database.ExecuteSqlCommand("delete from AspNetUsers");
+            //context.Database.ExecuteSqlCommand("delete from Responses");
+            //context.Database.ExecuteSqlCommand("delete from Givens");
+            //context.Database.ExecuteSqlCommand("delete from ProblemDiagrams");
+            //context.Database.ExecuteSqlCommand("delete from Problems");
+            //context.Database.ExecuteSqlCommand("delete from Assignments");
+            //context.Database.ExecuteSqlCommand("delete from Courses");
+            //context.Database.ExecuteSqlCommand("delete from StudentCourses");
+            //context.Database.ExecuteSqlCommand("delete from AspNetUsers");
 
             //set up myUser for testing
             var passwordHash = new PasswordHasher();
@@ -61,8 +61,8 @@ namespace UCOHomeworkTool.Migrations
             context.Users.AddOrUpdate(u => u.UserName, myUser);
             context.SaveChanges();
             //set up teacher role and give this user that role
-            using (var rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext())))
-            using (var um = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+            using (var rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context)))
+            using (var um = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context)))
             {
                 if (!rm.RoleExists("Teacher"))
                 {
@@ -88,134 +88,134 @@ namespace UCOHomeworkTool.Migrations
             }
 
             //create Signals course for myUser and enroll myUser in course
-            var courses = new List<Course>
-            {
-                new Course {Name = "Signals", 
-                            Assignments = new List<Assignment>(), 
-                            Templates = new List<Assignment>(),
-                            Students = new List<Student>()},
-                new Course {Name = "TestCourse", 
-                            Assignments = new List<Assignment>(), 
-                            Templates = new List<Assignment>(),
-                            Students = new List<Student>()},
-                new Course {Name = "Electrical Science", 
-                            Assignments = new List<Assignment>(), 
-                            Templates = new List<Assignment>(),
-                            Students = new List<Student>()},
-            };
-            courses.ForEach(c => context.Courses.AddOrUpdate(u => u.Name, c));
-            context.Teachers.Find(myUser.Id).CoursesTeaching = courses;
-            courses.ForEach(c => c.Teacher = myUser);
-            context.SaveChanges();
-            //create dummy students and enroll them in testCourse to test problem randomization funcionality
+            //var courses = new List<Course>
+            //{
+            //    new Course {Name = "Signals", 
+            //                Assignments = new List<Assignment>(), 
+            //                Templates = new List<Assignment>(),
+            //                Students = new List<Student>()},
+            //    new Course {Name = "TestCourse", 
+            //                Assignments = new List<Assignment>(), 
+            //                Templates = new List<Assignment>(),
+            //                Students = new List<Student>()},
+            //    new Course {Name = "Electrical Science", 
+            //                Assignments = new List<Assignment>(), 
+            //                Templates = new List<Assignment>(),
+            //                Students = new List<Student>()},
+            //};
+            //courses.ForEach(c => context.Courses.AddOrUpdate(u => u.Name, c));
+            //context.Teachers.Find(myUser.Id).CoursesTeaching = courses;
+            //courses.ForEach(c => c.Teacher = myUser);
+            //context.SaveChanges();
+            ////create dummy students and enroll them in testCourse to test problem randomization funcionality
 
-            var student1 = new Student
-            {
-                UserName = "1",
-                PasswordHash = passwordHash.HashPassword("pass"),
-                CoursesTaking = new List<Course>(),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                FirstName = "Bob",
-                LastName = "Costas",
-            };
+            //var student1 = new Student
+            //{
+            //    UserName = "1",
+            //    PasswordHash = passwordHash.HashPassword("pass"),
+            //    CoursesTaking = new List<Course>(),
+            //    SecurityStamp = Guid.NewGuid().ToString(),
+            //    FirstName = "Bob",
+            //    LastName = "Costas",
+            //};
 
-            var student2 = new Student
-            {
-                UserName = "2",
-                PasswordHash = passwordHash.HashPassword("pass"),
-                CoursesTaking = new List<Course>(),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                FirstName = "Rob",
-                LastName = "Stark",
-            };
+            //var student2 = new Student
+            //{
+            //    UserName = "2",
+            //    PasswordHash = passwordHash.HashPassword("pass"),
+            //    CoursesTaking = new List<Course>(),
+            //    SecurityStamp = Guid.NewGuid().ToString(),
+            //    FirstName = "Rob",
+            //    LastName = "Stark",
+            //};
 
-            var student3 = new Student
-            {
-                UserName = "3",
-                PasswordHash = passwordHash.HashPassword("pass"),
-                CoursesTaking = new List<Course>(),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                FirstName = "Joey",
-                LastName = "Diaz",
-            };
-            List<ApplicationUser> students = new List<ApplicationUser> { student1, student2, student3 };
-            //create assignment templates to be used in Signals course
-            var assignmentsTemplate = new List<Assignment>()
-            {
-                new Assignment(){AssignmentNumber = 1, Course = courses[0], Problems = new List<Problem>()},
-            };
-            var problems = new List<Problem>()
-            {
-                createProblem(1,
-                              "",
-                              new List<string>{"Vs1", "Vs2","Vs3"},
-                              new List<string>{"v1","v2","v3"},
-                              null),
-                createProblem(2,
-                               "",
-                              new List<string>{"Vs1", "R1","R2","R3","a"},
-                              new List<string>{"Vx","P"},
-                              null),
-                createProblem(3,
-                               "",
-                              new List<string>{"Vs1","R1","R2","R3","R4","Is3"},
-                              new List<string>{"i due to source Vs1","i due to source Vs2","i due to source Vs3", "i total"},
-                              null),
-                createProblem(4,
-                               "",
-                              new List<string>{"Vs", "R1","R2","R3","R4","R5"},new List<string>{"io (in microAmps)"},null),
-            };
-            context.Courses.Find(courses[0].Id).Templates.AddRange(assignmentsTemplate);
-            assignmentsTemplate[0].Problems.AddRange(problems);
-            assignmentsTemplate.ForEach(t => context.Assignments.AddOrUpdate(t));
-            context.SaveChanges();
-            //associate diagrams to the created problems
-            string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-            var diagram = Image.FromFile(path + "\\HW1_Prob1.jpg");
-            var diagram1 = Image.FromFile(path + "\\h1p1.png");
-            var diagram2 = Image.FromFile(path + "\\h1p2.png");
-            var diagram3 = Image.FromFile(path + "\\h1p3.png");
-            var diagram4 = Image.FromFile(path + "\\h1p4.png");
-            var problemDiagrams = new List<ProblemDiagram>()
-            {
-                new ProblemDiagram{Diagram = diagram1, Problem = assignmentsTemplate[0].Problems[0] },
-                new ProblemDiagram{Diagram = diagram2, Problem = assignmentsTemplate[0].Problems[1] },
-                new ProblemDiagram{Diagram = diagram3, Problem = assignmentsTemplate[0].Problems[2] },
-                new ProblemDiagram{Diagram = diagram4, Problem = assignmentsTemplate[0].Problems[3] },
-            };
-            problemDiagrams.ForEach(p => context.ProblemDiagrams.AddOrUpdate(p));
-            //create a single problem to give to dummy students 
-            var testProblem = createProblem(1,
-                                            "",
-                                            new List<string> { "R1", "R2", "R3", "V1", "V2" },
-                                            new List<string> { "i1", "i2", "i3" },
-                                            new Problem.CalculateResponseDelegate(Signals.a5p1));
-            //create assignment for that problem
-            var testAssignment = new Assignment
-            {
-                AssignmentNumber = 1,
-                Course = courses[1],
-                Problems = new List<Problem> { testProblem },
-            };
-            context.Courses.Find(courses[1].Id).Templates.Add(testAssignment);
-            context.Assignments.AddOrUpdate(testAssignment);
-            context.SaveChanges();
-            //set up diagram for test problem
-            var testDiagram = new ProblemDiagram
-            {
-                Problem = testProblem,
-                Diagram = diagram,
-            };
-            context.ProblemDiagrams.AddOrUpdate(p => p.Id, testDiagram);
-            // instantiate students to db and connect test assignments to students
-            foreach (var student in students)
-            {
-                var testAssignFromTemplate = new Assignment(testAssignment);
-                context.Users.AddOrUpdate(student);
-                testAssignFromTemplate.Student = student;
-            }
-            context.SaveChanges();
-            createFourAssignmentsForESCourse(context);
+            //var student3 = new Student
+            //{
+            //    UserName = "3",
+            //    PasswordHash = passwordHash.HashPassword("pass"),
+            //    CoursesTaking = new List<Course>(),
+            //    SecurityStamp = Guid.NewGuid().ToString(),
+            //    FirstName = "Joey",
+            //    LastName = "Diaz",
+            //};
+            //List<ApplicationUser> students = new List<ApplicationUser> { student1, student2, student3 };
+            ////create assignment templates to be used in Signals course
+            //var assignmentsTemplate = new List<Assignment>()
+            //{
+            //    new Assignment(){AssignmentNumber = 1, Course = courses[0], Problems = new List<Problem>()},
+            //};
+            //var problems = new List<Problem>()
+            //{
+            //    createProblem(1,
+            //                  "",
+            //                  new List<string>{"Vs1", "Vs2","Vs3"},
+            //                  new List<string>{"v1","v2","v3"},
+            //                  null),
+            //    createProblem(2,
+            //                   "",
+            //                  new List<string>{"Vs1", "R1","R2","R3","a"},
+            //                  new List<string>{"Vx","P"},
+            //                  null),
+            //    createProblem(3,
+            //                   "",
+            //                  new List<string>{"Vs1","R1","R2","R3","R4","Is3"},
+            //                  new List<string>{"i due to source Vs1","i due to source Vs2","i due to source Vs3", "i total"},
+            //                  null),
+            //    createProblem(4,
+            //                   "",
+            //                  new List<string>{"Vs", "R1","R2","R3","R4","R5"},new List<string>{"io (in microAmps)"},null),
+            //};
+            //context.Courses.Find(courses[0].Id).Templates.AddRange(assignmentsTemplate);
+            //assignmentsTemplate[0].Problems.AddRange(problems);
+            //assignmentsTemplate.ForEach(t => context.Assignments.AddOrUpdate(t));
+            //context.SaveChanges();
+            ////associate diagrams to the created problems
+            //string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
+            //var diagram = Image.FromFile(path + "\\HW1_Prob1.jpg");
+            //var diagram1 = Image.FromFile(path + "\\h1p1.png");
+            //var diagram2 = Image.FromFile(path + "\\h1p2.png");
+            //var diagram3 = Image.FromFile(path + "\\h1p3.png");
+            //var diagram4 = Image.FromFile(path + "\\h1p4.png");
+            //var problemDiagrams = new List<ProblemDiagram>()
+            //{
+            //    new ProblemDiagram{Diagram = diagram1, Problem = assignmentsTemplate[0].Problems[0] },
+            //    new ProblemDiagram{Diagram = diagram2, Problem = assignmentsTemplate[0].Problems[1] },
+            //    new ProblemDiagram{Diagram = diagram3, Problem = assignmentsTemplate[0].Problems[2] },
+            //    new ProblemDiagram{Diagram = diagram4, Problem = assignmentsTemplate[0].Problems[3] },
+            //};
+            //problemDiagrams.ForEach(p => context.ProblemDiagrams.AddOrUpdate(p));
+            ////create a single problem to give to dummy students 
+            //var testProblem = createProblem(1,
+            //                                "",
+            //                                new List<string> { "R1", "R2", "R3", "V1", "V2" },
+            //                                new List<string> { "i1", "i2", "i3" },
+            //                                new Problem.CalculateResponseDelegate(Signals.a5p1));
+            ////create assignment for that problem
+            //var testAssignment = new Assignment
+            //{
+            //    AssignmentNumber = 1,
+            //    Course = courses[1],
+            //    Problems = new List<Problem> { testProblem },
+            //};
+            //context.Courses.Find(courses[1].Id).Templates.Add(testAssignment);
+            //context.Assignments.AddOrUpdate(testAssignment);
+            //context.SaveChanges();
+            ////set up diagram for test problem
+            //var testDiagram = new ProblemDiagram
+            //{
+            //    Problem = testProblem,
+            //    Diagram = diagram,
+            //};
+            //context.ProblemDiagrams.AddOrUpdate(p => p.Id, testDiagram);
+            //// instantiate students to db and connect test assignments to students
+            //foreach (var student in students)
+            //{
+            //    var testAssignFromTemplate = new Assignment(testAssignment);
+            //    context.Users.AddOrUpdate(student);
+            //    testAssignFromTemplate.Student = student;
+            //}
+            //context.SaveChanges();
+            //createFourAssignmentsForESCourse(context);
         }
         private void createFourAssignmentsForESCourse(ApplicationDbContext context)
         {
