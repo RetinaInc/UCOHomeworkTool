@@ -1,27 +1,30 @@
 ﻿@model IEnumerable<UCOHomeworkTool.Models.Assignment>
-<table class="table table-hover">
-    <thead>
-        @if(Model.FirstOrDefault() != null)
-        {
+@if (Model.FirstOrDefault() != null)
+{
+    <table class="table table-hover">
+        <thead>
             <caption>Assignment @Model.FirstOrDefault().AssignmentNumber</caption>
-        }
+            <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Student ID</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        @{
+    foreach (var assignment in Model)
+    {
         <tr>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>Student ID</th>
-            <th>Grade</th>
+            <td>@assignment.Student.LastName</td>
+            <td>@assignment.Student.FirstName</td>
+            <td>@assignment.Student.UserName</td>
+            <td>@assignment.Grade</td>
         </tr>
-    </thead>
-    @{
-        foreach(var assignment in Model)
-        {
-           <tr>
-               <td>@assignment.Student.LastName</td>
-               <td>@assignment.Student.FirstName</td>
-               <td>@assignment.Student.UserName</td>
-               <td>@assignment.Grade</td>
-           </tr> 
-        }
     }
-
-</table>
+        }
+    </table>
+}
+else
+{
+    <div>This class has not been given this assignment yet.</div> 
+}
