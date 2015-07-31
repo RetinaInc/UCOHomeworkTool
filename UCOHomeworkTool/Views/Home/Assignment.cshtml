@@ -9,8 +9,8 @@
             <div id="accordion" class="panel-group">
                 <div id="panel@(problem.Id)" class="panel
                      @{ if (problem.TrysRemaining == 0 || problem.AllResponsesCorrect()) {  @: panel-success
-                                                 } else {  @: panel-primary
-                      }     } ">
+                                                                                                                } else {  @: panel-primary
+                                                                                     }     } ">
                     <div class= " panel-heading">
                     <h3 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="@collapseLink">Problem @problem.ProblemNumber</a>
@@ -22,7 +22,7 @@
                             @problem.Description
                         </li>
                     </ul>
-                    <div class="panel-body">
+                    <div class="panel-body" style="padding: 25px;">
                         <div class="row">
                             <div class="col-sm-6">
                                 @*http://placehold.it/600x400&text=Problem Diagram for placeholder*@
@@ -40,19 +40,23 @@
                             <div class="col-sm-6 col-sm-offset-6">
                                 Please give the values for:
                                 <div class="row">
-                                    @foreach (var response in problem.Responses)
-                                    {
-                                            <div class="col-sm-3">
-                                                <div style="font-weight: bolder" class="pull-right">@response.Label</div>
-                                            </div>
-                                            <div class="col-sm-5">
-                                                <input id="@response.Id" placeholder="Enter a Value" class="form-control response-input@(problem.Id)" type="text" style="text-align: right;" />
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <div id="alert@(response.Id)" role="alert" data-alert="alert" class="alert alert-success fade">
+                                    <div class="form-horizontal">
+                                        @foreach (var response in problem.Responses)
+                                        {
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2" style="font-weight: bolder;">@response.Label</label>
+                                                <div class="col-md-10">
+                                                    <div class="col-sm-6">
+                                                        <input id="@response.Id" placeholder="Enter a Value" class="form-control response-input@(problem.Id)" type="text" style="text-align: right;" />
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div id="alert@(response.Id)" role="alert" data-alert="alert" class="alert alert-success fade">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                    }
+                                        }
+                                    </div>
                                     <div class="col-sm-6">
                                         <div id="probalert@(problem.Id)" role="alert" data-alert="alert" class="alert alert-warning fade"></div>
                                     </div>
@@ -60,7 +64,7 @@
                                         <button id="submit@(problem.Id)" class="btn btn-primary form-control" onclick="checkResponse(@problem.Id);"
                                                 style="margin-top: 20px;"
                                                 @{ if (problem.TrysRemaining == 0 || problem.AllResponsesCorrect()) { @: disabled="disabled"
-                                                                                                                                                      } }>
+                                                                                                                                                                                                                                                                                                      } }>
                                             Submit
                                         </button>
                                     </div>

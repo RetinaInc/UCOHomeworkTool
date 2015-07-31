@@ -6,7 +6,7 @@
 @section ContextLinks{
     <ul class="navbar-nav nav">
         <li>
-            @Html.ActionLink("Admin", "Index", "Admin", null, htmlAttributes: new { title = "admin" }).If(User.IsInRole("Admin"))
+            @Html.ActionLink("Admin", "Index", "Users", null, htmlAttributes: new { title = "admin" }).If(User.IsInRole("Admin"))
         </li>
     </ul>
 }
@@ -15,7 +15,7 @@
     <div class="list-group">
         @foreach (var course in Model)
         {
-            <a class="list-group-item btn" href="@Url.Action("Course","Teacher",new{id = @course.Id})">@course.Name</a>
+            <a class="list-group-item btn" href="@Url.Action("Grades","Teacher",new{id = @course.Id})">@course.Name</a>
         }
     </div>
 </div>
