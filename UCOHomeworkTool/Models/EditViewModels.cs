@@ -88,7 +88,7 @@ namespace UCOHomeworkTool.Models
         [Display(Name="Last Name")]
         public string LastName{ get; set; }
         [Required]
-        [Display(Name="Username")]
+        [Display(Name="Username/Student ID")]
         public string UserName { get; set; }
         [Display(Name="Password")]
         public string Password { get; set; }
