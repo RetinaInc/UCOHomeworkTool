@@ -28,38 +28,6 @@ namespace UCOHomeworkTool.Calculations
                 return null;
             }
             return (Problem.CalculateResponseDelegate)Delegate.CreateDelegate(typeof (Problem.CalculateResponseDelegate), type, calcString);
-            //old way of getting delegates
-            //switch(calcString.ToLower())
-            //{
-            //    case "electricalscience.a1p1":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a1p1);
-            //    case "electricalscience.a1p2":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a1p2);
-            //    case "electricalscience.a1p3":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a1p3);
-            //    case "electricalscience.a1p4":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a1p4);
-            //    case "electricalscience.a2p1":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a2p1);
-            //    case "electricalscience.a2p2":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a2p2);
-            //    case "electricalscience.a2p3":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a2p3);
-            //    case "electricalscience.a3p1":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a3p1);
-            //    case "electricalscience.a3p2":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a3p2);
-            //    case "electricalscience.a3p3":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a3p3);
-            //    case "electricalscience.a4p1":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a4p1);
-            //    case "electricalscience.a4p2":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a4p2);
-            //    case "electricalscience.a4p3":
-            //        return new Problem.CalculateResponseDelegate(ElectricalScience.a4p3);
-            //    default:
-            //        return null;
-            //}
         }
         public static void SetExpectedResponse(Response response, string label, double value)
         {
