@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.SqlTypes;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -203,9 +204,13 @@ namespace UCOHomeworkTool.Models
     }
     public class Assignment
     {
-        public Assignment() { }
+        public Assignment() {
+            DueDate = DateTime.Parse("01/01/1901");
+        }
+
         public Assignment(Assignment toCopy)
         {
+            DueDate = DateTime.Parse("01/01/1901");
             AssignmentNumber = toCopy.AssignmentNumber;
             Course = toCopy.Course;
             Problems = new List<Problem>();
@@ -217,6 +222,7 @@ namespace UCOHomeworkTool.Models
         }
         public Assignment(Assignment toCopy, List<Problem> problemsToAssign)
         {
+            DueDate = DateTime.Parse("01/01/1901");
             AssignmentNumber = toCopy.AssignmentNumber;
             Course = toCopy.Course;
             Problems = new List<Problem>();
@@ -236,6 +242,29 @@ namespace UCOHomeworkTool.Models
         public virtual Course Course { get; set; }
         public virtual ApplicationUser Student { get; set; }
         public double Grade { get; set; }
+        public DateTime DueDate { get; set; }
+        public double LatePenalty
+        {
+            get
+            {
+                if( DateTime.Compare(DateTime.Now, GetDueDateFromTemplate()) > 0  )
+                {
+                    return .5;
+                }
+                else
+                {
+                    return 1.0;
+                }
+            }
+        }
+        public string DueDateString
+        {
+            get
+            {
+                return DueDate.ToString("MM/dd/yyyy h:mm tt");
+            }
+        }
+
         public void GradeAssignment()
         {
             double totalPoints = 20.0;
@@ -243,25 +272,28 @@ namespace UCOHomeworkTool.Models
             var modifierSegment = 1.0 / Problems.Count;
             foreach (var prob in Problems)
             {
-                //if (prob.AllResponsesCorrect())
-                //{
-                //    switch (prob.TrysRemaining)
-                //    {
-                //        case 1:
-                //            aggregateModifier += modifierSegment * .7;
-                //            break;
-                //        case 0:
-                //            aggregateModifier += modifierSegment * .5;
-                //            break;
-                //        default:
-                //            aggregateModifier += modifierSegment;
-                //            break;
-                //    }
+                var problemModifier =  modifierSegment * prob.GetGrade();
 
-                //}
-                aggregateModifier += modifierSegment * prob.GetGrade();
+                if(!prob.HasBeenGraded)
+                {
+                    problemModifier *= LatePenalty;                   
+                }
+                aggregateModifier += problemModifier;
+                if(prob.AllResponsesCorrect())
+                {
+                    prob.HasBeenGraded = true;
+                }
             }
             this.Grade = Math.Round(totalPoints * aggregateModifier, 2, MidpointRounding.AwayFromZero);
+        }
+        public DateTime GetDueDateFromTemplate()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                return db.Assignments.Include("Course").Where(a => a.Course.Id == this.Course.Id 
+                    &&  a.AssignmentNumber == this.AssignmentNumber 
+                    &&  a.Student == null).FirstOrDefault().DueDate;
+            }
         }
         public bool MakeAssignment(List<int> probids, ApplicationDbContext db)
         {
@@ -340,6 +372,12 @@ namespace UCOHomeworkTool.Models
                 }
             }
             return hasProblemsAssigned;
+        }
+
+
+        public bool HasSetDueDate()
+        {
+            return DateTime.Compare(this.DueDate, DateTime.Parse("01/02/1901")) > 0 ;
         }
     }
     public class Problem
@@ -420,10 +458,12 @@ namespace UCOHomeworkTool.Models
             }
             return allCorrect;
         }
+
         public int Id { get; set; }
         public int ProblemNumber { get; set; }
         public int GeneratedFrom { get; set; }
         public int TrysRemaining { get; set; }
+        public bool HasBeenGraded { get; set; }
         public string Description { get; set; }
         public virtual List<Given> Givens { get; set; }
         public virtual List<Response> Responses { get; set; }

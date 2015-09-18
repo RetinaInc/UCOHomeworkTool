@@ -11,6 +11,7 @@ using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Web.Script.Serialization;
+using System.Globalization;
 
 namespace UCOHomeworkTool.Controllers
 {
@@ -67,8 +68,9 @@ namespace UCOHomeworkTool.Controllers
             }
 
         }
-        public ActionResult AssignProblems(List<int> probids, int assignmentId)
+        public ActionResult AssignProblems(List<int> probids, int assignmentId, string dateTimeString)
         {
+            DateTime dueDate = getDateTimeFromString(dateTimeString);
             if(probids == null)
             {
                 probids = new List<int>();
@@ -76,6 +78,7 @@ namespace UCOHomeworkTool.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var assignment = db.Assignments.Include("Course").SingleOrDefault(x => x.Id == assignmentId);
+                assignment.DueDate = dueDate;
                 assignment.MakeAssignment(probids, db);
                 try
                 {
@@ -212,6 +215,11 @@ namespace UCOHomeworkTool.Controllers
                 //if we got this far there are no stats to export, return a redirect to course page to take no action
                 return RedirectToAction("Course", "Teacher", new { id = courseId });
             } 
+        }
+        [NonAction]
+        public DateTime getDateTimeFromString(string dateTimeString)
+        {
+            return DateTime.Parse(dateTimeString);
         }
     }
 
