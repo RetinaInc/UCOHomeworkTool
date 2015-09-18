@@ -28,6 +28,7 @@ namespace UCOHomeworkTool.Models
     public class Student : ApplicationUser
     {
         public virtual List<Course> CoursesTaking { get; set; }
+
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

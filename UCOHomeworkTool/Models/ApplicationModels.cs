@@ -25,7 +25,7 @@ namespace UCOHomeworkTool.Models
     public class Course
     {
         public int Id { get; set; }
-        [Display(Name="Course Name")]
+        [Display(Name = "Course Name")]
         public string Name { get; set; }
         public virtual List<Assignment> Templates { get; set; }
         public virtual List<Assignment> Assignments { get; set; }
@@ -44,7 +44,7 @@ namespace UCOHomeworkTool.Models
             {
                 this.Students.Add(student);
                 student.CoursesTaking.Add(this);
-                foreach(var template in this.Templates.Where(t => t.HasProblemsAssigned()))
+                foreach (var template in this.Templates.Where(t => t.HasProblemsAssigned()))
                 {
                     var probsToAssign = template.Problems.Where(p => p.IsAssigned).ToList();
                     var newAssignment = new Assignment(template, probsToAssign);
@@ -56,11 +56,33 @@ namespace UCOHomeworkTool.Models
             }
             return enrolled;
         }
+        internal bool UnenrollStudent(ApplicationDbContext db, Student student)
+        {
+            bool unenrollable = true;
+            var existingStudent = Students.Where(s => s.Id == student.Id).FirstOrDefault();
+            if (existingStudent == null)
+            {
+                unenrollable = false;
+            }
+            if (unenrollable)
+            {
+                this.Students.Remove(student);
+                this.UnassignAssignmentFromCourse(db,student.Id);
+                db.SaveChanges();
+            }
+            return unenrollable;
+        }
+
+        private void UnassignAssignmentFromCourse(ApplicationDbContext db, string studentId)
+        {
+            var assignmentsToRemove = db.Assignments.Where(a => a.Student.Id == studentId && a.Course.Id == this.Id).ToList();
+            db.Assignments.RemoveRange(assignmentsToRemove);
+        }
         public CourseStatistics GetStatistics()
         {
-            var courseStats = new CourseStatistics() {Assignments = new List<AssignmentStatistics>() };
+            var courseStats = new CourseStatistics() { Assignments = new List<AssignmentStatistics>() };
             var distinctAssignmentNumbers = Assignments.Select(a => a.AssignmentNumber).Distinct().ToList().OrderBy(a => a);
-            foreach(var assignmentNum in distinctAssignmentNumbers)
+            foreach (var assignmentNum in distinctAssignmentNumbers)
             {
                 var assignment = Assignments.Where(a => a.AssignmentNumber == assignmentNum).FirstOrDefault();
                 var distinctProblemNumbers = assignment.Problems.Select(p => p.ProblemNumber).Distinct().ToList().OrderBy(p => p);
@@ -70,11 +92,11 @@ namespace UCOHomeworkTool.Models
                     var probSet = new List<Problem>();
                     Assignments.Where(a => a.AssignmentNumber == assignment.AssignmentNumber).ToList().ForEach(a => probSet.AddRange(a.Problems.Where(p => p.ProblemNumber == pnum).ToList()));
                     var probStats = new ProblemStatistics() { ProblemNumber = pnum };
-                    probStats.FirstTry = (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 4).Count() / probSet.Count; 
-                    probStats.SecondTry= (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 3).Count() / probSet.Count; 
-                    probStats.ThirdTry= (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 2).Count() / probSet.Count; 
-                    probStats.FourthTry= (double)probSet.Where(p => p.GetGrade() == 0.7).Count() / probSet.Count; 
-                    probStats.FifthTry= (double)probSet.Where(p => p.GetGrade() == 0.5).Count() / probSet.Count; 
+                    probStats.FirstTry = (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 4).Count() / probSet.Count;
+                    probStats.SecondTry = (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 3).Count() / probSet.Count;
+                    probStats.ThirdTry = (double)probSet.Where(p => p.GetGrade() == 1.0 && p.TrysRemaining == 2).Count() / probSet.Count;
+                    probStats.FourthTry = (double)probSet.Where(p => p.GetGrade() == 0.7).Count() / probSet.Count;
+                    probStats.FifthTry = (double)probSet.Where(p => p.GetGrade() == 0.5).Count() / probSet.Count;
                     assignmentStats.Problems.Add(probStats);
                 }
                 courseStats.Assignments.Add(assignmentStats);
@@ -144,7 +166,7 @@ namespace UCOHomeworkTool.Models
                 foreach (var assignment in statModel.Assignments)
                 {
                     //create new book for this set of assignments
-                    var worksheet = package.Workbook.Worksheets.Add(string.Format("Assignment {0}",assignment.AssignmentNumber));
+                    var worksheet = package.Workbook.Worksheets.Add(string.Format("Assignment {0}", assignment.AssignmentNumber));
                     int colIndex = 1;
                     int rowIndex = 1;
                     worksheet.Cells[rowIndex, colIndex++].Value = "Problem";
@@ -158,16 +180,16 @@ namespace UCOHomeworkTool.Models
                     {
                         colIndex = 1;
                         worksheet.Cells[++rowIndex, colIndex++].Value = problem.ProblemNumber;
-                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
-                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FirstTry; 
-                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
-                        worksheet.Cells[rowIndex, colIndex++].Value = problem.SecondTry; 
-                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
-                        worksheet.Cells[rowIndex, colIndex++].Value = problem.ThirdTry; 
-                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
-                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FourthTry; 
-                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%"; 
-                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FifthTry; 
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%";
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FirstTry;
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%";
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.SecondTry;
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%";
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.ThirdTry;
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%";
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FourthTry;
+                        worksheet.Cells[rowIndex, colIndex].Style.Numberformat.Format = "00.00%";
+                        worksheet.Cells[rowIndex, colIndex++].Value = problem.FifthTry;
                     }
                     worksheet.Cells.AutoFitColumns();
                 }
@@ -176,6 +198,8 @@ namespace UCOHomeworkTool.Models
                 return ms;
             }
         }
+
+
     }
     public class Assignment
     {
@@ -206,7 +230,7 @@ namespace UCOHomeworkTool.Models
         }
 
         public int Id { get; set; }
-        [Display(Name="Assignment Number")]
+        [Display(Name = "Assignment Number")]
         public int AssignmentNumber { get; set; }
         public virtual List<Problem> Problems { get; set; }
         public virtual Course Course { get; set; }
@@ -308,7 +332,7 @@ namespace UCOHomeworkTool.Models
         public bool HasProblemsAssigned()
         {
             bool hasProblemsAssigned = false;
-            foreach(var prob in Problems)
+            foreach (var prob in Problems)
             {
                 if (prob.IsAssigned)
                 {
@@ -326,7 +350,7 @@ namespace UCOHomeworkTool.Models
             IsAssigned = true;
             Description = toCopy.Description;
             ProblemNumber = toCopy.ProblemNumber;
-            Calculation = toCopy.Calculation; 
+            Calculation = toCopy.Calculation;
             Givens = new List<Given>();
             GeneratedFrom = toCopy.Id;
             TrysRemaining = 5;

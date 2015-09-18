@@ -120,13 +120,41 @@ namespace UCOHomeworkTool.Controllers
                     else
                     {
 
-                        addedStudent = new {LastName=student.LastName, FirstName=student.FirstName, StudentId=student.UserName};
+                        addedStudent = new {LastName=student.LastName, FirstName=student.FirstName, StudentId=student.UserName, Id = student.Id};
                         returnMessage = "The student with id " + studentId + " was enrolled successfully";
                     }
                 }
             }
 
             return Json(new { message = returnMessage, student = addedStudent }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult UnenrollStudent(int courseId, string studentId)
+        {
+            string returnMessage;
+            bool unenrollSuccess = false;
+            using(var db = new ApplicationDbContext())
+            {
+                var course = db.Courses.Find(courseId);
+                var student = db.Students.Find(studentId);
+                if(student == null)
+                {
+                    returnMessage = "The student you tried to unenroll does not exist in the system";
+                }
+                else
+                {
+                    unenrollSuccess = course.UnenrollStudent(db, student);
+                    if(unenrollSuccess)
+                    {
+                        returnMessage = "The student with id " + student.UserName + " was unenrolled successfully";
+                    }
+                    else
+                    {
+                        returnMessage = "The student with id " + student.UserName + " does not exist in this course. Please refresh your page.";
+                    }
+                }
+            }
+
+            return Json(new { message = returnMessage, success = unenrollSuccess }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Grades(int id)
         {

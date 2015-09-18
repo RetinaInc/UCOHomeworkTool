@@ -26,10 +26,11 @@
         <tbody id="student_table_body">
             @foreach (var student in Model.Students.OrderBy(s => s.LastName))
             {
-                <tr>
+                <tr id="@(student.Id)">
                     <td>@student.LastName</td>
                     <td>@student.FirstName</td>
                     <td>@student.UserName</td>
+                    <td><div class="btn btn-danger" onclick="unenrollStudent(@Model.Id, '@student.Id')">Unenroll</div></td>
                 </tr>
             }
         </tbody>
@@ -59,7 +60,14 @@
                 if(data.message.includes("successfully"))
                 {
                     toastr.success(data.message);
-                    $("#student_table_body").append("<tr><td>"+data.student.LastName+"</td><td>"+data.student.FirstName+"</td><td>"+data.student.StudentId+"</td></tr>");
+                    var newTableRow = $("<tr>").attr('id', data.student.Id)
+                        .append($('<td>').html(data.student.LastName))
+                        .append($('<td>').html(data.student.FirstName))
+                        .append($('<td>').html(data.student.StudentId))
+                        .append($('<td>').append($('<div>').html("Unenroll").addClass("btn btn-danger")
+                                                    .click(function () { unenrollStudent(courseId, data.student.Id); })));
+
+                    $("#student_table_body").append(newTableRow);
                 }
                 else if(data.message.includes("register"))
                 {
@@ -75,6 +83,34 @@
                 toastr.error("An error occurred, please try again later.");
             }
         });
+    }
+    function unenrollStudent(courseId, studentId)
+    {
+        $.ajax({
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            type: "POST",
+            data: JSON.stringify({"courseId":courseId, "studentId": studentId}),
+            url: "/Teacher/UnenrollStudent",
+            success: function(data){
+                if(data.success == true)
+                {
+                    toastr.success(data.message);
+                    $("#student_table_body tr#" + studentId).remove();
+                }
+                else
+                {
+                    toastr.error(data.message);
+                }
+
+
+            },
+            error: function(data)
+            {
+                toastr.error("An unknown error occurred, please try again later.");
+            }
+    });
+
     }
     //# sourceURL=enrollment.js:
 </script>
