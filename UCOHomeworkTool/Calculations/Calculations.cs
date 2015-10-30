@@ -11,7 +11,7 @@ namespace UCOHomeworkTool.Calculations
         public static Problem.CalculateResponseDelegate GetCalculation(string calcString, string courseName)
         {
             Type type;
-            switch(courseName.ToLower())
+            switch (courseName.ToLower())
             {
                 case "electrical science":
                     type = typeof(ElectricalScience);
@@ -27,7 +27,7 @@ namespace UCOHomeworkTool.Calculations
             {
                 return null;
             }
-            return (Problem.CalculateResponseDelegate)Delegate.CreateDelegate(typeof (Problem.CalculateResponseDelegate), type, calcString);
+            return (Problem.CalculateResponseDelegate)Delegate.CreateDelegate(typeof(Problem.CalculateResponseDelegate), type, calcString);
         }
         public static void SetExpectedResponse(Response response, string label, double value)
         {
@@ -35,6 +35,13 @@ namespace UCOHomeworkTool.Calculations
             {
                 response.Expected = Math.Round(value, 2, MidpointRounding.AwayFromZero);
             }
+        }
+        public static double GetGivenValue(List<Given> givens, string label)
+        {
+
+            Given given = givens.Find(g => g.Label == label) ?? new Given { Value = 0 };
+            return (double) given.Value;
+
         }
     }
 }
