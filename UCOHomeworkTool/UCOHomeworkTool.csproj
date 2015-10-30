@@ -481,6 +481,7 @@
     <Content Include="Views\Users\_UserTable.cshtml" />
     <Content Include="Views\Courses\_CourseTable.cshtml" />
     <Content Include="Views\Assignments\_AssignmentTable.cshtml" />
+    <Content Include="Views\Users\SelfDeleteWarning.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

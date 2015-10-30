@@ -250,6 +250,10 @@ namespace UCOHomeworkTool.Controllers
             {
                 return HttpNotFound();
             }
+            if (applicationUser.UserName == User.Identity.Name)
+            {
+                return View("SelfDeleteWarning");
+            }
             return View(applicationUser);
         }
 
@@ -259,6 +263,13 @@ namespace UCOHomeworkTool.Controllers
         public ActionResult DeleteConfirmed(string id)
         {
             var applicationUser = db.Users.Find(id);
+
+            //make sure a user is not deleting themself
+            if(User.Identity.Name == applicationUser.UserName)
+            {
+                return RedirectToAction("Index");
+            }
+
             //check to see if any assignments have been made for this user if they are a student and if so, delete them
             var assignmentsToRemove = db.Assignments.Where(a => a.Student.Id == applicationUser.Id).ToList();
             db.Assignments.RemoveRange(assignmentsToRemove);
