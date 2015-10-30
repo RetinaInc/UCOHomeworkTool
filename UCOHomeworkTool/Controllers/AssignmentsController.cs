@@ -54,6 +54,8 @@ namespace UCOHomeworkTool.Controllers
         // GET: Assignments/Create
         public ActionResult Create(string courseName, int? assignmentNumber)
         {
+            var courseNames = db.Courses.Select(c => c.Name).ToList();
+            ViewBag.CourseNames = courseNames;
             return View(new EditAssignmentViewModel() { Course = courseName, AssignmentNumber = (assignmentNumber ?? 1) });
         }
 
@@ -156,6 +158,8 @@ namespace UCOHomeworkTool.Controllers
             {
                 return HttpNotFound();
             }
+            var courseNames = db.Courses.Select(c => c.Name).ToList();
+            ViewBag.CourseNames = courseNames;
             return View(viewModel);
         }
 
