@@ -19,6 +19,7 @@ namespace UCOHomeworkTool.Models
         public string Course{ get; set; }
         [Required]
         [Display(Name="Assignment Number")]
+        [Range (1, int.MaxValue, ErrorMessage = "Assignment Number must be positive and not 0")]
         public int AssignmentNumber { get; set; }
         public List<EditProblemViewModel> Problems { get; set; }
 
@@ -32,6 +33,7 @@ namespace UCOHomeworkTool.Models
         }
         public int Id { get; set; }
         [Required]
+        [Range (1, int.MaxValue, ErrorMessage = "Problem number must be positive and not 0")]
         public int ProblemNumber { get; set; }
         public string Description { get; set; }
         public List<EditGivenViewModel> Givens { get; set; }

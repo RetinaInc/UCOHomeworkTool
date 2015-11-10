@@ -46,7 +46,7 @@ namespace UCOHomeworkTool.Controllers
         // GET: Courses/Create
         public ActionResult Create()
         {
-            var teacherNames = db.Teachers.Select(t => t.UserName).ToList();
+            var teacherNames = db.Teachers.ToList().Select(t => new SelectListItem { Text = t.FirstAndLastName, Value = t.UserName }).ToList();
             ViewBag.TeacherNames = teacherNames;
             return View();
         }
@@ -83,7 +83,7 @@ namespace UCOHomeworkTool.Controllers
                 return HttpNotFound();
             }
 
-            var teacherNames = db.Teachers.Select(t => t.UserName).ToList();
+            var teacherNames = db.Teachers.ToList().Select(t => new SelectListItem { Text = t.FirstAndLastName, Value = t.UserName }).ToList(); 
             ViewBag.TeacherNames = teacherNames;
             return View(course);
         }

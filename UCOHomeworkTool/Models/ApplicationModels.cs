@@ -237,6 +237,7 @@ namespace UCOHomeworkTool.Models
 
         public int Id { get; set; }
         [Display(Name = "Assignment Number")]
+        [Range (1, int.MaxValue, ErrorMessage = "Assignment number must be positive and greater than 0")]
         public int AssignmentNumber { get; set; }
         public virtual List<Problem> Problems { get; set; }
         public virtual Course Course { get; set; }
