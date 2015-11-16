@@ -19,6 +19,9 @@ namespace UCOHomeworkTool.Calculations
                 case "signals":
                     type = typeof(Signals);
                     break;
+                case "physics for engineers and scientist 1":
+                    type = typeof(PSE1);
+                    break;
                 default:
                     type = null;
                     break;

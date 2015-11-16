@@ -6,6 +6,9 @@
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
         </th>
+        <th>
+            Teacher
+        </th>
         <th></th>
     </tr>
 
@@ -14,6 +17,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Teacher.FirstAndLastName)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
