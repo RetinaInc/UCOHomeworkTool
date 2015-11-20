@@ -393,6 +393,7 @@
     <None Include="Properties\PublishProfiles\ucohomeworktooldemo - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\customValidation.js" />
+    <Content Include="Scripts\DynamicLabel.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />

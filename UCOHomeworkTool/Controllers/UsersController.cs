@@ -73,7 +73,11 @@ namespace UCOHomeworkTool.Controllers
             {
                 if (um.IsInRole(applicationUser.Id, "Teacher"))
                 {
-                    editUser.IsTeacher = true;
+                    editUser.BaseUserType = "Teacher";
+                }
+                else
+                {
+                    editUser.BaseUserType = "Student";
                 }
                 if (um.IsInRole(applicationUser.Id, "Admin"))
                 {
@@ -86,7 +90,9 @@ namespace UCOHomeworkTool.Controllers
         // GET: ApplicationUsers/Create
         public ActionResult Create()
         {
-            return View();
+            var model = new EditUserViewModel();
+            model.BaseUserType = "Student";
+            return View(model);
         }
 
         // POST: ApplicationUsers/Create
@@ -157,6 +163,11 @@ namespace UCOHomeworkTool.Controllers
                         um.Update(appUser);
 
                     }
+                    else
+                    {
+                        um.AddToRole(appUser.Id, "Student");
+                        um.Update(appUser);
+                    }
                     if (user.IsAdmin)
                     {
                         um.AddToRole(appUser.Id, "Admin");
@@ -197,7 +208,11 @@ namespace UCOHomeworkTool.Controllers
                 }
                 if (um.IsInRole(applicationUser.Id, "Teacher"))
                 {
-                    editUser.IsTeacher = true;
+                    editUser.BaseUserType = "Teacher";
+                }
+                else
+                {
+                    editUser.BaseUserType = "Student";
                 }
             }
             return View(editUser);

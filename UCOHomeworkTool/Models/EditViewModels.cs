@@ -15,11 +15,11 @@ namespace UCOHomeworkTool.Models
         }
         public int Id { get; set; }
         [Required]
-        [Display(Name="Course Name")]
-        public string Course{ get; set; }
+        [Display(Name = "Course Name")]
+        public string Course { get; set; }
         [Required]
-        [Display(Name="Assignment Number")]
-        [Range (1, int.MaxValue, ErrorMessage = "Assignment Number must be positive and not 0")]
+        [Display(Name = "Assignment Number")]
+        [Range(1, int.MaxValue, ErrorMessage = "Assignment Number must be positive and not 0")]
         public int AssignmentNumber { get; set; }
         public List<EditProblemViewModel> Problems { get; set; }
 
@@ -33,19 +33,19 @@ namespace UCOHomeworkTool.Models
         }
         public int Id { get; set; }
         [Required]
-        [Range (1, int.MaxValue, ErrorMessage = "Problem number must be positive and not 0")]
+        [Range(1, int.MaxValue, ErrorMessage = "Problem number must be positive and not 0")]
         public int ProblemNumber { get; set; }
         public string Description { get; set; }
         public List<EditGivenViewModel> Givens { get; set; }
         public List<EditResponseViewModel> Responses { get; set; }
-        public HttpPostedFileBase Diagram{ get; set; }
-        [Display(Name="Calculation String")]
-        [RequiredWhenCreating(ErrorMessage="You must enter a value for Calculation String when creating a new problem.")]
+        public HttpPostedFileBase Diagram { get; set; }
+        [Display(Name = "Calculation String")]
+        [RequiredWhenCreating(ErrorMessage = "You must enter a value for Calculation String when creating a new problem.")]
         public string CalcString { get; set; }
 
     }
     public class EditGivenViewModel
-    { 
+    {
         public EditGivenViewModel()
         {
             MinValue = 1;
@@ -53,13 +53,13 @@ namespace UCOHomeworkTool.Models
         }
         public int Id { get; set; }
         [Required]
-        public string Label{ get; set; }
+        public string Label { get; set; }
         [Required]
-        [Display(Name="Minimum Value")]
-        [Range(1.0,Double.MaxValue)]
+        [Display(Name = "Minimum Value")]
+        [Range(1.0, Double.MaxValue)]
         public int MinValue { get; set; }
         [Required]
-        [Display(Name="Maximum Value")]
+        [Display(Name = "Maximum Value")]
         [Range(1.0, Double.MaxValue)]
         public int MaxValue { get; set; }
 
@@ -84,19 +84,35 @@ namespace UCOHomeworkTool.Models
         }
         public string Id { get; set; }
         [Required]
-        [Display(Name="First Name")]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
         [Required]
-        [Display(Name="Last Name")]
-        public string LastName{ get; set; }
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
         [Required]
-        [Display(Name="Username/Student ID")]
+        [Display(Name = "Student ID")]
         public string UserName { get; set; }
-        [Display(Name="Password")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
+        [Required]
+        [Display(Name = "Student or Teacher")]
+        public string BaseUserType { get; set; }
 
-        [Display(Name="Is a Teacher")]
-        public bool IsTeacher { get; set; }
+        [Display(Name = "Is a Teacher")]
+        public bool IsTeacher
+        {
+            get
+            {
+                return BaseUserType.Equals("Teacher");
+            }
+        }
+        public bool IsStudent
+        {
+            get
+            {
+                return BaseUserType.Equals("Student");
+            }
+        }
         [Display(Name = "Is an Admin")]
         public bool IsAdmin { get; set; }
     }
