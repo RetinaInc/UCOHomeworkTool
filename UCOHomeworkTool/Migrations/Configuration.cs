@@ -84,6 +84,12 @@ namespace UCOHomeworkTool.Migrations
                 {
                     var userResult = um.AddToRole(myUser.Id, "Admin");
                 }
+                if(!rm.RoleExists("Student"))
+                {
+                    var roleResult = rm.Create(new IdentityRole("Student"));
+                    if (!roleResult.Succeeded)
+                        throw new ApplicationException("Creating role Student failed with errors: " + roleResult.Errors);
+                }
 
             }
 

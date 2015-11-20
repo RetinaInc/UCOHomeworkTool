@@ -23,14 +23,38 @@ namespace UCOHomeworkTool.Controllers
         // GET: ApplicationUsers
         public ActionResult Index()
         {
-            int pageSize = 5;
+            int pageSize = 10;
             int pageNumber = 1;
+            ViewBag.page = pageNumber;
             return View(db.Users.ToList().OrderBy(user => user.LastName).ToPagedList(pageNumber,pageSize));
         }
-        public PartialViewResult UserTablePage(int page)
+        public PartialViewResult UserTablePage(int page, int? userType)
         {
-            int pageSize = 5;
-            return PartialView("_UserTable", db.Users.OrderBy(u => u.LastName).ToPagedList(page,pageSize));
+            int pageSize = 10;
+            ViewBag.page = page;
+            ViewBag.userType = userType;
+
+            string roleId;
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+            switch(userType)
+            {
+                case (int)UserType.Student:
+                    roleId = roleManager.FindByName("Student").Id;
+                    break;
+                case (int) UserType.Teacher:
+                    roleId = roleManager.FindByName("Teacher").Id;
+                    break;
+                case (int) UserType.Admin:
+                    roleId = roleManager.FindByName("Admin").Id;
+                    break;
+                default:
+                    roleId = "0"; 
+                    break;
+            }
+
+
+            return PartialView("_UserTable", db.Users.Where(u => u.Roles.Any( r => r.RoleId == roleId || roleId == "0")) 
+                .OrderBy(u => u.LastName).ToPagedList(page,pageSize));
         }
         // GET: ApplicationUsers/Details/5
         public ActionResult Details(string id)
@@ -288,5 +312,13 @@ namespace UCOHomeworkTool.Controllers
             }
             base.Dispose(disposing);
         }
+        public enum UserType
+        {
+            Student = 1,
+            Teacher,
+            Admin
+        }
+
     }
+
 }

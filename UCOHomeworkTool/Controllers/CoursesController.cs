@@ -19,13 +19,13 @@ namespace UCOHomeworkTool.Controllers
         // GET: Courses
         public ActionResult Index()
         {
-            int pageSize = 5;
+            int pageSize = 10;
             int pageNumber = 1;
             return View(db.Courses.OrderBy(course=> course.Name).ToPagedList(pageNumber, pageSize));
         }
         public PartialViewResult CourseTablePage(int page)
         {
-            int pageSize = 5;
+            int pageSize = 10;
             return PartialView("_CourseTable", db.Courses.OrderBy(course => course.Name).ToPagedList(page, pageSize));
         }
         // GET: Courses/Details/5

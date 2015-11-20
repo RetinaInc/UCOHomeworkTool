@@ -7,12 +7,69 @@
 {
     @{Html.RenderPartial("~/Views/Admin/_ContextLinks.cshtml");}
 }
+
+@section Sidebar
+{
+    <li class="active">
+        @Ajax.ActionLink("All",
+        "UserTablePage",
+        new { page = ViewBag.page, userType = 0 },
+                        new AjaxOptions
+                        {
+                            HttpMethod = "GET",
+                            UpdateTargetId = "userTable",
+                            OnComplete = "activateLink('#userTableAll');"
+                        },
+                        new { @id = "userTableAll" }
+                        )
+    </li>
+    <li>
+        @Ajax.ActionLink("Student",
+        "UserTablePage",
+        new { page = ViewBag.page, userType = 1 },
+                            new AjaxOptions
+                            {
+                                HttpMethod = "GET",
+                                OnComplete = "activateLink('#userTableStudents');",
+                                UpdateTargetId = "userTable"
+                            },
+                            new { @id = "userTableStudents" }
+                            )
+    </li>
+    <li>
+        @Ajax.ActionLink("Teachers",
+        "UserTablePage",
+        new { page = ViewBag.page, userType = 2 },
+                            new AjaxOptions
+                            {
+                                HttpMethod = "GET",
+                                OnComplete = "activateLink('#userTableTeachers');",
+                                UpdateTargetId = "userTable"
+                            },
+                            new { @id = "userTableTeachers" }
+                            )
+    </li>
+    <li>
+        @Ajax.ActionLink("Admins",
+        "UserTablePage",
+        new { page = ViewBag.page, userType = 3 },
+                            new AjaxOptions
+                            {
+                                HttpMethod = "GET",
+                                OnComplete = "activateLink('#userTableAdmins');",
+                                UpdateTargetId = "userTable"
+                            },
+                            new { @id = "userTableAdmins" }
+                            )
+    </li>
+}
+
 <h3 class="page-header">Users</h3>
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
 <div id="userTable">
-@Html.Partial("_UserTable", Model)
+    @Html.Partial("_UserTable", Model)
 </div>
-<br/>
+<br />
 
