@@ -10,7 +10,7 @@
         <label class="sr-only" for="studentId">Student Id</label>
         <input type="text" id="studentId" class="form-control" placeholder="Student Id" />
     </div>
-    <div id="enrollBtn" class="btn btn-primary" onclick="enrollStudent(@Model.Id);">Enroll</div>
+    <div id="enrollBtn" class="btn btn-sm btn-primary" onclick="enrollStudent(@Model.Id);">Enroll</div>
 </form>
 <div class="btn-toolbar"></div>
 <h4>Current Roster:</h4>
@@ -30,7 +30,7 @@
                     <td>@student.LastName</td>
                     <td>@student.FirstName</td>
                     <td>@student.UserName</td>
-                    <td><div class="btn btn-danger" onclick="unenrollStudent(@Model.Id, '@student.Id')">Unenroll</div></td>
+                    <td><a href="#" onclick="unenrollStudent(@Model.Id, '@student.Id')">Unenroll</a></td>
                 </tr>
             }
         </tbody>
@@ -64,7 +64,7 @@
                         .append($('<td>').html(data.student.LastName))
                         .append($('<td>').html(data.student.FirstName))
                         .append($('<td>').html(data.student.StudentId))
-                        .append($('<td>').append($('<div>').html("Unenroll").addClass("btn btn-danger")
+                        .append($('<td>').append($('<a>').html("Unenroll").attr('href', '#')
                                                     .click(function () { unenrollStudent(courseId, data.student.Id); })));
 
                     $("#student_table_body").append(newTableRow);
