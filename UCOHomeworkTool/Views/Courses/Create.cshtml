@@ -9,7 +9,7 @@
 }
 <h2>Create</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
@@ -17,6 +17,22 @@
         <h4>Course</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CoursePrefix, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CoursePrefix, new { htmlAttributes = new { @class = "form-control", @placeholder = "Course Prefix" } })
+                @Html.ValidationMessageFor(model => model.CoursePrefix, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CourseNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CourseNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Course Number" } })
+                @Html.ValidationMessageFor(model => model.CourseNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -24,13 +40,15 @@
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.Teacher, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Teacher.UserName, ViewBag.TeacherNames as IEnumerable<SelectListItem>, new {@class = "form-control" })
+                @Html.DropDownListFor(model => model.Teacher.UserName, ViewBag.TeacherNames as IEnumerable<SelectListItem>, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Teacher.UserName, "", new { @class = "text-danger" })
             </div>
         </div>
+
 
 
         <div class="form-group">

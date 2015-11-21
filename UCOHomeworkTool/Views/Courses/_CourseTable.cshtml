@@ -4,6 +4,12 @@
 <table class="table">
     <tr>
         <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().CoursePrefix)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().CourseNumber)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
         </th>
         <th>
@@ -15,6 +21,12 @@
     @foreach (var item in Model)
     {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CoursePrefix)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseNumber)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>

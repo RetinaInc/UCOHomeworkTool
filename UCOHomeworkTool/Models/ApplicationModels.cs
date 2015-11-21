@@ -32,6 +32,24 @@ namespace UCOHomeworkTool.Models
         public string CoursePrefix { get; set; }
         [Display(Name= "Course Number")]
         public string CourseNumber { get; set; }
+        [NotMapped]
+        [Display(Name = "Course Prefix and Number")]
+        public string PrefixAndNumber 
+        {
+            get
+            {
+                return String.Format("{0} {1}", this.CoursePrefix, this.CourseNumber);
+            }
+        }
+        [NotMapped]
+        [Display(Name = "Course")]
+        public string FullCourseName
+        {
+            get
+            {
+                return String.Format("{0} {1}", this.PrefixAndNumber, this.Name);
+            }
+        }
         public virtual List<Assignment> Templates { get; set; }
         public virtual List<Assignment> Assignments { get; set; }
         public virtual List<Student> Students { get; set; }

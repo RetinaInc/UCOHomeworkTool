@@ -56,7 +56,7 @@ namespace UCOHomeworkTool.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Teacher")] Course course)
+        public ActionResult Create([Bind(Include = "Id,Name,Teacher,CoursePrefix,CourseNumber")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -93,12 +93,14 @@ namespace UCOHomeworkTool.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Teacher")] Course course)
+        public ActionResult Edit([Bind(Include = "Id,Name,Teacher,CoursePrefix,CourseNumber")] Course course)
         {
             if (ModelState.IsValid)
             {
                 var existingCourse = db.Courses.Include(c => c.Teacher).Where(c => c.Id == course.Id).SingleOrDefault();
                 var teacher = db.Teachers.Where(t => t.UserName == course.Teacher.UserName).FirstOrDefault();
+                existingCourse.CourseNumber = course.CourseNumber;
+                existingCourse.CoursePrefix = course.CoursePrefix;
                 if(teacher == null)
                 {
                     existingCourse.Teacher = null;
