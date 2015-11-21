@@ -28,6 +28,10 @@ namespace UCOHomeworkTool.Models
         public int Id { get; set; }
         [Display(Name = "Course Name")]
         public string Name { get; set; }
+        [Display(Name= "Course Prefix")]
+        public string CoursePrefix { get; set; }
+        [Display(Name= "Course Number")]
+        public string CourseNumber { get; set; }
         public virtual List<Assignment> Templates { get; set; }
         public virtual List<Assignment> Assignments { get; set; }
         public virtual List<Student> Students { get; set; }
