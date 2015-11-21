@@ -19,7 +19,7 @@
                             @Html.HiddenFor(model => model.Id)
                             <p>
                                 @Html.LabelFor(m => m.ProblemNumber)
-                                @Html.TextBoxFor(m => m.ProblemNumber, new { @class = "form-control", @id = @problemIndex })
+                                @Html.TextBoxFor(m => m.ProblemNumber, new { @class = "form-control", @id = @problemIndex, @type="number", @min=1 })
                                 @Html.ValidationMessageFor(m => m.ProblemNumber, null, new { @class = "text-danger" })
                             </p>
                             <p>
