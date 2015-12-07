@@ -58,11 +58,11 @@ namespace UCOHomeworkTool.Models
         [Required]
         [Display(Name = "Minimum Value")]
         [Range(1.0, Double.MaxValue)]
-        public int MinValue { get; set; }
+        public double MinValue { get; set; }
         [Required]
         [Display(Name = "Maximum Value")]
         [Range(1.0, Double.MaxValue)]
-        public int MaxValue { get; set; }
+        public double MaxValue { get; set; }
 
     }
     public class EditResponseViewModel

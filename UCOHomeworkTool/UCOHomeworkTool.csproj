@@ -198,6 +198,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Calculations\Calculations.cs" />
     <Compile Include="Calculations\ElectricalScience.cs" />
+    <Compile Include="Calculations\Physics.cs" />
     <Compile Include="Calculations\PSE1.cs" />
     <Compile Include="Calculations\Signals.cs" />
     <Compile Include="CollectionHandling\CollectionHandling.cs" />
@@ -244,6 +245,10 @@
     <Compile Include="Migrations\201511210002458_AddPrefixAndNumberToCourses.cs" />
     <Compile Include="Migrations\201511210002458_AddPrefixAndNumberToCourses.Designer.cs">
       <DependentUpon>201511210002458_AddPrefixAndNumberToCourses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512071441034_changeGivensToDoubles.cs" />
+    <Compile Include="Migrations\201512071441034_changeGivensToDoubles.Designer.cs">
+      <DependentUpon>201512071441034_changeGivensToDoubles.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -517,6 +522,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511210002458_AddPrefixAndNumberToCourses.resx">
       <DependentUpon>201511210002458_AddPrefixAndNumberToCourses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512071441034_changeGivensToDoubles.resx">
+      <DependentUpon>201512071441034_changeGivensToDoubles.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

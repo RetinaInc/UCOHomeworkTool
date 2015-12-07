@@ -18,9 +18,9 @@ namespace UCOHomeworkTool.Models
     {
         private static readonly Random random = new Random();
         private static readonly object syncLock = new object();
-        public static int RandomNumber(int min, int max)
+        public static double RandomNumber(double min, double max)
         {
-            return random.Next(min, max);
+            return Math.Round(random.NextDouble() *( max - min) + min, 2, MidpointRounding.AwayFromZero);
         }
     }
     public class Course
@@ -563,13 +563,13 @@ namespace UCOHomeworkTool.Models
         }
         public int Id { get; set; }
         public string Label { get; set; }
-        public int Value { get; set; }
+        public double Value { get; set; }
         public virtual Problem Problem { get; set; }
     }
     public class GivenTemplate : Given
     {
-        public int minRange { get; set; }
-        public int maxRange { get; set; }
+        public double minRange { get; set; }
+        public double maxRange { get; set; }
     }
     public class Response
     {

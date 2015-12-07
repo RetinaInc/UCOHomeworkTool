@@ -13,6 +13,9 @@ namespace UCOHomeworkTool.Calculations
             Type type;
             switch (courseName.ToLower())
             {
+                case "physics":
+                    type = typeof(Physics);
+                    break;
                 case "electrical science":
                     type = typeof(ElectricalScience);
                     break;
